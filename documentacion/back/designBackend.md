@@ -74,3 +74,10 @@ Equipo:
 - Lista de Entrenadores.
 - Lista de Cuerpo técnico.
 - Lista de Jugadores.
+- Nombre.
+- Localidad.
+
+Cancha (Ampliación necesaria para el almacenaje dentro del partido): 
+- Nombre.
+- Localidad.
+- Dirección.
