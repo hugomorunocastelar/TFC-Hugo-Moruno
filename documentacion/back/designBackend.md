@@ -22,13 +22,22 @@ Para ello, situaremos 4 áreas a mencionar:
   3. Público.
   4. Páginas web.
 
-### Partidos
+
+<div style="page-break-after: always;"></div>
+
+# Partidos
 
 Como tema principal de la aplicación tenemos el manejo de los partidos de voleibol. Para ello, se desarrollará una estructura que contará con los distintos endpoint con los que se arbitrará desde dispositivos móviles (tablets).
 
+En base a lo anterior se intenta desplegar una estructura que consiga el mismo desarrollo que el acta real.
+
+<img src="../diagramas/acta-real.png" height="400">
+
 Sitúo entonces el diagrama que se incluye en la propuesta del proyecto para un desarrollo más extenso y detallado de su implementación.
 
-![diagrama de partidos](diagramas/dot&dotpartidos.png)
+<img src="diagramas/dot&dotpartidos.png" height="200">
+
+<div style="page-break-after: always;"></div>
 
 Cómo se ve en el diagrama, compondremos la estructura del flujo de los partidos de:
 
@@ -44,47 +53,177 @@ Partido:
   - Puntos:
     - Jugador que lo marca
 
+Esta es la estructura de la propuesta, qué se presenta como una aproximación.
+
 #### ¿Por qué se elige esta estructura?
 
 ```
 Esta estructura se elige debido a que el objetivo de la aplicación es acercar el arbitraje más estricto al nivel más básico del voleibol. Para ello, se compone un sólo objeto denominado: Partido; que se compone de: Sets y Equipos (En un partido real de voleibol son los datos más importantes del acta real); que a su vez se componen de lo especificado en el esquema anterior. 
 ```
 
-#### Detallaje en lenguaje java
+<div style="page-break-after: always;"></div>
 
-Acorde a lo mentado anteriormente, las distintas clases tendrán las siguientes estructuras:
+# Detallaje en lenguaje java
+
+En base a la idea y propuesta se amplían las necesidades concretas detalladas aquí:
+
+Persona:
+- DNI.
+- Nombre.
+- Apellidos.
+- Fecha de nacimiento.
+- Dirección.
+- Teléfono.
+- Email.
+- DNI verificado (Booleano).
+- Tutelado (Booleano).
+- DNI del Tutor (Otra persona).
+
+## Equipos
+
+<img src="diagramas/equipos.png" height="200">
 
 Jugador (desciende de la clase Persona):
-- Atributos de la clase Persona (Explicados más adelante).
+- Atributos de la clase Persona.
 - Número de la camiseta (Predeterminado).
 - ID del equipo al que pertenece.
 - Categoría.
 
 Entrenador (desciende de la clase Persona):
-- Atributos de la clase Persona (Explicados más adelante).
+- Atributos de la clase Persona.
 - Número de licencia.
 - Nivel de licencia.
 - ID del equipo al que pertenece.
 
 Técnico (Ampliación. Desciende de la clase Persona):
-- Atributos de la clase Persona (Explicados más adelante).
+- Atributos de la clase Persona.
+- Número de licencia.
 - Función.
+- ID del equipo al que pertenece.
 
 Equipo:
-- Lista de Entrenadores.
+- Lista de Entrenadores (Máximo 3).
 - Lista de Cuerpo técnico.
 - Lista de Jugadores.
+- Capitán (Por defecto).
 - Nombre.
 - Localidad.
 
-Cancha (Ampliación necesaria para el almacenaje dentro del partido): 
+Equipo en partido (Hereda de Equipo):
+- Atributos de Equipo.
+- Capitán (En caso de ser distinto al por defecto).
+- Lista de jugadores que faltan al partido.
+
+<div style="page-break-after: always;"></div>
+
+## Datos
+
+<img src="diagramas/datos-partido.png" height="100">
+
+Ciudad:
 - Nombre.
-- Localidad.
+- Región.
+- Rango CP.
+
+Cancha: 
+- Nombre.
+- Id de la ciudad.
 - Dirección.
+- Número de pistas posibles.
+
+Detalles del Partido:
+- Código de identificación único.
+- Nombre de la competición.
+- Id de la ciudad.
+- División.
+- Categoría.
+- Situación de inicio.
+
+Situación de inicio:
+- Equipo local.
+- Equipo visitante.
+- Equipo que saca.
+- Equipo que recibe.
+- Equipo situado en la izquierda.
+- Equipo situado en la derecha.
+
+<div style="page-break-after: always;"></div>
+
+## Arbitraje
+
+<img src="diagramas/arbitraje.png" height="200">
+
+Árbitro:
+- Atributos de la clase Persona.
+- Número de la licencia.
+- Nivel de la Licencia.
+- Id de la Ciudad.
+
+Equipo Arbitral:
+- Árbitro principal.
+- Lista de árbitros asistentes.
+
+Observaciones:
+- Lista de Observaciones.
+
+## Sanciones
+
+<img src="diagramas/amonestaciones.png" height="200">
+
+Sanción:
+- Tipo (Nº -> Jugador, C -> Entrenador, AC -> Entrenador asistente, T -> Téc. Fisioterapeuta, M -> Médico o Delegado, I -> Solicitud improcedente, D -> Demora (colectiva))
+- Equipo que causa.
+- Marcador.
+
+<div style="page-break-after: always;"></div>
+
+## Sets
+
+<img src="diagramas/set.png" height="200">
+
+Set:
+- Situación de inicio.
+- Hora de inicio.
+- Hora de fin.
+- Alineaciones.
+- Tiempos muertos.
+
+Alineación:
+- Jugador en cada posición.
+- Número de rotaciones.
+- Cambios.
 
 Punto:
-- Jugador.
-- Número.
-- Lista de cambios.
-- Lista de amonestaciones.
-- Tiempo.
+- Jugador que lo marca.
+- Número del punto.
+
+<div style="page-break-after: always;"></div>
+
+## Resultados
+
+<img src="diagramas/resultados.png" height="200">
+
+Resultado:
+- Lista de Sets.
+- Equipo ganador.
+- Equipo perdedor.
+- Hora inicio.
+- Hora fin.
+- Duración.
+- Puntaje.
+
+Puntaje:
+- Puntos a favor de un equipo.
+- Puntos a favor del otro equipo.
+- Resultado.
+
+<div style="page-break-after: always;"></div>
+
+# Sistema de usuarios
+
+Para el sistema de usuarios utilizaré la librería de Spring Security. Para ello crearé en principio los roles de:
+- ADMIN
+- PUBLIC
+- PLAYER
+- REFEREE
+- COACH
