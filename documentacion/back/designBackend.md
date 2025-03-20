@@ -107,12 +107,17 @@ Equipo:
 - Lista de Jugadores.
 - Capitán (Por defecto).
 - Nombre.
-- Localidad.
+- Id del Club.
+- Categoría.
 
 Equipo en partido (Hereda de Equipo):
 - Atributos de Equipo.
 - Capitán (En caso de ser distinto al por defecto).
 - Lista de jugadores que faltan al partido.
+
+Club:
+- Nombre.
+- Localidad.
 
 <div style="page-break-after: always;"></div>
 
