@@ -1,0 +1,105 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.App-header {
+  background-color: #5d687e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+}
+
+.App-body {
+  background-color: #8a97b1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.App-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* form config */
+  border: 5px solid rgb(153, 206, 255);
+  border-radius: 5px;
+  width: 50%;
+  margin: 20px;
+  color: white;
+  padding: 0 30px;
+
+}
+
+.App-content > div
+{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.App-content h2
+{
+  padding-bottom: 10px;
+  border-bottom: 4px dotted #ffffff;
+
+}
+
+.buttonsAndResponses
+{
+  height: 400px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttonsAndResponses > .buttons
+{
+  height: 100%;
+  width: 20%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.buttonsAndResponses > .buttons > button
+{
+  flex-grow: 1;
+  padding: 20px;
+  font-size: 20px;
+  background-color: rgb(101, 117, 108);
+  transition: ease-in 0.2s;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin: 10px 10px 10px 0px;
+  cursor: pointer;
+}
+
+.buttonsAndResponses > .buttons > button:hover
+{
+  background-color: rgb(135, 168, 150);
+  transform: scale(1.05);
+}
+
+.buttonsAndResponses > .response 
+{
+  flex-grow: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  height: 90%;
+  resize: none;
+  margin-left: 10px;
+}

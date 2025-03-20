@@ -1,0 +1,29 @@
+server:
+    port: 8088
+spring:
+    application:
+        name: viajes-clase
+        version:
+    datasource:
+#        DEVELOPMENT
+#        url: jdbc:mysql://localhost:3306/pruebafct
+#        PRODUCCIÓN
+        url: jdbc:mysql://mysql:3306/pruebafct
+
+        driverClassName: com.mysql.cj.jdbc.Driver
+        username: root
+        password: pruebafct
+    jpa:
+#        database-platform: org.hibernate.dialect.MySQLDialect
+        hibernate:
+            ddl-auto: create
+#            ddl-auto: update
+#        show-sql: true
+#        properties:
+#            hibernate:
+#                format_sql: true
+
+logging:
+    level:
+        org:
+            springframework: DEBUG

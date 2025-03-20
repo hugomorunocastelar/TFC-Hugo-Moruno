@@ -81,3 +81,10 @@ Cancha (Ampliación necesaria para el almacenaje dentro del partido):
 - Nombre.
 - Localidad.
 - Dirección.
+
+Punto:
+- Jugador.
+- Número.
+- Lista de cambios.
+- Lista de amonestaciones.
+- Tiempo.
