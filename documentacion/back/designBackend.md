@@ -117,7 +117,7 @@ Equipo en partido (Hereda de Equipo):
 
 Club:
 - Nombre.
-- Localidad.
+- Id de la ciudad.
 
 <div style="page-break-after: always;"></div>
 
