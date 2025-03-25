@@ -61,10 +61,28 @@ Entrenador
 
 ![TABLA-ENTRENADORES](diagramas/entrenadores.svg)
 
+<div style="page-break-after: always;"></div>
+
 Técnico
 
 ![TABLA-TÉCNICOS](diagramas/tecnicos.svg)
 
 Equipo
 
-![]()
+![TABLA-EQUIPOS](diagramas/equipo.svg)
+
+Club
+
+![TABLA-CLUBES](diagramas/club.svg)
+
+Ciudad
+
+![TABLA-CIUDAD](diagramas/ciudades.svg)
+
+Cancha
+
+![TABLA-CANCHA](diagramas/cancha.svg)
+
+DetallesPartido
+
+![TABLA-DETALLESPARTIDO](diagramas/detallesPartido.svg)
