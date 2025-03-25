@@ -119,6 +119,29 @@ Registro de las canchas donde se disputan los partidos.
 Información detallada de cada partido disputado.  
 ![TABLA-DETALLESPARTIDO](diagramas/detallesPartido.svg)  
 
+<div style="page-break-after: always;"></div>
+
+### **3.10 Tabla Situación de Inicio**  
+Información sobre la situación de inicio de cada partido.  
+![TABLA-SITUACIONPARTIDO](diagramas/situacionInicioPartido.svg) 
+
+### **3.11 Tabla Árbitros**  
+Información sobre los árbitros.  
+![TABLA-ARBITRO](diagramas/arbitro.svg) 
+
+### **3.12 Tabla Equipos Arbitrales**  
+Información sobre los conjuntos de árbitros.  
+![TABLA-EQUIPOARBITRAL](diagramas/equipoArbitral.svg) 
+
+### **3.13 Tabla Observaciones**  
+Información sobre las observaciones de los partidos.  
+![TABLA-OBSERVACION](diagramas/observaciones.svg) 
+
 ---
+
+### **3.13 Tabla Sanción**  
+Contiene las sanciones impuestas.  
+![TABLA-OBSERVACION](diagramas/sancion.svg) 
+
 
 Este modelo de base de datos permite estructurar de manera eficiente la información del sistema, asegurando una gestión óptima de jugadores, equipos y partidos.
