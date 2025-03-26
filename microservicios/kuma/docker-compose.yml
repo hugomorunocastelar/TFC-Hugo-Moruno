@@ -1,0 +1,25 @@
+services:
+  kuma:
+    restart: always
+    networks:
+      - red_interna
+      - red_monitor
+    ports:
+      - 3001:3001
+    volumes:
+      - uptime-kuma:/app/data
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
+    labels:
+      caddy: "monitor.pruebafcthugocastelar.duckdns.org"
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+
+networks:
+  red_interna:
+    external: true
+  red_monitor:
+    external: true
+
+volumes:
+  uptime-kuma:
+    name: uptime-kuma
