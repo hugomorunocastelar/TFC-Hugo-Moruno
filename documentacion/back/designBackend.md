@@ -232,3 +232,69 @@ Para el sistema de usuarios utilizaré la librería de Spring Security. Para ell
 - PLAYER
 - REFEREE
 - COACH
+
+Cada uno de estos roles tendrá diferentes niveles de acceso y permisos dentro de la aplicación:
+
+- **ADMIN**: Tiene control total sobre la plataforma. Puede crear, modificar y eliminar usuarios, gestionar partidos y modificar configuraciones del sistema.
+- **PUBLIC**: Solo tiene acceso a información pública, como resultados de partidos y estadísticas generales.
+- **PLAYER**: Puede acceder a su perfil, ver estadísticas personales y consultar información relevante de su equipo.
+- **REFEREE**: Puede gestionar partidos, registrar sanciones y validar resultados.
+- **COACH**: Puede gestionar su equipo, modificar alineaciones y consultar estadísticas de sus jugadores.
+
+## Autenticación y Autorización
+
+La autenticación de usuarios se realizará mediante tokens JWT. Se implementará un sistema de registro y login seguro con cifrado de contraseñas utilizando BCrypt.
+
+### Endpoints para autenticación:
+1. **`/auth/register`** → Permite a los administradores registrar nuevos usuarios.
+2. **`/auth/login`** → Devuelve un token JWT si las credenciales son correctas.
+3. **`/auth/logout`** → Invalida el token actual.
+
+## Gestión de Usuarios
+
+Para gestionar los usuarios, se utilizarán los siguientes endpoints:
+
+1. **`/users`** (GET) → Devuelve la lista de usuarios registrados.
+2. **`/users/{id}`** (GET) → Devuelve la información de un usuario específico.
+3. **`/users/{id}`** (PUT) → Permite modificar los datos de un usuario.
+4. **`/users/{id}`** (DELETE) → Elimina un usuario del sistema.
+
+## Seguridad y Control de Acceso
+
+Para reforzar la seguridad, se implementarán medidas adicionales como:
+- **CORS Policy**: Para restringir accesos no autorizados desde otros dominios.
+- **Rate Limiting**: Para evitar ataques de fuerza bruta en los endpoints de autenticación.
+- **Logs de Actividad**: Registro de eventos de acceso, modificaciones y eliminaciones de datos.
+
+---
+
+# Público
+
+El público tendrá acceso a la información pública de los partidos y estadísticas sin necesidad de autenticarse. Para ello, se desarrollarán los siguientes endpoints:
+
+1. **`/public/matches`** (GET) → Lista de partidos disponibles con resultados y detalles básicos.
+2. **`/public/match/{id}`** (GET) → Información detallada de un partido específico.
+3. **`/public/standings`** (GET) → Clasificación y estadísticas de equipos y jugadores.
+
+Además, se podrán implementar filtros y opciones de búsqueda para que el público pueda encontrar información relevante de manera rápida y eficiente.
+
+---
+
+# Páginas web
+
+Para la interacción web, se desarrollarán interfaces adaptadas a diferentes tipos de usuarios:
+
+- **Página pública**: Información sobre la aplicación, calendario de partidos y acceso a estadísticas.
+- **Panel de administración**: Gestión de usuarios, equipos, partidos y configuración del sistema.
+- **Área de árbitros**: Registro de sanciones, control de partidos en tiempo real y validación de resultados.
+- **Portal de jugadores y entrenadores**: Consulta de estadísticas, gestión de equipos y análisis de rendimiento.
+
+Estas interfaces se desarrollarán con tecnologías modernas como React o Angular para ofrecer una experiencia fluida e intuitiva.
+
+---
+
+# Conclusión
+
+El backend multimodal para la aplicación DOT & DOT ha sido diseñado para ser seguro, escalable y flexible, permitiendo la integración con distintos frontends y dispositivos. Se ha establecido una estructura clara para la gestión de partidos, usuarios, arbitraje y resultados, asegurando la integridad de los datos y un acceso controlado basado en roles.
+
+El uso de Spring Boot junto con Spring Security proporcionará una arquitectura robusta, mientras que la utilización de JWT garantizará una autenticación segura y eficiente. Este sistema permitirá una experiencia optimizada para administradores, árbitros, jugadores y entrenadores, acercando el arbitraje digital al voleibol de una manera profesional y precisa.
