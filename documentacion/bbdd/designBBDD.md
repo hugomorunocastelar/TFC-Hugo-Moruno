@@ -155,8 +155,26 @@ Lista los resultados de los partidos.
 
 Este modelo de base de datos permite estructurar de manera eficiente la información del sistema, asegurando una gestión óptima de jugadores, equipos y partidos.
 
+<div style="page-break-after: always;"></div>
+
 ## **4. Modelos Completos**
 
 ### **4.1 Personas**
 Sistema de almacenamiento de las tablas referentes a personas.  
-![TABLAS-PERSONAS]()
+![TABLAS-PERSONAS](diagramas/1-sistema-personas.svg)
+
+<div style="page-break-after: always;"></div>
+
+### **4.2 Equipos**
+Sistema de almacenamiento de las tablas referentes a los equipos.  
+![TABLAS-EQUIPOS](diagramas/2-sistema-equipos.svg)
+
+### **4.3 Equipo Arbitral**
+Sistema de almacenamiento de las tablas referentes a los equipos arbitrales.  
+![TABLAS-ARBITRALES](diagramas/3-sistema-arbitral.svg)
+
+<div style="page-break-after: always;"></div>
+
+### **4.4 Partidos**
+Sistema de almacenamiento de las tablas referentes a los partidos.  
+![TABLAS-PARTIDOS](diagramas/4-sistema-partidos.svg)
