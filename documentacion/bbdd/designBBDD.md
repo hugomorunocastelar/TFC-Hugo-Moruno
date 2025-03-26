@@ -133,15 +133,30 @@ Información sobre los árbitros.
 Información sobre los conjuntos de árbitros.  
 ![TABLA-EQUIPOARBITRAL](diagramas/equipoArbitral.svg) 
 
+<div style="page-break-after: always;"></div>
+
 ### **3.13 Tabla Observaciones**  
 Información sobre las observaciones de los partidos.  
 ![TABLA-OBSERVACION](diagramas/observaciones.svg) 
 
----
-
-### **3.13 Tabla Sanción**  
+### **3.14 Tabla Sanción**  
 Contiene las sanciones impuestas.  
-![TABLA-OBSERVACION](diagramas/sancion.svg) 
+![TABLA-SANCION](diagramas/sancion.svg) 
 
+### **3.15 Tabla Set**  
+Almacena los sets jugados.  
+![TABLA-SET](diagramas/set.svg) 
+
+<div style="page-break-after: always;"></div>
+
+### **3.16 Tabla Resultado**  
+Lista los resultados de los partidos.  
+![TABLA-RESULTADO](diagramas/resultado.svg) 
 
 Este modelo de base de datos permite estructurar de manera eficiente la información del sistema, asegurando una gestión óptima de jugadores, equipos y partidos.
+
+## **4. Modelos Completos**
+
+### **4.1 Personas**
+Sistema de almacenamiento de las tablas referentes a personas.  
+![TABLAS-PERSONAS]()
