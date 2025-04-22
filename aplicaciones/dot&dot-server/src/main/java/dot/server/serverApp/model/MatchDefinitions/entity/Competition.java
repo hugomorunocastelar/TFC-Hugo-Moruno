@@ -1,17 +1,17 @@
-package dot.server.serverApp.model.Utils.entity;
+package dot.server.serverApp.model.MatchDefinitions.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-public class Category {
+public class Competition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 20)
+    @Column(length = 50, nullable = false)
     private String name;
 
 }

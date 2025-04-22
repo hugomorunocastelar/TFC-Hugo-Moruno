@@ -18,7 +18,8 @@ public class Player {
     @Column(nullable = false)
     private Team idTeam;
 
-    @Column(nullable = false)
+    @OneToOne
+    @JoinColumn(name = "person_id", unique = true)
     private Person dni;
 
 }

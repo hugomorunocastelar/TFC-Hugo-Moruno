@@ -1,7 +1,7 @@
 package dot.server.serverApp.model.Club.entity;
 
 import dot.server.serverApp.model.Person.entity.Person;
-import dot.server.serverApp.model.Utils.entity.Category;
+import dot.server.serverApp.model.Definitions.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 

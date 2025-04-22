@@ -45,4 +45,16 @@ public class Person {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Person tutor;
 
+    @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
+    private Coach coach;
+
+    @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
+    private Player player;
+
+    @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
+    private Support support;
+
+    @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
+    private Referee referee;
+
 }
