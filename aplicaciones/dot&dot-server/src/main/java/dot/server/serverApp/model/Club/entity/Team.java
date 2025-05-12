@@ -16,10 +16,12 @@ public class Team {
     @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "dni_captain_id", nullable = false)
     private Person dniCaptain;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "id_club_id", nullable = false)
     private Club idClub;
 
     @Column(nullable = false)

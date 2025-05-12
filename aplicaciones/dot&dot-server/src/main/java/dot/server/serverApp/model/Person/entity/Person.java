@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Data
@@ -25,7 +25,7 @@ public class Person {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private LocalDate birthDate;
+    private Date birthDate;
 
     @Column(length = 100)
     private String address;
@@ -43,6 +43,8 @@ public class Person {
     private Boolean tutored;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ManyToOne
+    @JoinColumn(name = "tutor_id")
     private Person tutor;
 
     @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)

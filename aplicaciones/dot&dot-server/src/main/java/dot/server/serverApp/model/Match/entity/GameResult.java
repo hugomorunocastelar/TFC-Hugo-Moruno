@@ -4,7 +4,7 @@ import dot.server.serverApp.model.Club.entity.Team;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Data
@@ -27,11 +27,11 @@ public class GameResult {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private LocalDate timeStart;
+    private Date timeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private LocalDate timeEnd;
+    private Date timeEnd;
 
     private int duration;
 

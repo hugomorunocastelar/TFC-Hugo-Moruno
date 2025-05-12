@@ -3,7 +3,8 @@ package dot.server.serverApp.model.Match.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.util.Date;
+
 
 @Entity
 @Data
@@ -22,11 +23,11 @@ public class GameSet {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private LocalDate timeStart;
+    private Date timeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private LocalDate timeEnd;
+    private Date timeEnd;
 
     @Column(length = 20, nullable = false)
     private String localAlignment;

@@ -4,7 +4,8 @@ package dot.server.serverApp.model.MatchDefinitions.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.util.Date;
+
 
 @Entity
 @Data
@@ -18,9 +19,9 @@ public class Season {
     private String name;
 
     @Temporal(TemporalType.DATE)
-    private LocalDate initialDay;
+    private Date initialDay;
 
     @Temporal(TemporalType.DATE)
-    private LocalDate finalisationDay;
+    private Date finalisationDay;
 
 }

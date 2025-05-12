@@ -16,10 +16,11 @@ public class Support {
     private String noLicense;
 
     @Column(length = 30, nullable = false)
-    private String function;
+    private String purpose;
 
-    @Column(nullable = false)
-    private Team idTeam;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @OneToOne
     @JoinColumn(name = "person_id", unique = true)

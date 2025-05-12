@@ -18,8 +18,9 @@ public class Coach {
     @Column(length = 3, nullable = false)
     private String lvlLicense;
 
-    @Column(nullable = false)
-    private Team idTeam;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @OneToOne
     @JoinColumn(name = "person_id", unique = true)
