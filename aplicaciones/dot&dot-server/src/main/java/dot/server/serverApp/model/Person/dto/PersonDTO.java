@@ -2,12 +2,17 @@ package dot.server.serverApp.model.Person.dto;
 
 import dot.server.serverApp.model.Person.entity.Person;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Setter
+@Getter
 public class PersonDTO {
     private long id;
     private String dni;

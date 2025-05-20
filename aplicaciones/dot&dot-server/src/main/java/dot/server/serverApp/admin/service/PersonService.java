@@ -10,5 +10,11 @@ public interface PersonService {
 
     public List<PersonDTO> list();
 
+    PersonDTO findById(Long id);
 
+    boolean create(PersonDTO p);
+
+    boolean update(PersonDTO p);
+
+    boolean delete(PersonDTO p);
 }

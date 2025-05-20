@@ -37,4 +37,8 @@ public class Game {
     @OneToOne(mappedBy = "game")
     private GameResult result;
 
+    private boolean playing;
+
+    private int relevance;
+
 }
