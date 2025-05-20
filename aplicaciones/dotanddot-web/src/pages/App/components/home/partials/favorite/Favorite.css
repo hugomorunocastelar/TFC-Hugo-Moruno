@@ -1,0 +1,52 @@
+.Fav-Panel {
+  height: fit-content;
+  display: flex;
+  overflow: hidden;
+}
+
+.Fav {
+  width: 100%;
+}
+
+.F-Head {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+
+
+  & h2 {
+    margin: 0;
+    color: var(--color-black-green);
+  }
+}
+
+.F-Table {  
+  width: 100%;
+  border-collapse: collapse;
+  
+  & tr {
+    width: 100%;
+    height: 50px;
+    
+    &:nth-child(even) {
+      background-color: var(--color-white-green);
+    }
+    &:nth-child(odd) {
+      background-color: var(--color-light-green);
+    }
+    &:hover {
+      background-color: var(--color-green);
+    }
+  }
+
+  & td {
+    padding: 0 20px;
+    width: 100%;
+    font-size: 20px;
+
+    & svg {
+      height: 20px;
+      width: 20px;
+    }
+  }
+}

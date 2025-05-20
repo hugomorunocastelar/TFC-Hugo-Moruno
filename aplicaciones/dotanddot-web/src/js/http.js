@@ -1,10 +1,10 @@
-export {
-  get,
-  post
-}
+import * as session from "./session.mjs";
 
-function get(URL) {
-  const token = localStorage.getItem("token");
+export function get(URL) {
+
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
 
   return fetch(URL, {
     method: "GET",
@@ -15,8 +15,11 @@ function get(URL) {
   });
 }
 
-function post(URL, body = {}) {
-  const token = localStorage.getItem("token");
+export function post(URL, body = {}) {
+
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
 
   return fetch(URL, {
     method: "POST",

@@ -1,8 +1,20 @@
+// const BACK_IP = 'http://192.168.1.20:5000';
+const BACK_IP = '/server';
 
-export {
+const API = {
+  AUTH: {
+    ROOT: `${BACK_IP}/auth`,
+    LOGIN: `${BACK_IP}/auth/login`,
+    REGISTER: `${BACK_IP}/auth/register`,
+    VALIDATE: {
+      ROOT: `${BACK_IP}/auth/validate`,
+      ADMIN: `${BACK_IP}/auth/test/admin`
+    }
+  },
+  PERSON: {
+    ROOT: `${BACK_IP}/person`,
+    FIND: (personId) => `${BACK_IP}/person/${personId}`,
+  }
+};
 
-}
-
-const BACK_IP = `http://localhost:5000`;
-
-
+export default API;

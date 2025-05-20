@@ -10,8 +10,7 @@ function Login() {
   return (
     <div className='LoginPanel'>
       <div className='LP-Title'>
-        <p>Dot&Dot</p>
-        <p>Voley Leagues Administration</p>
+        <p>Dot&Dot: Voley Leagues Administration</p>
       </div>
       <div className='LP-Identification'>
         <div className='LP-Buttons'>
