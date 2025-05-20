@@ -1,5 +1,9 @@
 # ⚡ Dot & Dot - Gestión de Ligas de Voleibol 🏐
 
+## Despliegue abierto
+
+🛜 [https://dot-dot.duckdns.org](https://dot-dot.duckdns.org) 🛜
+
 ## 📌 Descripción
 **Dot & Dot** es una innovadora aplicación web diseñada para la **gestión integral de ligas de voleibol**. 🏆 Su objetivo es facilitar la organización, seguimiento y administración de los torneos, proporcionando una herramienta eficiente para jugadores 🏃‍♂️, entrenadores 🏋️, árbitros ⚖️ y organizadores 🏢. 
 
