@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/recent-matches")
+@RequestMapping("/match")
 public class MatchController {
 
-
+    
 
 }
