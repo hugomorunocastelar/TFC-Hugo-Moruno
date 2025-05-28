@@ -8,22 +8,33 @@
   background-color: #f8f8f8;
   color: #333;
   padding: 1rem;
-}
+  
+  & .error-emoji {
+    font-size: 6rem;
+    animation: wobble 1.5s infinite;
+  }
+  
+  & .error-title {
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+  
+  & .error-message {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    color: #666;
+  }
+  
+  & .error-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
 
-.error-emoji {
-  font-size: 6rem;
-  animation: wobble 1.5s infinite;
-}
-
-.error-title {
-  font-size: 2rem;
-  margin-top: 1rem;
-}
-
-.error-message {
-  font-size: 1.2rem;
-  margin-top: 0.5rem;
-  color: #666;
+    &:hover {
+      cursor: pointer;
+      background-color: var(--color-neutral-3);
+    }
+  }
 }
 
 @keyframes wobble {

@@ -15,7 +15,7 @@
   justify-content: center;
   align-items: center;
 
-  background-color: var(--color-dark-green);
+  background-color: var(--color-palette-green-3);
 }
 
 .HP-Header-Content {
@@ -34,7 +34,7 @@
     height: 40px;
     width: fit-content;
 
-    color: var(--color-white-green);
+    color: var(--color-palette-green-0);
   }
 
 }
@@ -54,7 +54,7 @@
     font-variant: small-caps;
     font-weight: bold;
     
-    color: var(--color-white-green);
+    color: var(--color-palette-green-0);
     background-color: transparent;
     
     & svg {
@@ -69,9 +69,9 @@
     top: 55px;
     height: 300px;
     width: 400px;
-    border: 2px solid var(--color-black-green);
+    border: 2px solid var(--color-palette-green-4);
     border-radius: 5px;
-    background-color: var(--color-white-green);
+    background-color: var(--color-palette-green-0);
     z-index: 5;
     &.hide {
       display: none;
@@ -86,7 +86,7 @@
     width: fit-content;
     border-radius: 5px;
     overflow: hidden;
-    background-color: var(--color-white-green);
+    background-color: var(--color-palette-green-0);
     z-index: 5;
     box-shadow: 0px 3px 5px 2px #00000052;
     &.hide {
@@ -95,9 +95,9 @@
   }
   
   & .LoggedButton {
-    color: var(--color-white-green) !important;
+    color: var(--color-palette-green-0) !important;
     background-color: transparent;
-    border: 2px solid var(--color-white-green);
+    border: 2px solid var(--color-palette-green-0);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,7 +111,7 @@
     }
 
     &:hover {
-      background-color: var(--color-black-green) !important;
+      background-color: var(--color-palette-green-4) !important;
     }
 
   }
@@ -138,14 +138,14 @@
     padding: 10px 20px;
     border-radius: 5px 5px 0 0;
     font-weight: bold;
-    color: var(--color-black-green);
-    background-color: var(--color-light-green);
+    color: var(--color-palette-green-4);
+    background-color: var(--color-palette-green-1);
 
     transition: background-color 0.2s ease-in-out;
   }
 
   & .selected {
-    background-color: var(--color-white-green) !important;
+    background-color: var(--color-palette-green-0) !important;
   }
 }
 
@@ -156,12 +156,12 @@
   display: flex;
   justify-content: center;
   z-index: 2;
-  background-color: var(--color-white-green);
+  background-color: var(--color-palette-green-0);
 
   &::before {
     content: "";
     position: absolute;
-    background-image: url("../../../public/login/background-img.jpg");
+    background-image: url("../../../login/background-img.jpg");
     background-position: center;
     background-size: cover;
     z-index: 1;
@@ -182,14 +182,14 @@
 
   padding: 20px 0;
 
-  background-color: var(--color-white-green);
+  background-color: var(--color-palette-green-0);
 
 }
 
 .HP-Footer {
   min-height: 50px;
   width: 100%;
-  background-color: var(--color-dark-green);
+  background-color: var(--color-palette-green-3);
 
   display: flex;
   justify-content: center;
@@ -204,7 +204,7 @@
   justify-content: space-between;
   align-items: center;
   
-  color: var(--color-white-green);
+  color: var(--color-palette-green-0);
 
   & a {
     height: 25px;

@@ -10,11 +10,11 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
-    color: var(--color-white-green);
+    color: var(--color-palette-green-0);
   }
 
   & button {
-    background-color: var(--color-dark-green);
+    background-color: var(--color-palette-green-3);
     font-variant: unset;
     margin: 0;
     margin-top: 5px;
@@ -23,7 +23,7 @@
     justify-content: center;
 
     &:hover {
-      background-color: var(--color-black-green);
+      background-color: var(--color-palette-green-4);
     }
   }
 }

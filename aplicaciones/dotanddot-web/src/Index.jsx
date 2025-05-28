@@ -6,7 +6,8 @@ import Home from "./pages/App/components/home/Home";
 import Competitions from "./pages/App/components/competitions/Competitions";
 import AuthGuard from "./AuthGuard";
 import Admin from "./pages/Admin/Admin";
-import Teams from "./pages/App/components/teams/Teams";
+import Competition from "./pages/App/components/competition/Competition";
+import Clubs from "./pages/App/components/clubs/Clubs";
 
 function Index() {
   return (
@@ -14,8 +15,10 @@ function Index() {
       <Routes>
         <Route path="/" element={<App />} >
           <Route path="/" element={<Home />}/>
-          <Route path="competitions" element={<Competitions />}/>
-          <Route path="teams" element={<Teams />}/>
+          <Route path="competitions/:competition/:category" element={<Competition />}></Route>  
+          <Route path="competitions" element={<Competitions />}>
+          </Route>
+          <Route path="clubs" element={<Clubs />}/>
         </Route>
         <Route path="admin" element={<AuthGuard><Admin /></AuthGuard>}>
           <Route path="users" element={<p>USERS</p>} >

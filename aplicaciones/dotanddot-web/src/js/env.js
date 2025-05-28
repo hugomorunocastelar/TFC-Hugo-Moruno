@@ -1,5 +1,5 @@
-// const BACK_IP = 'http://192.168.1.20:5000';
-const BACK_IP = '/server';
+let IP = import.meta.env.VITE_API_URL;
+const BACK_IP = IP;
 
 const API = {
   AUTH: {

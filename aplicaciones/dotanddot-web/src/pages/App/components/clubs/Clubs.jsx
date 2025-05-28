@@ -1,7 +1,7 @@
 import React from 'react'
-import "./Teams.css";
+import "./Clubs.css";
 
-function Teams() {
+function Clubs() {
   return (
     <div>
       waaaaaaaaaaaaa
@@ -9,4 +9,4 @@ function Teams() {
   )
 }
 
-export default Teams
+export default Clubs

@@ -21,7 +21,7 @@ function App() {
   const options = {
     'home': '/',
     'competitions': '/competitions',
-    'teams': '/teams',
+    'clubs': '/clubs',
     'admin': '/admin'
   }
   

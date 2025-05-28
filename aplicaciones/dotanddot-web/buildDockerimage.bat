@@ -1,5 +1,13 @@
 @echo off
 
+echo Login de Docker:
+call docker login -u hugomoru5 -p moru5-docker
+if ERRORLEVEL 1 (
+    echo Error login de Docker
+    pause
+    exit /b 1
+)
+
 echo Ejecutando build del proyecto...
 call npm run build
 if ERRORLEVEL 1 (

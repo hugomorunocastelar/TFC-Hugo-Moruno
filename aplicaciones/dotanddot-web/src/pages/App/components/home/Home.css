@@ -10,7 +10,13 @@
     border-radius: 15px;
     box-shadow: 0px 1px 1px 2px #0000001c;
     overflow: hidden;
-    background-color: var(--color-white);
+    background-color: var(--color-neutral-0);
+
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
   }
 
   & .HCP-Col {
@@ -21,7 +27,9 @@
 
   & .HCP-Left {
     position: relative;
-
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     & .LogoBall {
       position: absolute;
       width: 100%;
@@ -52,6 +60,15 @@
 
     & > * {
       margin-bottom: 10px;
+    }
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .HomeCompPanel {
+    & .HCP-Left {
+      grid-template-columns: auto;
+      grid-template-rows: min-content min-content;
     }
   }
 }

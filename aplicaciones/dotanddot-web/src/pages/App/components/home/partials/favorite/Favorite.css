@@ -16,7 +16,7 @@
 
   & h2 {
     margin: 0;
-    color: var(--color-black-green);
+    color: var(--color-palette-green-4);
   }
 }
 
@@ -29,13 +29,13 @@
     height: 50px;
     
     &:nth-child(even) {
-      background-color: var(--color-white-green);
+      background-color: var(--color-palette-green-0);
     }
     &:nth-child(odd) {
-      background-color: var(--color-light-green);
+      background-color: var(--color-palette-green-1);
     }
     &:hover {
-      background-color: var(--color-green);
+      background-color: var(--color-palette-green-2);
     }
   }
 
@@ -47,6 +47,12 @@
     & svg {
       height: 20px;
       width: 20px;
+    }
+
+    & p {
+      margin: 10px 0;
+      font-size: 18px;
+      text-align: center;
     }
   }
 }
