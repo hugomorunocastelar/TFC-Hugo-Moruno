@@ -39,6 +39,8 @@ public class Game {
 
     private boolean playing;
 
+    private boolean finished;
+
     private int relevance;
 
 }

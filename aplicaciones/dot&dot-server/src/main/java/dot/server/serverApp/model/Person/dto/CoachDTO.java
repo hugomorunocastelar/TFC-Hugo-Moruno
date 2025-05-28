@@ -1,67 +1,61 @@
 package dot.server.serverApp.model.Person.dto;
 
-import dot.server.serverApp.model.Person.entity.Person;
+import dot.server.serverApp.model.Person.entity.Coach;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@Setter
-@Getter
-public class PersonDTO {
-    private long id;
-    private String dni;
-    private String name;
-    private String surnames;
-    private Date birthDate;
-    private String address;
-    private String phone;
-    private String email;
-    private Boolean dniVerified;
-    private Boolean tutored;
-    private Long tutorId;
+public class CoachDTO {
 
-    public static PersonDTO from(Person person) {
-        PersonDTO dto = new PersonDTO();
-        dto.setId(person.getId());
-        dto.setDni(person.getDni());
-        dto.setName(person.getName());
-        dto.setSurnames(person.getSurnames());
-        dto.setBirthDate(person.getBirthDate());
-        dto.setAddress(person.getAddress());
-        dto.setPhone(person.getPhone());
-        dto.setEmail(person.getEmail());
-        dto.setDniVerified(person.getDniVerified());
-        dto.setTutored(person.getTutored());
-        dto.setTutorId(person.getTutor() != null ? person.getTutor().getId() : null);
+    private Long id;
+    private String noLicense;
+    private String lvlLicense;
+
+    private Long teamId;
+    private Long personId;
+
+    public static CoachDTO from(Coach coach) {
+        if (coach == null) return null;
+
+        CoachDTO dto = new CoachDTO();
+        dto.setId(coach.getId());
+        dto.setNoLicense(coach.getNoLicense());
+        dto.setLvlLicense(coach.getLvlLicense());
+        dto.setTeamId(coach.getTeam() != null ? coach.getTeam().getId() : null);
+        dto.setPersonId(coach.getDni() != null ? coach.getDni().getId() : null);
         return dto;
     }
 
-    public static Person to(PersonDTO dto) {
-        Person person = new Person();
-        person.setId(dto.getId());
-        person.setDni(dto.getDni());
-        person.setName(dto.getName());
-        person.setSurnames(dto.getSurnames());
-        person.setBirthDate(dto.getBirthDate());
-        person.setAddress(dto.getAddress());
-        person.setPhone(dto.getPhone());
-        person.setEmail(dto.getEmail());
-        person.setDniVerified(dto.getDniVerified());
-        person.setTutored(dto.getTutored());
-        return person;
+    public static Coach to(CoachDTO dto) {
+        if (dto == null) return null;
+
+        Coach coach = new Coach();
+        coach.setId(dto.getId());
+        coach.setNoLicense(dto.getNoLicense());
+        coach.setLvlLicense(dto.getLvlLicense());
+
+        if (dto.getTeamId() != null) {
+            var team = new dot.server.serverApp.model.Club.entity.Team();
+            team.setId(dto.getTeamId());
+            coach.setTeam(team);
+        }
+
+        if (dto.getPersonId() != null) {
+            var person = new dot.server.serverApp.model.Person.entity.Person();
+            person.setId(dto.getPersonId());
+            coach.setDni(person);
+        }
+
+        return coach;
     }
 
-    public static List<PersonDTO> from(List<Person> people) {
-        return people.stream().map(PersonDTO::from).collect(Collectors.toList());
+    public static List<CoachDTO> from(List<Coach> list) {
+        return list.stream().map(CoachDTO::from).collect(Collectors.toList());
     }
 
-    public static List<Person> to(List<PersonDTO> dtoList) {
-        return dtoList.stream().map(PersonDTO::to).collect(Collectors.toList());
+    public static List<Coach> to(List<CoachDTO> dtoList) {
+        return dtoList.stream().map(CoachDTO::to).collect(Collectors.toList());
     }
 }

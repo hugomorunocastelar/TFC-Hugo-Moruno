@@ -1,6 +1,6 @@
 package dot.server.serverApp.admin.service;
 
-import dot.server.serverApp.model.Person.dto.PersonDTO;
+import dot.server.serverApp.model.Person.dto.CoachDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,13 +8,9 @@ import java.util.List;
 @Service
 public interface CoachService {
 
-    public List<PersonDTO> list();
-
-    PersonDTO findById(Long id);
-
-    boolean create(PersonDTO p);
-
-    boolean update(PersonDTO p);
-
-    boolean delete(PersonDTO p);
+    boolean create(CoachDTO dto);
+    CoachDTO findById(Long id);
+    List<CoachDTO> list();
+    boolean update(CoachDTO dto);
+    boolean delete(Long id);
 }

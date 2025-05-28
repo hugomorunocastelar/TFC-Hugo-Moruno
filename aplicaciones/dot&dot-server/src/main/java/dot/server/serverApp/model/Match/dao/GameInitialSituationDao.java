@@ -1,6 +1,6 @@
 package dot.server.serverApp.model.Match.dao;
 
-import dot.server.serverApp.model.Match.entity.Game;
+import dot.server.serverApp.model.Match.entity.GameInitialSituation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GameDetailsDao extends JpaRepository<Game, Long> {}
+public interface GameInitialSituationDao extends JpaRepository<GameInitialSituation, Long> {}

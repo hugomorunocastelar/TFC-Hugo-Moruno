@@ -1,17 +1,17 @@
 package dot.server.serverApp.admin.service;
 
-import dot.server.serverApp.model.Person.dto.PersonDTO;
 import dot.server.serverApp.model.Person.entity.Coach;
+import dot.server.serverApp.model.Person.entity.Referee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public interface CoachService {
+public interface RefereeService {
 
-    Coach save(Coach coach);
-    Coach findById(Long id);
-    List<Coach> findAll();
-    Coach update(Long id, Coach coach);
+    Referee save(Referee referee);
+    Referee findById(Long id);
+    List<Referee> findAll();
+    Referee update(Long id, Referee referee);
     void deleteById(Long id);
 }

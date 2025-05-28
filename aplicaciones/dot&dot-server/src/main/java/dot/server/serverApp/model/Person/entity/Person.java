@@ -54,9 +54,6 @@ public class Person {
     private Player player;
 
     @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
-    private Support support;
-
-    @OneToOne(mappedBy = "dni", cascade = CascadeType.ALL)
     private Referee referee;
 
 }

@@ -2,60 +2,55 @@ package dot.server.serverApp.admin.controller;
 
 import dot.server.serverApp.admin.service.PersonService;
 import dot.server.serverApp.model.Person.dto.PersonDTO;
-import dot.server.serverApp.model.Person.entity.Person;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/admin/persons")
 @CrossOrigin("*")
+@Tag(name = "Admin - Personas", description = "CRUD para gestión de personas")
 public class PersonController {
 
     @Autowired
-    PersonService serv;
+    private PersonService serv;
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll() {
+    @GetMapping
+    @Operation(summary = "Obtener todas las personas")
+    public ResponseEntity<List<PersonDTO>> getAll() {
         List<PersonDTO> response = serv.list();
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.internalServerError().build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(
-        @PathVariable("id") Long id
-    ) {
-        PersonDTO p = serv.findById(id);
-        if (p != null)
-            return ResponseEntity.ok(p);
-        else
-            return ResponseEntity.badRequest().build();
+    @Operation(summary = "Obtener persona por ID")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(PersonDTO.to(serv.findById(id)));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(
-        @RequestBody PersonDTO person
-    ) {
-        if (serv.create(person))
+    @PostMapping
+    @Operation(summary = "Crear una nueva persona")
+    public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonDTO person) {
+        boolean created = serv.create(person);
+        if (created) {
+            return ResponseEntity.status(201).body(person);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar persona existente")
+    public ResponseEntity<PersonDTO> update(@PathVariable Long id, @Valid @RequestBody PersonDTO person) {
+        person.setId(id);
+        boolean updated = serv.update(person);
+        if (updated) {
             return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.notFound().build();
     }
-
-    @PutMapping("/{id}/update")
-    public ResponseEntity<?> update(
-        @RequestBody PersonDTO person
-    ) {
-        if(serv.update(person))
-            return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
-    }
-
 }

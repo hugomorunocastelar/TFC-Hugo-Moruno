@@ -21,6 +21,12 @@ public class TestController {
     return true;
   }
 
+  @GetMapping("/ref")
+  @PreAuthorize("hasRole('REFEREE') or hasRole('ADMIN')")
+  public boolean refAccess() {
+    return true;
+  }
+
   @GetMapping("/admin")
   @PreAuthorize("hasRole('ADMIN')")
   public boolean adminAccess() {

@@ -1,4 +1,4 @@
-package dot.server.serverApp.model.Utils.entity;
+package dot.server.serverApp.model.Definitions.Utilities;
 
 import java.util.Map;
 

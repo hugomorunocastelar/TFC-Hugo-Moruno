@@ -1,61 +1,67 @@
 package dot.server.serverApp.admin.controller;
 
-import dot.server.serverApp.admin.service.PersonService;
-import dot.server.serverApp.model.Person.dto.PersonDTO;
-import dot.server.serverApp.model.Person.entity.Person;
+import dot.server.serverApp.admin.service.CoachService;
+import dot.server.serverApp.model.Person.dto.CoachDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/admin/coaches")
 @CrossOrigin("*")
-public class PersonController {
+@Tag(name = "Admin - Coaches", description = "CRUD para entrenadores")
+public class CoachController {
 
     @Autowired
-    PersonService serv;
+    private CoachService serv;
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll() {
-        List<PersonDTO> response = serv.list();
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.internalServerError().build();
+    @GetMapping
+    @Operation(summary = "Obtener todos los entrenadores")
+    public ResponseEntity<List<CoachDTO>> getAll() {
+        return ResponseEntity.ok(serv.list());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(
-        @PathVariable("id") Long id
-    ) {
-        PersonDTO p = serv.findById(id);
-        if (p != null)
-            return ResponseEntity.ok(p);
-        else
-            return ResponseEntity.badRequest().build();
+    @Operation(summary = "Obtener entrenador por ID")
+    public ResponseEntity<CoachDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(serv.findById(id));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(
-        @RequestBody PersonDTO person
-    ) {
-        if (serv.create(person))
-            return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
+    @PostMapping
+    @Operation(summary = "Crear un nuevo entrenador")
+    public ResponseEntity<CoachDTO> create(@Valid @RequestBody CoachDTO coach) {
+        boolean created = serv.create(coach);
+        if (created) {
+            return ResponseEntity.status(201).body(coach);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping("/{id}/update")
-    public ResponseEntity<?> update(
-        @RequestBody PersonDTO person
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar entrenador existente")
+    public ResponseEntity<CoachDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CoachDTO coach
     ) {
-        if(serv.update(person))
-            return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
+        coach.setId(id);
+        boolean updated = serv.update(coach);
+        if (updated) {
+            return ResponseEntity.ok(coach);
+        }
+        return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar entrenador por ID")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        boolean deleted = serv.delete(id);
+        return deleted
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
 }

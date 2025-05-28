@@ -1,7 +1,8 @@
 package dot.server.serverApp.model.Club.dao;
 
 import dot.server.serverApp.model.Club.entity.Club;
+import dot.server.serverApp.model.Club.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ClubDao extends JpaRepository<Club, Long> {
+public interface TeamDao extends JpaRepository<Team, Long> {
 }

@@ -1,38 +1,31 @@
 package dot.server.serverApp.model.Definitions;
 
 
+import lombok.Getter;
+
+@Getter
 public enum Category {
 
-    PRE_BENJAMIN("Pre-Benjamin", 6, 7),
-    BENJAMIN("Benjamin", 8, 9),
-    ALEVIN("Alevin", 10, 11),
-    INFANTILE("Infantile", 12, 13),
-    CADET("Cadet", 14, 15),
-    YOUTH("Youth", 16, 17),
-    JUNIOR("Junior", 18, 19),
-    ABSOLUTE("Absolute", 20, 39),
-    SENIOR("Senior", 40, 99);
+    PRE_BENJAMIN(0, "Pre-Benjamin", 6, 7),
+    BENJAMIN(1, "Benjamin", 8, 9),
+    ALEVIN(2, "Alevin", 10, 11),
+    INFANTILE(3, "Infantile", 12, 13),
+    CADET(4, "Cadet", 14, 15),
+    YOUTH(5, "Youth", 16, 17),
+    JUNIOR(6, "Junior", 18, 19),
+    ABSOLUTE(7, "Absolute", 20, 39),
+    SENIOR(8, "Senior", 40, 99);
 
+    private final int index;
     private final String label;
     private final int minAge;
     private final int maxAge;
 
-    Category(String label, int minAge, int maxAge) {
+    Category(int index, String label, int minAge, int maxAge) {
+        this.index = index;
         this.label = label;
         this.minAge = minAge;
         this.maxAge = maxAge;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public int getMinAge() {
-        return minAge;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
     }
 
     public static Category fromAge(int age) {

@@ -1,72 +1,71 @@
 package dot.server.serverApp.admin.service.impl;
 
 import dot.server.serverApp.admin.service.PersonService;
-import dot.server.serverApp.model.Person.dao.PersonDAO;
+import dot.server.serverApp.model.Person.dao.PersonDao;
 import dot.server.serverApp.model.Person.dto.PersonDTO;
 import dot.server.serverApp.model.Person.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Service
 public class PersonServiceImpl implements PersonService {
 
+    private final PersonDao dao;
+
     @Autowired
-    PersonDAO dao;
+    public PersonServiceImpl(PersonDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<PersonDTO> list() {
         List<Person> persons = dao.findAll();
-        List<PersonDTO> response = null;
-        if (!persons.isEmpty()) {
-            response = PersonDTO.from(persons);
-        }
-        return response;
+        return PersonDTO.from(persons);
     }
 
     @Override
     public PersonDTO findById(Long id) {
-
-        Person p = dao.findById(id).orElse(null);
-        if (p != null)
-            return PersonDTO.from(p);
-        else
-            return null;
+        return dao.findById(id)
+                .map(PersonDTO::from)
+                .orElse(null);
     }
 
     @Override
-    public boolean create(PersonDTO p) {
-        Person person = PersonDTO.to(p);
-        if (!person.equals(new PersonDTO())) {
-            dao.save(person);
-            return true;
-        } else {
+    public boolean create(PersonDTO dto) {
+        if (dto == null || dto.getDni() == null || dto.getDni().isEmpty()) {
             return false;
         }
+
+        boolean exists = dao.findByDni(dto.getDni()).isPresent();
+        if (exists) return false;
+
+        Person person = PersonDTO.to(dto);
+        dao.save(person);
+        return true;
     }
 
     @Override
-    public boolean update(PersonDTO p) {
-        Person person = PersonDTO.to(p);
-        Person found = dao.findById(p.getId()).orElse(null);
-        if(!person.equals(found)) {
-            dao.save(person);
-            return true;
-        } else {
-            return false;
-        }
+    public boolean update(PersonDTO dto) {
+        if (dto == null || dto.getId() == 0) return false;
+
+        Optional<Person> existingOpt = dao.findById(dto.getId());
+        if (existingOpt.isEmpty()) return false;
+
+        Person updated = PersonDTO.to(dto);
+        dao.save(updated);
+        return true;
     }
 
     @Override
-    public boolean delete(PersonDTO p) {
-        try {
-            if (dao.existsById(p.getId()))
-                dao.deleteById(p.getId());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    public boolean delete(PersonDTO dto) {
+        if (dto == null || dto.getId() == 0) return false;
 
+        if (!dao.existsById(dto.getId())) return false;
+
+        dao.deleteById(dto.getId());
+        return true;
+    }
 }

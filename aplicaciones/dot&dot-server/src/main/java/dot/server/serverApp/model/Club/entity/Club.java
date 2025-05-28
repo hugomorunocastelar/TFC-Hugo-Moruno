@@ -1,5 +1,6 @@
 package dot.server.serverApp.model.Club.entity;
 
+import dot.server.serverApp.model.MatchDefinitions.entity.City;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +15,8 @@ public class Club {
     @Column(length = 50, nullable = false)
     private String name;
 
-//    @Column(nullable = false)
-//    private City idCity;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private City idCity;
 
 }

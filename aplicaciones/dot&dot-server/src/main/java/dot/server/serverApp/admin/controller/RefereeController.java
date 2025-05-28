@@ -1,61 +1,59 @@
 package dot.server.serverApp.admin.controller;
 
-import dot.server.serverApp.admin.service.PersonService;
-import dot.server.serverApp.model.Person.dto.PersonDTO;
-import dot.server.serverApp.model.Person.entity.Person;
+import dot.server.serverApp.admin.service.RefereeService;
+import dot.server.serverApp.model.Person.entity.Referee;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
-@CrossOrigin("*")
-public class PersonController {
+@RequestMapping("/admin/referees")
+@Tag(name = "Referee Controller", description = "Operaciones relacionadas con los árbitros")
+public class RefereeController {
+
+    private final RefereeService refereeService;
 
     @Autowired
-    PersonService serv;
+    public RefereeController(RefereeService refereeService) {
+        this.refereeService = refereeService;
+    }
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll() {
-        List<PersonDTO> response = serv.list();
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.internalServerError().build();
+    @PostMapping
+    @Operation(summary = "Crear un nuevo árbitro")
+    public ResponseEntity<Referee> createReferee(@RequestBody Referee referee) {
+        return ResponseEntity.ok(refereeService.save(referee));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(
-        @PathVariable("id") Long id
-    ) {
-        PersonDTO p = serv.findById(id);
-        if (p != null)
-            return ResponseEntity.ok(p);
-        else
-            return ResponseEntity.badRequest().build();
+    @Operation(summary = "Obtener árbitro por ID")
+    public ResponseEntity<Referee> getReferee(@PathVariable Long id) {
+        return ResponseEntity.ok(refereeService.findById(id));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(
-        @RequestBody PersonDTO person
-    ) {
-        if (serv.create(person))
-            return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
+    @GetMapping
+    @Operation(summary = "Listar todos los árbitros")
+    public ResponseEntity<List<Referee>> getAllReferees() {
+        return ResponseEntity.ok(refereeService.findAll());
     }
 
-    @PutMapping("/{id}/update")
-    public ResponseEntity<?> update(
-        @RequestBody PersonDTO person
-    ) {
-        if(serv.update(person))
-            return ResponseEntity.ok(person);
-        else
-            return ResponseEntity.badRequest().build();
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar un árbitro por ID")
+    public ResponseEntity<Referee> updateReferee(@PathVariable Long id, @RequestBody Referee referee) {
+        try {
+            return ResponseEntity.ok(refereeService.update(id, referee));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un árbitro por ID")
+    public ResponseEntity<Void> deleteReferee(@PathVariable Long id) {
+        refereeService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1,53 +1,56 @@
 package dot.server.serverApp.admin.service.impl;
 
 import dot.server.serverApp.admin.service.CoachService;
+import dot.server.serverApp.admin.service.RefereeService;
 import dot.server.serverApp.model.Person.dao.CoachDao;
+import dot.server.serverApp.model.Person.dao.RefereeDao;
 import dot.server.serverApp.model.Person.entity.Coach;
+import dot.server.serverApp.model.Person.entity.Referee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CoachServiceImpl implements CoachService {
+public class RefereeServiceImpl implements RefereeService {
 
-    private final CoachDao coachDao;
+    private final RefereeDao refereeDao;
 
     @Autowired
-    public CoachServiceImpl(CoachDao coachDao) {
-        this.coachDao = coachDao;
+    public RefereeServiceImpl(RefereeDao refereeDao) {
+        this.refereeDao = refereeDao;
     }
 
     @Override
-    public Coach save(Coach coach) {
-        return coachDao.save(coach);
+    public Referee save(Referee referee) {
+        return refereeDao.save(referee);
     }
 
     @Override
-    public Coach findById(Long id) {
-        return coachDao.findById(id).orElse(null);
+    public Referee findById(Long id) {
+        return refereeDao.findById(id).orElse(null);
     }
 
     @Override
-    public List<Coach> findAll() {
-        return coachDao.findAll();
+    public List<Referee> findAll() {
+        return refereeDao.findAll();
     }
 
     @Override
-    public Coach update(Long id, Coach coach) {
-        return coachDao.findById(id)
+    public Referee update(Long id, Referee referee) {
+        return refereeDao.findById(id)
                 .map(existing -> {
-                    existing.setNoLicense(coach.getNoLicense());
-                    existing.setLvlLicense(coach.getLvlLicense());
-                    existing.setTeam(coach.getTeam());
-                    existing.setDni(coach.getDni());
-                    return coachDao.save(existing);
+                    existing.setNoLicense(referee.getNoLicense());
+                    existing.setLvlLicense(referee.getLvlLicense());
+                    existing.setCity(referee.getCity());
+                    existing.setDni(referee.getDni());
+                    return refereeDao.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new RuntimeException("Referee not found with id " + id));
     }
 
     @Override
     public void deleteById(Long id) {
-        coachDao.deleteById(id);
+        refereeDao.deleteById(id);
     }
 }

@@ -1,4 +1,4 @@
-package dot.server.serverApp.match.controller;
+package dot.server.serverApp.referee.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

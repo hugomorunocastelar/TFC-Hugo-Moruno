@@ -109,6 +109,12 @@ public class AuthController {
           roles.add(adminRole);
 
           break;
+        case "referee":
+          Role refRole = roleRepository.findByName(RoleEnum.ROLE_REFEREE)
+                  .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado."));
+          roles.add(refRole);
+
+          break;
         default:
           Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
               .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado."));
