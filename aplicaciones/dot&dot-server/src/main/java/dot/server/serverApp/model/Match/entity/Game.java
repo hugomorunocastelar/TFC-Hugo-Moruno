@@ -1,5 +1,6 @@
 package dot.server.serverApp.model.Match.entity;
 
+import dot.server.serverApp.model.MatchDefinitions.entity.League;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -42,5 +43,9 @@ public class Game {
     private boolean finished;
 
     private int relevance;
+
+    @ManyToOne
+    @JoinColumn(name = "league_id")
+    private League league;
 
 }

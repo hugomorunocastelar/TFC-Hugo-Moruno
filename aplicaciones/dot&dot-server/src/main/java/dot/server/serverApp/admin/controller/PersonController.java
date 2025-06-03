@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/persons")
+@RequestMapping("/admin/person")
 @CrossOrigin("*")
 @Tag(name = "Admin - Personas", description = "CRUD para gestión de personas")
 public class PersonController {
