@@ -136,12 +136,17 @@
 
   & button {
     padding: 10px 20px;
+    margin-right: 5px;
     border-radius: 5px 5px 0 0;
     font-weight: bold;
     color: var(--color-palette-green-4);
     background-color: var(--color-palette-green-1);
 
     transition: background-color 0.2s ease-in-out;
+
+    &:nth-last-child(1) {
+      margin-right: 0;
+    }
   }
 
   & .selected {

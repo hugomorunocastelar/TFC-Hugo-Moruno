@@ -1,6 +1,7 @@
 .competition-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto;
+  grid-auto-columns: auto;
   gap: 20px;
   padding: 0 20px;
   
@@ -70,5 +71,12 @@
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .competition-container {
+    display: grid;
+    grid-template-columns: auto;
   }
 }

@@ -1,5 +1,59 @@
 import * as session from "./session.mjs";
 
+export function getPublic(URL) {
+
+  return fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
+
+export function put(URL, body = {}) {
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
+
+  return fetch(URL, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+}
+
+export function del(URL, id) {
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
+
+  return fetch(`${URL}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  });
+}
+
+export function patch(URL, body = {}) {
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
+
+  return fetch(URL, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+}
+
 export function get(URL) {
 
   if (session.getSession() == null) throw new Error('No Session found');

@@ -1,0 +1,80 @@
+.Gameplace {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Gameplace-Table {
+  flex: 1;
+  max-width: 700px;
+}
+
+.Gameplace-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Gameplace-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Gameplace-Table th, .Gameplace-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.Gameplace-Table th {
+  background-color: #f0f0f0;
+}
+
+.Gameplace-Table button {
+  margin-right: 5px;
+}
+
+.Gameplace-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.Gameplace-Form h2 {
+  margin-top: 0;
+}
+
+.Gameplace-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Gameplace-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.Gameplace-Form input,
+.Gameplace-Form select {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Gameplace-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.Gameplace-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}

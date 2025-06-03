@@ -1,0 +1,79 @@
+.City {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.City-Table {
+  flex: 1;
+  max-width: 600px;
+}
+
+.City-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.City-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.City-Table th, .City-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.City-Table th {
+  background-color: #f0f0f0;
+}
+
+.City-Table button {
+  margin-right: 5px;
+}
+
+.City-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.City-Form h2 {
+  margin-top: 0;
+}
+
+.City-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.City-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.City-Form input {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.City-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.City-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}

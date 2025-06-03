@@ -1,0 +1,84 @@
+.Users {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Users-Table {
+  flex: 1;
+  max-width: 700px;
+}
+
+.Users-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Users-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Users-Table th, .Users-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.Users-Table th {
+  background-color: #f0f0f0;
+}
+
+.Users-Table button {
+  margin-right: 5px;
+}
+
+.Users-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.Users-Form h2 {
+  margin-top: 0;
+}
+
+.Users-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Users-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.Users-Form input,
+.Users-Form select {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Users-Form select[multiple] {
+  height: 100px;
+}
+
+.Users-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.Users-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}

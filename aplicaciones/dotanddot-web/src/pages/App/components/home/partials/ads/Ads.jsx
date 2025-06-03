@@ -17,8 +17,12 @@ function Ads() {
     return () => clearInterval(interval);
   }, []);
 
+  function nextAd() {
+    setCurrent((prev) => (prev + 1) % images.length);
+  }
+
   return (
-    <div className='Ads-Panel infoPanel' style={{  }}>
+    <div className='Ads-Panel infoPanel' onClick={nextAd}>
       <img src={images[current]} alt={`Anuncio ${current + 1}`} />
     </div>
   );

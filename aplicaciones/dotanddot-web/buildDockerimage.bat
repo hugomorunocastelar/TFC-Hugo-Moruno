@@ -11,7 +11,7 @@ if ERRORLEVEL 1 (
 echo Ejecutando build del proyecto...
 call npm run build
 if ERRORLEVEL 1 (
-    echo Error en npm run build
+    echo Error en npm run build 
     pause
     exit /b 1
 )

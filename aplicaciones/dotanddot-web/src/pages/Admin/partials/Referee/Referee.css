@@ -1,0 +1,80 @@
+.Referee {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Referee-Table {
+  flex: 1;
+  max-width: 700px;
+}
+
+.Referee-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Referee-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Referee-Table th, .Referee-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.Referee-Table th {
+  background-color: #f0f0f0;
+}
+
+.Referee-Table button {
+  margin-right: 5px;
+}
+
+.Referee-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.Referee-Form h2 {
+  margin-top: 0;
+}
+
+.Referee-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Referee-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.Referee-Form input,
+.Referee-Form select {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Referee-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.Referee-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}
