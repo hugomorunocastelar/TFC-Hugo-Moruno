@@ -2,6 +2,7 @@ package dot.server.serverApp.admin.service.impl;
 
 import dot.server.serverApp.admin.service.LeagueService;
 import dot.server.serverApp.model.MatchDefinitions.dao.LeagueDao;
+import dot.server.serverApp.model.MatchDefinitions.dto.LeagueDto;
 import dot.server.serverApp.model.MatchDefinitions.entity.League;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +18,22 @@ public class LeagueServiceImpl implements LeagueService {
     }
 
     @Override
-    public League save(League league) {
-        return leagueDao.save(league);
+    public LeagueDto save(LeagueDto leagueDto) {
+        League league = LeagueDto.to(leagueDto);
+        League saved = leagueDao.save(league);
+        return LeagueDto.from(saved);
     }
 
     @Override
-    public League findById(Long id) {
-        return leagueDao.findById(id).orElse(null);
+    public LeagueDto findById(Long id) {
+        return leagueDao.findById(id)
+                .map(LeagueDto::from)
+                .orElse(null);
     }
 
     @Override
-    public List<League> findAll() {
-        return leagueDao.findAll();
+    public List<LeagueDto> findAll() {
+        return LeagueDto.from(leagueDao.findAll());
     }
 
     @Override

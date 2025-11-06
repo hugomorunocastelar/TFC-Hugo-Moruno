@@ -1,8 +1,7 @@
 package dot.server.serverApp.admin.controller;
 
 import dot.server.serverApp.admin.service.LeagueService;
-import dot.server.serverApp.model.MatchDefinitions.entity.League;
-import dot.server.serverApp.open.service.OpenLeagueService;
+import dot.server.serverApp.model.MatchDefinitions.dto.LeagueDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +19,14 @@ public class LeagueController {
     }
 
     @GetMapping
-    public ResponseEntity<List<League>> getAllLeagues() {
-        List<League> leagues = leagueService.findAll();
+    public ResponseEntity<List<LeagueDto>> getAllLeagues() {
+        List<LeagueDto> leagues = leagueService.findAll();
         return ResponseEntity.ok(leagues);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<League> getLeagueById(@PathVariable Long id) {
-        League league = leagueService.findById(id);
+    public ResponseEntity<LeagueDto> getLeagueById(@PathVariable Long id) {
+        LeagueDto league = leagueService.findById(id);
         if (league == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -36,23 +35,24 @@ public class LeagueController {
     }
 
     @PostMapping
-    public ResponseEntity<League> createLeague(@RequestBody League league) {
-        League savedLeague = leagueService.save(league);
+    public ResponseEntity<LeagueDto> createLeague(@RequestBody LeagueDto leagueDto) {
+        LeagueDto savedLeague = leagueService.save(leagueDto);
         return new ResponseEntity<>(savedLeague, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<League> updateLeague(@PathVariable Long id, @RequestBody League leagueDetails) {
-        League existingLeague = leagueService.findById(id);
+    public ResponseEntity<LeagueDto> updateLeague(@PathVariable Long id, @RequestBody LeagueDto leagueDto) {
+        LeagueDto existingLeague = leagueService.findById(id);
         if (existingLeague == null) {
             return ResponseEntity.notFound().build();
         }
-        existingLeague.setName(leagueDetails.getName());
-        existingLeague.setCategory(leagueDetails.getCategory());
-        existingLeague.setCompetition(leagueDetails.getCompetition());
-        existingLeague.setCodePrefix(leagueDetails.getCodePrefix());
+        // Actualizar campos
+        existingLeague.setName(leagueDto.getName());
+        existingLeague.setCategory(leagueDto.getCategory());
+        existingLeague.setCompetition(leagueDto.getCompetition());
+        existingLeague.setCodePrefix(leagueDto.getCodePrefix());
 
-        League updatedLeague = leagueService.save(existingLeague);
+        LeagueDto updatedLeague = leagueService.save(existingLeague);
         return ResponseEntity.ok(updatedLeague);
     }
 

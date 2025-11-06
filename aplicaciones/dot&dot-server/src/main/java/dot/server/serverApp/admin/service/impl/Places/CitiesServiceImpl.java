@@ -22,20 +22,20 @@ public class CitiesServiceImpl implements CitiesService {
     @Override
     public List<CityDto> findAll() {
         List<City> cities = cityDao.findAll();
-        return CityDto.fromEntityList(cities);
+        return CityDto.from(cities);
     }
 
     @Override
     public Optional<CityDto> findById(Long id) {
         Optional<City> cityOpt = cityDao.findById(id);
-        return cityOpt.map(CityDto::fromEntity);
+        return cityOpt.map(CityDto::from);
     }
 
     @Override
     public CityDto save(CityDto cityDto) {
-        City city = CityDto.toEntity(cityDto);
+        City city = CityDto.to(cityDto);
         City savedCity = cityDao.save(city);
-        return CityDto.fromEntity(savedCity);
+        return CityDto.from(savedCity);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CitiesServiceImpl implements CitiesService {
         cityToUpdate.setLastPC(cityDto.getLastPC());
 
         City updatedCity = cityDao.save(cityToUpdate);
-        return CityDto.fromEntity(updatedCity);
+        return CityDto.from(updatedCity);
     }
 
     @Override
