@@ -13,12 +13,14 @@ function Admin() {
     Entrenador: 'coach',
     Jugador: 'player',
     Usuario: 'users',
+    Rol: 'roles',
     Clubes: 'clubs',
     Ciudad: 'city',
     Liga: 'league',
+    Competicion: 'competition',
     Equipo: 'team',
     Cancha: 'gameplace',
-    Temporada: 'season',
+    Temporada: 'seasons',
     Partido: 'game'
   };
 

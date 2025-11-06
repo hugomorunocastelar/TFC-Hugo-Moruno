@@ -3,7 +3,8 @@
   color: white;
   border: none;
   border-radius: 0.375rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem !important;
+  margin: 0 !important;
   font-weight: 500;
   display: inline-flex;
   align-items: center;

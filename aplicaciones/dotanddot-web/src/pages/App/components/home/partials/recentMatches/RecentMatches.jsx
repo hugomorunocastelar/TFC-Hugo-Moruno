@@ -1,34 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./RecentMatches.css";
+import { getAllOpenGames } from '../../../../../../js/home/games.mjs';
 
 function RecentMatches() {
 
-  const examMatches = [
-    {
-      team1: "Vva",
-      team1result: 3,
-      team2: "Alc",
-      team2result: 1,
-      day: "15/05/2025",
-      hour: "16:00"
-    },
-    {
-      team1: "CCs",
-      team1result: 3,
-      team2: "DBs",
-      team2result: 0,
-      day: "15/05/2025",
-      hour: "12:00"
-    },
-    {
-      team1: "Ppa",
-      team1result: 1,
-      team2: "Lic",
-      team2result: 3,
-      day: "14/05/2025",
-      hour: "16:00"
-    },
-  ]
+  const [matches, setMatches] = useState([]);
+
+  useEffect(() => {
+    getAllOpenGames()
+    .then((response) => {
+      if (response) setMatches(response);
+    });
+  }, []);
   
   return (
     <div className='RecMatches-Panel infoPanel'>
@@ -38,28 +21,35 @@ function RecentMatches() {
         </header>
         <table className='RM-MatchesTable'>
           <tbody>
-            {examMatches.map((elem, index) => (
-              <tr key={index}>
+            {matches ? (matches.filter(p => !p.playing && p.finished)
+            .map((elem) => (
+              <tr key={elem.id}>
                 <td>
                   <div className='teams'>
-                    <p>{elem.team1}</p>
-                    <p>{elem.team2}</p>
+                    <p>{elem.initialSituation.localTeam.name}</p>
+                    <p>{elem.initialSituation.visitTeam.name}</p>
                   </div>
                 </td>
                 <td>
                   <div className='teams'>
-                    <p>{elem.team1result}</p>
-                    <p>{elem.team2result}</p>
+                    <p>{elem.result.pointsLocal}</p>
+                    <p>{elem.result.pointsVisit}</p>
                   </div>
                 </td>
                 <td>
                   <div className='time'>
-                    <p>{elem.day}</p>
-                    <p>{elem.hour}</p>
+                    <p>{`${new Date(elem.result.timeStart).getUTCDate()}-${new Date(elem.result.timeStart).getUTCMonth()}-${new Date(elem.result.timeStart).getUTCFullYear()}`}</p>
+                    <p>{`${new Date(elem.result.timeStart).getUTCHours()}:${new Date(elem.result.timeStart).getUTCMinutes() == 0 ? '00' : new Date(elem.result.timeStart).getUTCMinutes()}`}</p>
                   </div>
                 </td>
               </tr>
-            ))}
+            ))) : (
+              <tr>
+                <td>
+                  <p>Empty data...</p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

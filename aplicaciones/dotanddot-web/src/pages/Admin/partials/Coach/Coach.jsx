@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Coach.css';
+import { getAllCoaches } from '../../../../js/cruds/coaches.mjs';
+import { getAllTeams } from '../../../../js/cruds/teams.mjs';
+import { getAllPersons } from '../../../../js/cruds/persons.mjs';
+import API from '../../../../js/env';
 
 function Coach() {
   const [coaches, setCoaches] = useState([]);
@@ -15,14 +25,25 @@ function Coach() {
     teamId: '',
     personId: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(coaches.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentCoaches = coaches.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   // Fetch coaches
   const fetchCoaches = async () => {
     try {
-      const response = await fetch('/api/coaches'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch coaches');
-      const data = await response.json();
-      setCoaches(data);
+      getAllCoaches()
+      .then((response) => {
+        if (response) setCoaches(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -31,10 +52,11 @@ function Coach() {
   // Fetch teams for dropdown
   const fetchTeams = async () => {
     try {
-      const response = await fetch('/api/teams'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch teams');
-      const data = await response.json();
-      setTeams(data);
+      getAllTeams()
+      .then((response) => {
+        if (response) 
+          setTeams(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -43,10 +65,11 @@ function Coach() {
   // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
-      const response = await fetch('/api/persons'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch persons');
-      const data = await response.json();
-      setPersons(data);
+      getAllPersons()
+      .then((response) => {
+        if (response) 
+          setPersons(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -102,20 +125,18 @@ function Coach() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/coaches/${formData.id}` : '/api/coaches'; // Replace with your URLs
       const bodyData = {
         noLicense: formData.noLicense,
         lvlLicense: formData.lvlLicense,
         team: formData.teamId ? { id: formData.teamId } : null,
         dni: formData.personId ? { id: formData.personId } : null,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save coach');
+
+      if (formData.id) {
+        await put(API.COACH.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.COACH.CREATE, bodyData);
+      }
       await fetchCoaches();
       closeForm();
     } catch (error) {
@@ -126,8 +147,7 @@ function Coach() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this coach?')) return;
     try {
-      const response = await fetch(`/api/coaches/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete coach');
+      await del(API.COACH.DELETE(id));
       await fetchCoaches();
       if (selectedCoach && selectedCoach.id === id) closeForm();
     } catch (error) {
@@ -140,7 +160,7 @@ function Coach() {
       <div className='Coach-Table'>
         <div className='Coach-Table-Header'>
           <h2>Coaches</h2>
-          <NewButton action={openFormForCreate} text="Coach" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -153,15 +173,15 @@ function Coach() {
             </tr>
           </thead>
           <tbody>
-            {coaches.map(coach => (
+            {currentCoaches.map(coach => (
               <tr key={coach.id}>
                 <td>{coach.noLicense}</td>
                 <td>{coach.lvlLicense}</td>
                 <td>{coach.team ? coach.team.name : ''}</td>
                 <td>{coach.dni ? `${coach.dni.name} ${coach.dni.surnames || ''}` : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(coach)}>Edit</button>
-                  <button onClick={() => handleDelete(coach.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(coach)}><EditButton /></button>
+                  <button onClick={() => handleDelete(coach.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -172,6 +192,19 @@ function Coach() {
             )}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="Coach-Pagination">
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -231,8 +264,8 @@ function Coach() {
               </select>
             </label>
             <div className='Coach-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

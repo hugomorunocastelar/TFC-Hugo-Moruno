@@ -61,4 +61,20 @@ export async function validateAdmin() {
   }
 }
 
+export async function validateReferee() {  
+  try
+  {
+    const response = await http.get(API.AUTH.VALIDATE.REFEREE);
+    if (!response.ok)
+    {
+      return false;
+    }
+    return response.json();
+  } catch (error)
+  {
+    session.removeSession();
+    return false;
+  }
+}
+
 

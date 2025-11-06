@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Team.css';
+import { getAllPersons } from '../../../../js/cruds/persons.mjs';
+import { getAllClubs } from '../../../../js/cruds/clubs.mjs';
+import { getAllTeams } from '../../../../js/cruds/teams.mjs';
+import API from '../../../../js/env';
 
 function Team() {
   const [teams, setTeams] = useState([]);
@@ -15,14 +25,26 @@ function Team() {
     idClubId: '',
     category: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(teams.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentTeams = teams.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   // Fetch teams
   const fetchTeams = async () => {
     try {
-      const response = await fetch('/api/teams'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch teams');
-      const data = await response.json();
-      setTeams(data);
+      getAllTeams()
+      .then((response) => {
+        if (response) 
+          setTeams(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -31,10 +53,11 @@ function Team() {
   // Fetch persons for captain dropdown
   const fetchPersons = async () => {
     try {
-      const response = await fetch('/api/persons'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch persons');
-      const data = await response.json();
-      setPersons(data);
+      getAllPersons()
+      .then((response) => {
+        if (response) 
+          setPersons(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -43,10 +66,10 @@ function Team() {
   // Fetch clubs for club dropdown
   const fetchClubs = async () => {
     try {
-      const response = await fetch('/api/clubs'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch clubs');
-      const data = await response.json();
-      setClubs(data);
+      getAllClubs()
+      .then((response) => {
+        if (response) setClubs(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -102,20 +125,18 @@ function Team() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/teams/${formData.id}` : '/api/teams'; // Replace with your URLs
       const bodyData = {
         name: formData.name,
         dniCaptain: { id: formData.dniCaptainId },
         idClub: { id: formData.idClubId },
         category: formData.category,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save team');
+
+      if (formData.id) {
+        await put(API.TEAM.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.TEAM.CREATE, bodyData);
+      }
       await fetchTeams();
       closeForm();
     } catch (error) {
@@ -126,8 +147,7 @@ function Team() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this team?')) return;
     try {
-      const response = await fetch(`/api/teams/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete team');
+      await del(API.TEAM.DELETE(id));
       await fetchTeams();
       if (selectedTeam && selectedTeam.id === id) closeForm();
     } catch (error) {
@@ -150,7 +170,7 @@ function Team() {
       <div className='Team-Table'>
         <div className='Team-Table-Header'>
           <h2>Teams</h2>
-          <NewButton action={openFormForCreate} text="Team" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -163,15 +183,15 @@ function Team() {
             </tr>
           </thead>
           <tbody>
-            {teams.map(team => (
+            {currentTeams.map(team => (
               <tr key={team.id}>
                 <td>{team.name}</td>
                 <td>{team.dniCaptain ? `${team.dniCaptain.name} ${team.dniCaptain.surnames || ''}` : ''}</td>
                 <td>{team.idClub ? team.idClub.name : ''}</td>
                 <td>{team.category}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(team)}>Edit</button>
-                  <button onClick={() => handleDelete(team.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(team)}><EditButton /></button>
+                  <button onClick={() => handleDelete(team.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -182,6 +202,19 @@ function Team() {
             )}
           </tbody>
         </table>
+        {teams.length > 0 && (
+          <div className="Team-Pagination">
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -246,8 +279,8 @@ function Team() {
               </select>
             </label>
             <div className='Team-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

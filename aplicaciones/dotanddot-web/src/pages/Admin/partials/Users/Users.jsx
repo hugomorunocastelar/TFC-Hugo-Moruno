@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Users.css';
+import { getAllUsers } from '../../../../js/cruds/users.mjs';
+import { getAllRoles } from '../../../../js/cruds/roles.mjs';
+import API from '../../../../js/env';
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -14,27 +23,28 @@ function Users() {
     roles: [],
   });
 
-  // Fetch users
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/users'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch users');
-      const data = await response.json();
-      setUsers(data);
+      getAllUsers()
+      .then((response) => {
+        if (response) setUsers(response);
+      })
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Fetch roles for selection
   const [roles, setRoles] = useState([]);
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('/api/roles'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch roles');
-      const data = await response.json();
-      setRoles(data);
+      getAllRoles()
+      .then((response) => {
+        if (response) setRoles(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -96,23 +106,19 @@ function Users() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/users/${formData.id}` : '/api/users'; // Replace with your URLs
       const bodyData = {
         username: formData.username,
         email: formData.email,
-        password: formData.password || undefined, // Only send password if set
+        password: formData.password || undefined,
         roles: formData.roles.map(roleId => ({ id: roleId })),
       };
-      // Remove password if empty to avoid overwriting with empty string
       if (!bodyData.password) delete bodyData.password;
 
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save user');
+      if (formData.id) {
+        await put(API.USERS.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.USERS.CREATE, bodyData);
+      }
       await fetchUsers();
       closeForm();
     } catch (error) {
@@ -123,8 +129,7 @@ function Users() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      const response = await fetch(`/api/users/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete user');
+      await del(API.USERS.DELETE(id));
       await fetchUsers();
       if (selectedUser && selectedUser.id === id) closeForm();
     } catch (error) {
@@ -132,12 +137,21 @@ function Users() {
     }
   };
 
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentUsers = users.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
     <div className='Users'>
       <div className='Users-Table'>
         <div className='Users-Table-Header'>
           <h2>Users</h2>
-          <NewButton action={openFormForCreate} text="User" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -149,14 +163,14 @@ function Users() {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {currentUsers.map(user => (
               <tr key={user.id}>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>{user.roles ? user.roles.map(r => r.name).join(', ') : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(user)}>Edit</button>
-                  <button onClick={() => handleDelete(user.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(user)}><EditButton /></button>
+                  <button onClick={() => handleDelete(user.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -168,6 +182,28 @@ function Users() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination" style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '5px' }}>
+          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+          {[...Array(totalPages)].map((_, idx) => {
+            const pageNum = idx + 1;
+            return (
+              <button
+                key={pageNum}
+                onClick={() => goToPage(pageNum)}
+                style={{
+                  fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                  textDecoration: currentPage === pageNum ? 'underline' : 'none',
+                }}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+        </div>
+      )}
 
       {formOpen && (
         <div className='Users-Form'>
@@ -224,8 +260,8 @@ function Users() {
               </select>
             </label>
             <div className='Users-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

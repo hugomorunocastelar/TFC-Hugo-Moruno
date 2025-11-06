@@ -132,6 +132,7 @@
   & .HP-Buttons-Admin {
     display: flex;
     flex-direction: row;
+    margin-left: 5px;
   }
 
   & button {

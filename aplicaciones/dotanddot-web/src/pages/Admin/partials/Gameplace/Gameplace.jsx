@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Gameplace.css';
+import { getAllCities } from '../../../../js/cruds/cities.mjs';
+import { getAllGameplaces } from '../../../../js/cruds/gameplaces.mjs';
+import API from '../../../../js/env';
 
 function Gameplace() {
   const [gameplaces, setGameplaces] = useState([]);
@@ -14,14 +23,25 @@ function Gameplace() {
     address: '',
     idCity: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(gameplaces.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentGameplaces = gameplaces.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   // Fetch gameplaces
   const fetchGameplaces = async () => {
     try {
-      const response = await fetch('/api/gameplaces'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch gameplaces');
-      const data = await response.json();
-      setGameplaces(data);
+      getAllGameplaces()
+      .then((response) => {
+        if (response) setGameplaces(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -30,10 +50,10 @@ function Gameplace() {
   // Fetch cities for dropdown
   const fetchCities = async () => {
     try {
-      const response = await fetch('/api/cities'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch cities');
-      const data = await response.json();
-      setCities(data);
+      getAllCities()
+      .then((response) => {
+        if (response) setCities(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -91,20 +111,18 @@ function Gameplace() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/gameplaces/${formData.id}` : '/api/gameplaces'; // Replace with your URLs
       const bodyData = {
         name: formData.name,
         gamefields: formData.gamefields,
         address: formData.address,
         idCity: formData.idCity ? { id: formData.idCity } : null,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save gameplace');
+
+      if (formData.id) {
+        await put(API.GAMEPLACE.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.GAMEPLACE.CREATE, bodyData);
+      }
       await fetchGameplaces();
       closeForm();
     } catch (error) {
@@ -115,8 +133,7 @@ function Gameplace() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this gameplace?')) return;
     try {
-      const response = await fetch(`/api/gameplaces/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete gameplace');
+      await del(API.GAMEPLACE.DELETE(id));
       await fetchGameplaces();
       if (selectedGameplace && selectedGameplace.id === id) closeForm();
     } catch (error) {
@@ -129,7 +146,7 @@ function Gameplace() {
       <div className='Gameplace-Table'>
         <div className='Gameplace-Table-Header'>
           <h2>Gameplaces</h2>
-          <NewButton action={openFormForCreate} text="Gameplace" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -142,15 +159,15 @@ function Gameplace() {
             </tr>
           </thead>
           <tbody>
-            {gameplaces.map(gp => (
+            {currentGameplaces.map(gp => (
               <tr key={gp.id}>
                 <td>{gp.name}</td>
                 <td>{gp.gamefields}</td>
                 <td>{gp.address}</td>
                 <td>{gp.idCity ? gp.idCity.name : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(gp)}>Edit</button>
-                  <button onClick={() => handleDelete(gp.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(gp)}><EditButton /></button>
+                  <button onClick={() => handleDelete(gp.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -161,6 +178,19 @@ function Gameplace() {
             )}
           </tbody>
         </table>
+        {gameplaces.length > 0 && (
+          <div className="pagination">
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -217,8 +247,8 @@ function Gameplace() {
               </select>
             </label>
             <div className='Gameplace-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

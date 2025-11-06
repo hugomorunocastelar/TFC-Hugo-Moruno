@@ -11,7 +11,8 @@ const API = {
     REGISTER: `${BACK_IP}/auth/register`,
     VALIDATE: {
       ROOT: `${BACK_IP}/auth/validate`,
-      ADMIN: `${BACK_IP}/auth/test/admin`
+      ADMIN: `${BACK_IP}/auth/test/admin`,
+      REFEREE: `${BACK_IP}/auth/test/ref`
     }
   },
   PERSON: {
@@ -86,13 +87,21 @@ const API = {
     UPDATE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
   },
-  SEASON: {
+  SEASONS: {
     ROOT: `${ADMIN_BACK_IP}/seasons`,
     ALL: `${ADMIN_BACK_IP}/seasons`,
     CREATE: `${ADMIN_BACK_IP}/seasons`,
     READ: (id) => `${ADMIN_BACK_IP}/seasons/${id}`,
     UPDATE: (id) => `${ADMIN_BACK_IP}/seasons/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/seasons/${id}`,
+  },
+  COMPETITION: {
+    ROOT: `${ADMIN_BACK_IP}/competitions`,
+    ALL: `${ADMIN_BACK_IP}/competitions`,
+    CREATE: `${ADMIN_BACK_IP}/competitions`,
+    READ: (id) => `${ADMIN_BACK_IP}/competitions/${id}`,
+    UPDATE: (id) => `${ADMIN_BACK_IP}/competitions/${id}`,
+    DELETE: (id) => `${ADMIN_BACK_IP}/competitions/${id}`,
   },
   USERS: {
     ROOT: `${ADMIN_BACK_IP}/users`,
@@ -102,10 +111,35 @@ const API = {
     UPDATE: (id) => `${ADMIN_BACK_IP}/users/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/users/${id}`,
   },
+  ROLES: {
+    ROOT: `${ADMIN_BACK_IP}/roles`,
+    ALL: `${ADMIN_BACK_IP}/roles`,
+    CREATE: `${ADMIN_BACK_IP}/roles`,
+    READ: (id) => `${ADMIN_BACK_IP}/roles/${id}`,
+    UPDATE: (id) => `${ADMIN_BACK_IP}/roles/${id}`,
+    DELETE: (id) => `${ADMIN_BACK_IP}/roles/${id}`,
+  },
+  GAMES: {
+    ROOT: `${ADMIN_BACK_IP}/games`,
+    ALL: `${ADMIN_BACK_IP}/games`,
+    CREATE: `${ADMIN_BACK_IP}/games`,
+    READ: (id) => `${ADMIN_BACK_IP}/games/${id}`,
+    UPDATE: (id) => `${ADMIN_BACK_IP}/games/${id}`,
+    DELETE: (id) => `${ADMIN_BACK_IP}/games/${id}`,
+  },
   OPEN: {
     CLUBS: {
       ROOT: `${OPEN_BACK_IP}/clubs`,
       ALL: `${OPEN_BACK_IP}/clubs`
+    },
+    GAMES: {
+      ROOT: `${OPEN_BACK_IP}/games`,
+      ALL: `${OPEN_BACK_IP}/games`,
+      OM: `${OPEN_BACK_IP}/games/outstanding-match`
+    },
+    CONTACT: {
+      ROOT: `${OPEN_BACK_IP}/mail`,
+      SEND: `${OPEN_BACK_IP}/mail/contact`,
     }
   }
 };

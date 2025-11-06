@@ -1,17 +1,17 @@
-INSERT INTO roles (name) VALUES 
+INSERT INTO roles (name) VALUES
 ('ROLE_USER'),
 ('ROLE_ADMIN'),
 ('ROLE_REFEREE');
 
-INSERT INTO users (username, password, email) VALUES 
+INSERT INTO users (username, password, email) VALUES
 ('admin', '$2a$10$ct32Oj3tMPd2id.W9QPxt.T4FX7L9C6pNKImaasanJnCMW8Gcv.sG', 'admin@dotdot.com'),
 ('referee', '$2a$10$48NT70UvDCImcLFvbttJquGMy8rN6Za0qHXCNu8FBmdxdulzIkx0m', 'referee@dotdot.com');
 
-INSERT INTO user_roles (user_id, role_id) VALUES 
+INSERT INTO user_roles (user_id, role_id) VALUES
 (1, 2),
 (2, 3);
 
-INSERT INTO city (id, name, region, firstPC, lastPC) VALUES 
+INSERT INTO city (id, name, region, firstPC, lastPC) VALUES
 (1, 'Cáceres', 'Extremadura', '10001', '10010'),
 (2, 'Badajoz', 'Extremadura', '06001', '06010'),
 (3, 'Mérida', 'Extremadura', '06800', '06809')
@@ -21,13 +21,14 @@ INSERT INTO city (id, name, region, firstPC, lastPC) VALUES
 ,(7, 'Navalmoral de la Mata', 'Extremadura', '10300', '10309')
 ,(8, 'Zafra', 'Extremadura', '06300', '06309')
 ,(9, 'Villanueva de la Serena', 'Extremadura', '06700', '06709')
-,(10, 'Montijo', 'Extremadura', '06480', '06489');
+,(10, 'Montijo', 'Extremadura', '06480', '06489')
+,(11, 'Villanueva del Fresno', 'Extremadura', '06110', '06111');
 
-INSERT INTO gameplace (name, gamefields, address, city_id) VALUES 
+INSERT INTO gameplace (name, gamefields, address, city_id) VALUES
 ('Pabellón Multiusos Cáceres', 2, 'Av. de Pierre de Coubertin, s/n, Cáceres', 1),
-('Polideportivo La Granadilla', 2, 'Ctra. Sevilla, s/n, Badajoz', 2), 
+('Polideportivo La Granadilla', 2, 'Ctra. Sevilla, s/n, Badajoz', 2),
 ('Polideportivo Guadiana', 1, 'Calle Albarregas, Mérida', 3),
-('Pabellón Ciudad de Plasencia', 2, 'Av. del Valle, Plasencia', 4), 
+('Pabellón Ciudad de Plasencia', 2, 'Av. del Valle, Plasencia', 4),
 ('Polideportivo Don Benito', 1, 'Calle Don Llorente, Don Benito', 5),
 ('Pabellón Extremadura', 2, 'Av. Rafael Alberti, Almendralejo', 6),
 ('Pabellón Antonio Jara', 1, 'Calle Real, Navalmoral de la Mata', 7),
@@ -36,14 +37,14 @@ INSERT INTO gameplace (name, gamefields, address, city_id) VALUES
 ('Pabellón Municipal Montijo', 1, 'Av. de Colón, Montijo', 10),
 ('Pabellón Villanueva del Fresno', 1, 'Calle Dehesa Boyal, Villanueva del Fresno', 11);
 
-INSERT INTO competition (name, day_start, day_end) VALUES 
+INSERT INTO competition (name, day_start, day_end) VALUES
 ('National', '2024-09-01', '2025-09-01'),
 ('Judex', '2024-09-01', '2025-09-01'),
 ('Federation', '2024-09-01', '2025-09-01'),
 ('Friendly', '2024-09-01', '2025-09-01');
 
 -- Inserts para 20 adultos (1 cada 10 personas)
-INSERT INTO Person (dni, name, surnames, birthDate, address, phone, email, dniVerified, tutored, tutor_id) VALUES
+INSERT INTO person (dni, name, surnames, birth_date, address, phone, email, dni_verified, tutored, tutor_id) VALUES
 ('10000001A', 'Carlos', 'García López', '1975-05-20', 'Calle Mayor 1, Badajoz', '924100001', 'carlos.garcia1@example.com', TRUE, FALSE, NULL),
 ('10000002B', 'María', 'Fernández Martín', '1980-11-15', 'Av. de España 2, Cáceres', '927100002', 'maria.fernandez2@example.com', TRUE, FALSE, NULL),
 ('10000003C', 'José', 'Sánchez Ruiz', '1968-07-30', 'Calle Ancha 3, Mérida', '924100003', 'jose.sanchez3@example.com', TRUE, FALSE, NULL),
@@ -65,7 +66,7 @@ INSERT INTO Person (dni, name, surnames, birthDate, address, phone, email, dniVe
 ('10000019S', 'Jorge', 'Romero Díaz', '1967-01-29', 'Calle Mayor 19, Badajoz', '924100019', 'jorge.romero19@example.com', TRUE, FALSE, NULL),
 ('10000020T', 'Natalia', 'Santos Vega', '1979-06-18', 'Av. España 20, Cáceres', '927100020', 'natalia.santos20@example.com', TRUE, FALSE, NULL);
 
-INSERT INTO Person (dni, name, surnames, birthDate, address, phone, email, dniVerified, tutored, tutor_id) VALUES
+INSERT INTO person (dni, name, surnames, birth_date, address, phone, email, dni_verified, tutored, tutor_id) VALUES
 ('20000001A', 'Lucía', 'Fernández Martín', '2009-03-20', 'Av. de España 21, Cáceres', '927200001', 'lucia.fernandez21@example.com', TRUE, TRUE, NULL),
 ('20000002B', 'Daniel', 'Sánchez Ruiz', '2006-11-12', 'Calle Ancha 22, Mérida', '924200002', 'daniel.sanchez22@example.com', TRUE, TRUE, NULL),
 ('20000003C', 'María', 'Gómez Díaz', '2008-01-08', 'Plaza de España 23, Badajoz', '924200003', 'maria.gomez23@example.com', TRUE, TRUE, NULL),
@@ -245,48 +246,113 @@ INSERT INTO Person (dni, name, surnames, birthDate, address, phone, email, dniVe
 ('20000177U', 'Marta', 'Moreno Sánchez', '2005-11-02', 'Av. Libertad 197, Badajoz', '924200177', 'marta.moreno197@example.com', TRUE, TRUE, NULL),
 ('20000178V', 'David', 'Vega Ortega', '2006-03-10', 'Calle San Juan 198, Cáceres', '927200178', 'david.vega198@example.com', TRUE, TRUE, NULL),
 ('20000179W', 'Isabel', 'Navarro Castillo', '2007-05-29', 'Av. España 199, Mérida', '924200179', 'isabel.navarro199@example.com', TRUE, TRUE, NULL),
-('20000180X', 'Adrián', 'García Paredes', '2008-11-22', 'Calle Mayor 200, Badajoz', '924200180', 'adrian.garcia200@example.com', TRUE, TRUE, NULL),
-('10000001A', 'José', 'García Martínez', '1980-04-15', 'Calle Mayor 1, Badajoz', '924100001', 'jose.garcia1@example.com', TRUE, FALSE, NULL),
-('10000002B', 'María', 'López Sánchez', '1975-07-22', 'Plaza de España 2, Cáceres', '927100002', 'maria.lopez2@example.com', TRUE, FALSE, NULL),
-('10000003C', 'Antonio', 'Fernández Ruiz', '1982-12-01', 'Avenida de la Constitución 3, Mérida', '924100003', 'antonio.fernandez3@example.com', TRUE, FALSE, NULL),
-('10000004D', 'Carmen', 'Martínez Gómez', '1978-09-17', 'Calle Luna 4, Badajoz', '924100004', 'carmen.martinez4@example.com', TRUE, FALSE, NULL),
-('10000005E', 'Manuel', 'Sánchez Ortega', '1985-11-30', 'Calle Sol 5, Cáceres', '927100005', 'manuel.sanchez5@example.com', TRUE, FALSE, NULL),
-('10000006F', 'Laura', 'Díaz Castillo', '1979-06-10', 'Plaza Mayor 6, Mérida', '924100006', 'laura.diaz6@example.com', TRUE, FALSE, NULL),
-('10000007G', 'Javier', 'Morales Pérez', '1983-03-25', 'Avenida Europa 7, Badajoz', '924100007', 'javier.morales7@example.com', TRUE, FALSE, NULL),
-('10000008H', 'Lucía', 'Ruiz Navarro', '1977-01-05', 'Calle Ancha 8, Cáceres', '927100008', 'lucia.ruiz8@example.com', TRUE, FALSE, NULL),
-('10000009I', 'David', 'Vega Hernández', '1981-08-14', 'Calle Colón 9, Mérida', '924100009', 'david.vega9@example.com', TRUE, FALSE, NULL),
-('10000010J', 'Isabel', 'Navarro Jiménez', '1976-05-29', 'Plaza de la Constitución 10, Badajoz', '924100010', 'isabel.navarro10@example.com', TRUE, FALSE, NULL),
-('10000011K', 'Adrián', 'García López', '1984-02-20', 'Avenida Libertad 11, Cáceres', '927100011', 'adrian.garcia11@example.com', TRUE, FALSE, NULL),
-('10000012L', 'Sandra', 'Fernández Silva', '1978-10-08', 'Calle Jardín 12, Mérida', '924100012', 'sandra.fernandez12@example.com', TRUE, FALSE, NULL),
-('10000013M', 'Pablo', 'Sánchez Medina', '1980-07-01', 'Calle Nueva 13, Badajoz', '924100013', 'pablo.sanchez13@example.com', TRUE, FALSE, NULL),
-('10000014N', 'Elena', 'Gómez Torres', '1979-04-19', 'Plaza del Sol 14, Cáceres', '927100014', 'elena.gomez14@example.com', TRUE, FALSE, NULL),
-('10000015O', 'Alberto', 'López Ruiz', '1982-09-27', 'Calle Mayor 15, Mérida', '924100015', 'alberto.lopez15@example.com', TRUE, FALSE, NULL),
-('10000016P', 'Lucía', 'Ruiz Fernández', '1977-12-11', 'Avenida Europa 16, Badajoz', '924100016', 'lucia.ruiz16@example.com', TRUE, FALSE, NULL),
-('10000017Q', 'Javier', 'Morales Sánchez', '1983-05-30', 'Calle Luna 17, Cáceres', '927100017', 'javier.morales17@example.com', TRUE, FALSE, NULL),
-('10000018R', 'Sara', 'Vázquez Castillo', '1981-03-14', 'Plaza Mayor 18, Mérida', '924100018', 'sara.vazquez18@example.com', TRUE, FALSE, NULL),
-('10000019S', 'Pablo', 'Torres Ortega', '1976-11-02', 'Calle Sol 19, Badajoz', '924100019', 'pablo.torres19@example.com', TRUE, FALSE, NULL),
-('10000020T', 'Carmen', 'Hernández Martínez', '1980-06-23', 'Avenida de la Constitución 20, Cáceres', '927100020', 'carmen.hernandez20@example.com', TRUE, FALSE, NULL);
-
+('20000180X', 'Adrián', 'García Paredes', '2008-11-22', 'Calle Mayor 200, Badajoz', '924200180', 'adrian.garcia200@example.com', TRUE, TRUE, NULL);
 -- Clubs
-INSERT INTO club (name, id_city_id) VALUES 
-('Voley Cáceres', 1),
-('Badajoz Voley Club', 2),
-('Mérida Voleibol', 3),
-('Plasencia Spikers', 4),
-('Don Benito Voley Team', 5),
-('Almendralejo Volley Force', 6),
-('Navalmoral Smash', 7),
-('Zafra Net Kings', 8),
-('Villanueva Set Club', 9),
-('Montijo Blockers', 10),
-('Voley Coria', 1),
-('Trujillo Spike Club', 1),
-('Jerez de los Caballeros Volley', 2),
-('Olivenza Voley Stars', 2),
-('Miajadas Net Force', 5),
-('Talayuela Volleyball', 7),
-('Valverde Voley Team', 2),
-('Los Santos Volley Power', 2),
-('Voley Almoharín', 5),
-('Moraleja Spikers', 1),
-('EMD Villanueva del Fresno', 11);
+INSERT INTO club (id, name, id_city_id) VALUES
+(1,'Voley Cáceres', 1),
+(2, 'Badajoz Voley Club', 2),
+(3, 'Mérida Voleibol', 3),
+(4, 'Plasencia Spikers', 4),
+(5, 'Don Benito Voley Team', 5),
+(6, 'Almendralejo Volley Force', 6),
+(7, 'Navalmoral Smash', 7),
+(8, 'Zafra Net Kings', 8),
+(9, 'Villanueva Set Club', 9),
+(10, 'Montijo Blockers', 10),
+(11, 'Voley Coria', 1),
+(12, 'Trujillo Spike Club', 1),
+(13, 'Jerez de los Caballeros Volley', 2),
+(14, 'Olivenza Voley Stars', 2),
+(15, 'Miajadas Net Force', 5),
+(16, 'Talayuela Volleyball', 7),
+(17, 'Valverde Voley Team', 2),
+(18, 'Los Santos Volley Power', 2),
+(19, 'Voley Almoharín', 5),
+(20, 'Moraleja Spikers', 1),
+(21, 'EMD Villanueva del Fresno', 11);
+
+INSERT INTO league (id, name, category, competition_id, code_prefix) VALUES
+(1, 'Group 1A Pre-Benjamín', 'PRE_BENJAMIN', 1, '1A_PRE'),
+(2, 'Group 2B Benjamín', 'BENJAMIN', 2, '2B_BEN'),
+(3, 'Group 1C Alevín', 'ALEVIN', 3, '1C_ALE'),
+(4, 'Group 2D Infantil', 'INFANTILE', 2, '2D_INF'),
+(5, 'Group 1A Senior', 'SENIOR', 1, '1A_SEN');
+
+INSERT INTO team (name, dni_captain_id, id_club_id, category) VALUES
+('PreBen 1', 1, 1, 0),
+('PreBen 2', 2, 2, 0),
+('Benj 1', 3, 3, 1),
+('Benj 2', 4, 4, 1),
+('Alev 1', 5, 5, 2),
+('Alev 2', 6, 1, 2),
+('Inf 1', 7, 2, 3),
+('Inf 2', 8, 3, 3),
+('Cad 1', 9, 4, 4),
+('Cad 2', 10, 5, 4),
+('Youth 1', 11, 1, 5),
+('Youth 2', 12, 2, 5),
+('Jun 1', 13, 3, 6),
+('Jun 2', 14, 4, 6),
+('Abs 1', 15, 5, 7),
+('Abs 2', 16, 1, 7),
+('Sen 1', 17, 2, 8),
+('Sen 2', 18, 3, 8);
+
+INSERT INTO game (id, unique_code, playing, finished, relevance, league_id) VALUES
+(1, '1A_PREAAA000', false, false, 1, 1),
+(2, '1A_PREAAA001', false, false, 3, 1),
+(3, '1A_PREAAA002', false, false, 5, 1),
+
+(4, '2B_BENBBB000', true, false, 2, 2),
+(5, '2B_BENBBB001', true, false, 4, 2),
+(6, '2B_BENBBB002', true, false, 5, 2),
+
+(7, '1C_ALECCC000', false, true, 1, 3),
+(8, '1C_ALECCC001', false, true, 3, 3),
+(9, '1C_ALECCC002', false, true, 5, 3),
+
+(10, '2D_INFDDD000', false, false, 2, 4),
+(11, '2D_INFDDD001', true, false, 3, 4),
+(12, '2D_INFDDD002', false, true, 4, 4),
+
+(13, '1A_SENEEE000', false, false, 1, 5),
+(14, '1A_SENEEE001', true, false, 2, 5),
+(15, '1A_SENEEE002', false, true, 3, 5);
+
+INSERT INTO game_result (unique_code, points_local, points_visit, winner_team_id, time_start, time_end, duration) VALUES
+('1A_PREAAA000', 25, 20, 1, '2025-06-09 10:00:00', '2025-06-09 10:45:00', 45),
+('1A_PREAAA001', 22, 25, 3, '2025-06-09 11:00:00', '2025-06-09 11:40:00', 40),
+('1A_PREAAA002', 18, 25, 3, '2025-06-09 12:00:00', '2025-06-09 12:35:00', 35),
+('2B_BENBBB000', 18, 25, 5, '2025-06-09 13:00:00', '2025-06-09 13:50:00', 50),
+('2B_BENBBB001', 26, 24, 4, '2025-06-09 14:00:00', '2025-06-09 14:45:00', 45),
+('2B_BENBBB002', 30, 28, 5, '2025-06-09 15:00:00', '2025-06-09 15:40:00', 40),
+('1C_ALECCC000', 21, 23, 8, '2025-06-09 16:00:00', '2025-06-09 16:35:00', 35),
+('1C_ALECCC001', 25, 22, 7, '2025-06-09 17:00:00', '2025-06-09 17:45:00', 45),
+('1C_ALECCC002', 20, 25, 9, '2025-06-09 18:00:00', '2025-06-09 18:35:00', 35),
+('2D_INFDDD000', 18, 19, 1, '2025-06-09 19:00:00', '2025-06-09 19:30:00', 30),
+('2D_INFDDD001', 25, 17, 1, '2025-06-09 19:45:00', '2025-06-09 20:15:00', 30),
+('2D_INFDDD002', 24, 26, 2, '2025-06-09 20:30:00', '2025-06-09 21:00:00', 30),
+('1A_SENEEE000', 25, 20, 3, '2025-06-09 21:15:00', '2025-06-09 21:45:00', 30),
+('1A_SENEEE001', 22, 25, 5, '2025-06-09 22:00:00', '2025-06-09 22:30:00', 30),
+('1A_SENEEE002', 21, 25, 5, '2025-06-09 22:45:00', '2025-06-09 23:15:00', 30);
+
+INSERT INTO game_initial_situation (unique_code, local_team_id, visit_team_id, starting_team_id, left_team_id) VALUES
+('1A_PREAAA000', 1, 2, 1, 1),
+('1A_PREAAA001', 1, 3, 1, 3),
+('1A_PREAAA002', 2, 3, 2, 2),
+
+('2B_BENBBB000', 4, 5, 4, 4),
+('2B_BENBBB001', 4, 6, 4, 6),
+('2B_BENBBB002', 5, 6, 5, 5),
+
+('1C_ALECCC000', 7, 8, 7, 7),
+('1C_ALECCC001', 7, 9, 7, 9),
+('1C_ALECCC002', 8, 9, 8, 8),
+
+('2D_INFDDD000', 1, 9, 1, 1),
+('2D_INFDDD001', 1, 2, 1, 2),
+('2D_INFDDD002', 1, 12, 1, 1),
+
+('1A_SENEEE000', 3, 4, 3, 3),
+('1A_SENEEE001', 3, 5, 3, 5),
+('1A_SENEEE002', 4, 5, 4, 4);

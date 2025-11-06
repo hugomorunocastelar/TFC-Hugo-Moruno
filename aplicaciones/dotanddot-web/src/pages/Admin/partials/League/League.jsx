@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './League.css';
+import { getAllLeagues } from '../../../../js/cruds/leagues.mjs';
+import { getAllCompetitions } from '../../../../js/cruds/competition.mjs';
+import API from '../../../../js/env';
 
 function League() {
   const [leagues, setLeagues] = useState([]);
@@ -14,26 +23,35 @@ function League() {
     competitionId: '',
     codePrefix: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  // Fetch leagues
+  const totalPages = Math.ceil(leagues.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentLeagues = leagues.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   const fetchLeagues = async () => {
     try {
-      const response = await fetch('/api/leagues'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch leagues');
-      const data = await response.json();
-      setLeagues(data);
+      getAllLeagues()
+      .then((response) => {
+        if (response) setLeagues(response);
+      })
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Fetch competitions for dropdown
   const fetchCompetitions = async () => {
     try {
-      const response = await fetch('/api/competitions'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch competitions');
-      const data = await response.json();
-      setCompetitions(data);
+      getAllCompetitions()
+      .then((response) => {
+        if (response) setCompetitions(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -88,20 +106,18 @@ function League() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/leagues/${formData.id}` : '/api/leagues'; // Replace with your URLs
       const bodyData = {
         name: formData.name,
         category: formData.category,
         competition: formData.competitionId ? { id: formData.competitionId } : null,
         codePrefix: formData.codePrefix,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save league');
+
+      if (formData.id) {
+        await put(API.LEAGUE.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.LEAGUE.CREATE, bodyData);
+      }
       await fetchLeagues();
       closeForm();
     } catch (error) {
@@ -112,8 +128,7 @@ function League() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this league?')) return;
     try {
-      const response = await fetch(`/api/leagues/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete league');
+      await del(API.LEAGUE.DELETE(id));
       await fetchLeagues();
       if (selectedLeague && selectedLeague.id === id) closeForm();
     } catch (error) {
@@ -136,7 +151,7 @@ function League() {
       <div className='League-Table'>
         <div className='League-Table-Header'>
           <h2>Leagues</h2>
-          <NewButton action={openFormForCreate} text="League" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -149,15 +164,15 @@ function League() {
             </tr>
           </thead>
           <tbody>
-            {leagues.map(league => (
+            {currentLeagues.map(league => (
               <tr key={league.id}>
                 <td>{league.name}</td>
                 <td>{league.category}</td>
                 <td>{league.competition ? league.competition.name : ''}</td>
                 <td>{league.codePrefix}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(league)}>Edit</button>
-                  <button onClick={() => handleDelete(league.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(league)}><EditButton /></button>
+                  <button onClick={() => handleDelete(league.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -168,6 +183,17 @@ function League() {
             )}
           </tbody>
         </table>
+        <div className="pagination">
+          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
       </div>
 
       {formOpen && (
@@ -227,8 +253,8 @@ function League() {
               />
             </label>
             <div className='League-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

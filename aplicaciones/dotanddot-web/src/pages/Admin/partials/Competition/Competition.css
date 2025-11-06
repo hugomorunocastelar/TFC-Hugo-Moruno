@@ -1,0 +1,79 @@
+.Competition {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Competition-Table {
+  flex: 1;
+  max-width: 700px;
+}
+
+.Competition-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Competition-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Competition-Table th, .Competition-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.Competition-Table th {
+  background-color: #f0f0f0;
+}
+
+.Competition-Table button {
+  margin-right: 5px;
+}
+
+.Competition-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.Competition-Form h2 {
+  margin-top: 0;
+}
+
+.Competition-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Competition-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.Competition-Form input {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Competition-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.Competition-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}

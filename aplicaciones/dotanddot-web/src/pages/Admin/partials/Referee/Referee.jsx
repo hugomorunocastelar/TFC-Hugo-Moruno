@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Referee.css';
+import { getAllPersons } from '../../../../js/cruds/persons.mjs';
+import { getAllCities } from '../../../../js/cruds/cities.mjs';
+import { getAllReferees } from '../../../../js/cruds/referees.mjs';
+import API from '../../../../js/env';
 
 function Referee() {
   const [referees, setReferees] = useState([]);
@@ -15,14 +25,25 @@ function Referee() {
     cityId: '',
     personId: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(referees.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentReferees = referees.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   // Fetch referees
   const fetchReferees = async () => {
     try {
-      const response = await fetch('/api/referees'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch referees');
-      const data = await response.json();
-      setReferees(data);
+      getAllReferees()
+      .then((response) => {
+        if (response) setReferees(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -31,10 +52,10 @@ function Referee() {
   // Fetch cities for dropdown
   const fetchCities = async () => {
     try {
-      const response = await fetch('/api/cities'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch cities');
-      const data = await response.json();
-      setCities(data);
+      getAllCities()
+      .then((response) => {
+        if (response) setCities(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -43,10 +64,11 @@ function Referee() {
   // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
-      const response = await fetch('/api/persons'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch persons');
-      const data = await response.json();
-      setPersons(data);
+      getAllPersons()
+      .then((response) => {
+        if (response) 
+          setPersons(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -102,20 +124,18 @@ function Referee() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/referees/${formData.id}` : '/api/referees'; // Replace with your URLs
       const bodyData = {
         noLicense: formData.noLicense,
         lvlLicense: formData.lvlLicense,
         city: formData.cityId ? { id: formData.cityId } : null,
         dni: formData.personId ? { id: formData.personId } : null,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save referee');
+
+      if (formData.id) {
+        await put(API.REFEREE.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.REFEREE.CREATE, bodyData);
+      }
       await fetchReferees();
       closeForm();
     } catch (error) {
@@ -126,8 +146,7 @@ function Referee() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this referee?')) return;
     try {
-      const response = await fetch(`/api/referees/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete referee');
+      await del(API.REFEREE.DELETE(id));
       await fetchReferees();
       if (selectedReferee && selectedReferee.id === id) closeForm();
     } catch (error) {
@@ -140,7 +159,7 @@ function Referee() {
       <div className='Referee-Table'>
         <div className='Referee-Table-Header'>
           <h2>Referees</h2>
-          <NewButton action={openFormForCreate} text="Referee" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -153,15 +172,15 @@ function Referee() {
             </tr>
           </thead>
           <tbody>
-            {referees.map(referee => (
+            {currentReferees.map(referee => (
               <tr key={referee.id}>
                 <td>{referee.noLicense}</td>
                 <td>{referee.lvlLicense}</td>
                 <td>{referee.city ? referee.city.name : ''}</td>
                 <td>{referee.dni ? `${referee.dni.name} ${referee.dni.surnames || ''}` : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(referee)}>Edit</button>
-                  <button onClick={() => handleDelete(referee.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(referee)}><EditButton /></button>
+                  <button onClick={() => handleDelete(referee.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -172,6 +191,19 @@ function Referee() {
             )}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="Referee-Pagination">
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -231,8 +263,8 @@ function Referee() {
               </select>
             </label>
             <div className='Referee-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

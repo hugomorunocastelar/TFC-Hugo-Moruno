@@ -3,8 +3,9 @@ import "./Ads.css";
 import ad1 from "/ads/ad1.png";
 import ad2 from "/ads/ad2.png";
 import ad3 from "/ads/ad3.png";
+import ad4 from "/ads/ad4.png";
 
-const images = [ ad1, ad2, ad3 ];
+const images = [ ad1, ad2, ad3, ad4 ];
 
 function Ads() {
   const [current, setCurrent] = useState(0);

@@ -1,11 +1,10 @@
 import React from 'react'
 import "./Home.css";
-import Favorite from './partials/favorite/Favorite';
-import RecentMatches from './partials/recentMatches/recentMatches';
 import OutstandingMatch from './partials/outstandingMatch/OutstandingMatch';
 import Ads from './partials/ads/Ads';
 import LogoBall from '../../../../components/LogoBall/LogoBall';
 import NextMatches from './partials/nextMatches/NextMatches';
+import RecentMatches from './partials/recentMatches/RecentMatches';
 
 function Home() {
   return (
@@ -17,7 +16,6 @@ function Home() {
       </div>
       <div className='HCP-Right HCP-Col'>
         <OutstandingMatch />
-        <Favorite />
         <Ads />
       </div>
     </div>

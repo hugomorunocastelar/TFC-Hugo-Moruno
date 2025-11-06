@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './City.css';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
+import API from '../../../../js/env';
 
 function City() {
   const [cities, setCities] = useState([]);
@@ -14,6 +21,17 @@ function City() {
     firstPC: '',
     lastPC: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(cities.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentCities = cities.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   const fetchCities = async () => {
     try {
@@ -68,14 +86,18 @@ function City() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/cities/${formData.id}` : '/api/cities'; // Replace with your URLs
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) throw new Error('Failed to save city');
+      const bodyData = {
+        name: formData.name,
+        region: formData.region,
+        firstPC: formData.firstPC,
+        lastPC: formData.lastPC,
+      };
+
+      if (formData.id) {
+        await put(API.CITIES.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.CITIES.CREATE, bodyData);
+      }
       await fetchCities();
       closeForm();
     } catch (error) {
@@ -86,8 +108,7 @@ function City() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this city?')) return;
     try {
-      const response = await fetch(`/api/cities/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to delete city');
+      await del(API.CITIES.DELETE(id));
       await fetchCities();
       if (selectedCity && selectedCity.id === id) closeForm();
     } catch (error) {
@@ -100,7 +121,7 @@ function City() {
       <div className='City-Table'>
         <div className='City-Table-Header'>
           <h2>Cities</h2>
-          <NewButton action={openFormForCreate} text="City" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -113,15 +134,15 @@ function City() {
             </tr>
           </thead>
           <tbody>
-            {cities.map(city => (
+            {currentCities.map(city => (
               <tr key={city.id}>
                 <td>{city.name}</td>
                 <td>{city.region}</td>
                 <td>{city.firstPC}</td>
                 <td>{city.lastPC}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(city)}>Edit</button>
-                  <button onClick={() => handleDelete(city.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(city)}><EditButton /></button>
+                  <button onClick={() => handleDelete(city.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -132,6 +153,17 @@ function City() {
             )}
           </tbody>
         </table>
+        <div className="pagination">
+          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
       </div>
 
       {formOpen && (
@@ -181,8 +213,8 @@ function City() {
               />
             </label>
             <div className='City-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

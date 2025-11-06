@@ -1,0 +1,79 @@
+.Roles {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Roles-Table {
+  flex: 1;
+  max-width: 700px;
+}
+
+.Roles-Table-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Roles-Table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Roles-Table th, .Roles-Table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.Roles-Table th {
+  background-color: #f0f0f0;
+}
+
+.Roles-Table button {
+  margin-right: 5px;
+}
+
+.Roles-Form {
+  flex: 1;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.Roles-Form h2 {
+  margin-top: 0;
+}
+
+.Roles-Form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Roles-Form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.Roles-Form input {
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Roles-Form-Actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.Roles-Form-Actions button {
+  padding: 8px 12px;
+  cursor: pointer;
+}

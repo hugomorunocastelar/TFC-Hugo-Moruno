@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
+import API from '../../../../js/env';
+import { post, put, del } from '../../../../js/http';
 import './Person.css';
+import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 
 function Person() {
   const [persons, setPersons] = useState([]);
@@ -20,33 +28,43 @@ function Person() {
     tutorId: '',
   });
 
-  // Fetch persons - replace URL with your API endpoint
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchPersons = async () => {
     try {
-      const response = await fetch('/api/persons'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch persons');
-      const data = await response.json();
-      setPersons(data);
+      getAllPersons()
+      .then((response) => {
+        if (response)
+          setPersons(response);
+      })
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Fetch persons again to populate tutor dropdown (excluding self)
   const fetchTutors = async () => {
     try {
-      const response = await fetch('/api/persons'); // Same endpoint for tutors
-      if (!response.ok) throw new Error('Failed to fetch tutors');
-      const data = await response.json();
-      return data;
+      getAllPersons()
+      .then((response) => {
+        if (response)
+          setTutors(response);
+      })
     } catch (error) {
       console.error(error);
-      return [];
     }
   };
 
   useEffect(() => {
     fetchPersons();
+  }, []);
+
+  useEffect(() => {
+    fetchTutors()
+    .then(
+      data => setTutors(data)
+    );
   }, []);
 
   function openFormForCreate() {
@@ -114,8 +132,6 @@ function Person() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/persons/${formData.id}` : '/api/persons'; // Replace with your URLs
       const bodyData = {
         dni: formData.dni,
         name: formData.name,
@@ -128,14 +144,15 @@ function Person() {
         tutored: formData.tutored,
         tutor: formData.tutorId ? { id: formData.tutorId } : null,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save person');
+
+      if (formData.id) {
+        await put(API.PERSON.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.PERSON.CREATE, bodyData);
+      }
       await fetchPersons();
       closeForm();
+      setCurrentPage(1); // Reset to first page after changes
     } catch (error) {
       console.error(error);
     }
@@ -144,10 +161,10 @@ function Person() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this person?')) return;
     try {
-      const response = await fetch(`/api/persons/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete person');
+      await del(API.PERSON.DELETE(id));
       await fetchPersons();
       if (selectedPerson && selectedPerson.id === id) closeForm();
+      setCurrentPage(1); // Reset to first page after deletion
     } catch (error) {
       console.error(error);
     }
@@ -155,17 +172,22 @@ function Person() {
 
   const [tutors, setTutors] = useState([]);
 
-  useEffect(() => {
-    // Load tutors for dropdown
-    fetchTutors().then(data => setTutors(data));
-  }, []);
+  // Pagination calculations
+  const totalPages = Math.ceil(persons.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentPersons = persons.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   return (
     <div className='Person'>
       <div className='Person-Table'>
         <div className='Person-Table-Header'>
           <h2>Persons</h2>
-          <NewButton action={openFormForCreate} text="Person" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -173,26 +195,20 @@ function Person() {
               <th>DNI</th>
               <th>Name</th>
               <th>Surnames</th>
-              <th>Birth Date</th>
               <th>DNI Verified</th>
-              <th>Tutored</th>
-              <th>Tutor</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {persons.map(person => (
+            {currentPersons.map(person => (
               <tr key={person.id}>
                 <td>{person.dni}</td>
                 <td>{person.name}</td>
                 <td>{person.surnames}</td>
-                <td>{person.birthDate ? person.birthDate.split('T')[0] : ''}</td>
                 <td>{person.dniVerified ? 'Yes' : 'No'}</td>
-                <td>{person.tutored ? 'Yes' : 'No'}</td>
-                <td>{person.tutor ? person.tutor.name + ' ' + person.tutor.surnames : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(person)}>Edit</button>
-                  <button onClick={() => handleDelete(person.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(person)}><EditButton /></button>
+                  <button onClick={() => handleDelete(person.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -203,6 +219,33 @@ function Person() {
             )}
           </tbody>
         </table>
+
+        {/* Pagination controls */}
+        {totalPages > 1 && (
+          <div className="pagination" style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '5px' }}>
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            {[...Array(totalPages)].map((_, idx) => {
+              const pageNum = idx + 1;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => goToPage(pageNum)}
+                  style={{
+                    fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                    textDecoration: currentPage === pageNum ? 'underline' : 'none',
+                  }}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -309,8 +352,8 @@ function Person() {
                 onChange={handleInputChange}
               >
                 <option value="">None</option>
-                {tutors
-                  .filter(t => !formData.id || t.id !== formData.id) // exclude self
+                {tutors && tutors
+                  .filter(t => !formData.id || t.id !== formData.id)
                   .map(tutor => (
                     <option key={tutor.id} value={tutor.id}>
                       {tutor.name} {tutor.surnames}
@@ -319,8 +362,8 @@ function Person() {
               </select>
             </label>
             <div className='Person-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>

@@ -25,12 +25,12 @@ export function put(URL, body = {}) {
   });
 }
 
-export function del(URL, id) {
+export function del(URL) {
   if (session.getSession() == null) throw new Error('No Session found');
 
   const token = session.getSession().token;
 
-  return fetch(`${URL}/${id}`, {
+  return fetch(`${URL}`, {
     method: "DELETE",
     headers: {
       "Authorization": `Bearer ${token}`,

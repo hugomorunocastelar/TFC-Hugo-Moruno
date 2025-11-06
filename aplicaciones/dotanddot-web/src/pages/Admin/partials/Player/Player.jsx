@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { del, post, put } from '../../../../js/http';
 import NewButton from '../../components/buttons/new/NewButton';
+import EditButton from '../../components/buttons/edit/EditButton';
+import DeleteButton from '../../components/buttons/delete/DeleteButton';
+import CreateButton from '../../components/buttons/create/CreateButton';
+import UpdateButton from '../../components/buttons/update/UpdateButton';
+import CancelButton from '../../components/buttons/cancel/CancelButton';
 import './Player.css';
+import { getAllTeams } from '../../../../js/cruds/teams.mjs';
+import API from '../../../../js/env';
+import { getAllPlayers } from '../../../../js/cruds/players.mjs';
+import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 
 function Player() {
   const [players, setPlayers] = useState([]);
@@ -14,14 +24,26 @@ function Player() {
     teamId: '',
     personId: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(players.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentPlayers = players.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   // Fetch players
   const fetchPlayers = async () => {
     try {
-      const response = await fetch('/api/players'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch players');
-      const data = await response.json();
-      setPlayers(data);
+      getAllPlayers()
+      .then((response) => {
+        if (response) 
+          setPlayers(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -30,10 +52,11 @@ function Player() {
   // Fetch teams for dropdown
   const fetchTeams = async () => {
     try {
-      const response = await fetch('/api/teams'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch teams');
-      const data = await response.json();
-      setTeams(data);
+      getAllTeams()
+      .then((response) => {
+        if (response) 
+          setTeams(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -42,10 +65,11 @@ function Player() {
   // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
-      const response = await fetch('/api/persons'); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to fetch persons');
-      const data = await response.json();
-      setPersons(data);
+      getAllPersons()
+      .then((response) => {
+        if (response) 
+          setPersons(response);
+      })
     } catch (error) {
       console.error(error);
     }
@@ -101,19 +125,17 @@ function Player() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/players/${formData.id}` : '/api/players'; // Replace with your URLs
       const bodyData = {
         noShirt: formData.noShirt,
         team: formData.teamId ? { id: formData.teamId } : null,
         dni: formData.personId ? { id: formData.personId } : null,
       };
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) throw new Error('Failed to save player');
+
+      if (formData.id) {
+        await put(API.PLAYER.UPDATE(formData.id), bodyData);
+      } else {
+        await post(API.PLAYER.CREATE, bodyData);
+      }
       await fetchPlayers();
       closeForm();
     } catch (error) {
@@ -124,8 +146,7 @@ function Player() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this player?')) return;
     try {
-      const response = await fetch(`/api/players/${id}`, { method: 'DELETE' }); // Replace with your URL
-      if (!response.ok) throw new Error('Failed to delete player');
+      await del(API.PLAYER.DELETE(id));
       await fetchPlayers();
       if (selectedPlayer && selectedPlayer.id === id) closeForm();
     } catch (error) {
@@ -138,7 +159,7 @@ function Player() {
       <div className='Player-Table'>
         <div className='Player-Table-Header'>
           <h2>Players</h2>
-          <NewButton action={openFormForCreate} text="Player" />
+          <button onClick={openFormForCreate}><NewButton /></button>
         </div>
         <table>
           <thead>
@@ -150,14 +171,14 @@ function Player() {
             </tr>
           </thead>
           <tbody>
-            {players.map(player => (
+            {currentPlayers.map(player => (
               <tr key={player.id}>
                 <td>{player.noShirt}</td>
                 <td>{player.team ? player.team.name : ''}</td>
                 <td>{player.dni ? `${player.dni.name} ${player.dni.surnames || ''}` : ''}</td>
                 <td>
-                  <button onClick={() => openFormForEdit(player)}>Edit</button>
-                  <button onClick={() => handleDelete(player.id)}>Delete</button>
+                  <button onClick={() => openFormForEdit(player)}><EditButton /></button>
+                  <button onClick={() => handleDelete(player.id)}><DeleteButton /></button>
                 </td>
               </tr>
             ))}
@@ -168,6 +189,19 @@ function Player() {
             )}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {formOpen && (
@@ -216,8 +250,8 @@ function Player() {
               </select>
             </label>
             <div className='Player-Form-Actions'>
-              <button type="submit">{formData.id ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={closeForm}>Cancel</button>
+              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+              <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>
         </div>
