@@ -1,8 +1,8 @@
 package dot.server.resources.Match.model.dto;
 
 import dot.server.resources.Club.dto.TeamDto;
-import dot.server.resources.Match.model.GameSanctions;
 import dot.server.resources.Definitions.SanctionType;
+import dot.server.resources.Match.model.GameSanctions;
 import lombok.Data;
 
 @Data

@@ -9,8 +9,12 @@ import java.util.List;
 public interface CoachService {
 
     boolean create(CoachDTO dto);
+
     CoachDTO findById(Long id);
+
     List<CoachDTO> list();
+
     boolean update(CoachDTO dto);
+
     boolean delete(Long id);
 }

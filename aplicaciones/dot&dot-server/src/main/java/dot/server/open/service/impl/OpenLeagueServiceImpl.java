@@ -1,8 +1,8 @@
 package dot.server.open.service.impl;
 
+import dot.server.open.service.OpenLeagueService;
 import dot.server.resources.MatchDefinitions.dao.LeagueDao;
 import dot.server.resources.MatchDefinitions.entity.League;
-import dot.server.open.service.OpenLeagueService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.List;
 public class OpenLeagueServiceImpl implements OpenLeagueService {
 
     private final LeagueDao leagueDao;
+
     public OpenLeagueServiceImpl(LeagueDao leagueDao) {
         this.leagueDao = leagueDao;
     }

@@ -29,6 +29,8 @@ import Welcome from "./pages/Admin/partials/WelcomeAdmin/Welcome";
 import Roles from "./pages/Admin/partials/Roles/Roles";
 import Seasons from "./pages/Admin/partials/Seasons/Seasons";
 import AuthRefereeGuard from "./AuthRefereeGuard";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
+import ValidateAccount from "./pages/Login/partials/validate-account/ValidateAccount";
 
 function Index() {
   return (
@@ -62,6 +64,8 @@ function Index() {
         <Route path="*" element={<Error />} />
         <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>} />
         <Route path="login" element={<Login />} />
+        <Route path="validate-account" element={<ValidateAccount />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>
   );

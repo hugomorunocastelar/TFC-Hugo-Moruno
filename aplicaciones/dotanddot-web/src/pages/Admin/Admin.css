@@ -35,7 +35,7 @@
   color: var(--color-palette-green-3);
   border: none;
   padding: 10px 15px;
-  border-radius: 5px;
+  border-radius: 3px;
   font-weight: bold;
   cursor: pointer;
   &:hover {
@@ -71,7 +71,7 @@
   text-align: left;
   padding: 8px 12px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 3px;
   transition: background-color 0.2s;
 }
 
@@ -91,7 +91,7 @@
 
 .AP-Crud {
   background-color: var(--color-palette-green-0);
-  border-radius: 12px;
+  border-radius: 3px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
@@ -104,7 +104,7 @@
     border: none !important;
     border-collapse: unset !important;
     border-spacing: 0;
-    border-radius: 10px;
+    border-radius: 3px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 

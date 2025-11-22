@@ -1,13 +1,12 @@
 package dot.server.auth.role.model.dto;
 
 import dot.server.auth.role.model.Role;
-import dot.server.common.dto.AppDto;
 import lombok.Data;
 
 import java.time.Instant;
 
 @Data
-public class RoleDto implements AppDto<Role, RoleDto> {
+public class RoleDto {
 
     private Long id;
     private String name;

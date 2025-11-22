@@ -1,0 +1,23 @@
+<configuration>
+<!--    <appender name="kpiRequests" class="ch.qos.logback.core.FileAppender">-->
+<!--        <file>logs/elk_kpiAiRequests.log</file>-->
+<!--        <append>true</append>-->
+<!--        <encoder>-->
+<!--            <pattern>%msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level[%logger{0}] -> %msg%n</pattern>
+        </encoder>
+    </appender>
+
+<!--    <logger name="elk_kpiAiRequests" level="INFO" additivity="false">-->
+<!--        <appender-ref ref="kpiRequests"/>-->
+<!--    </logger>-->
+
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+    </root>
+</configuration>

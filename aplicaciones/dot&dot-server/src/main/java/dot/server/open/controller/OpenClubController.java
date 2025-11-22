@@ -1,7 +1,7 @@
 package dot.server.open.controller;
 
-import dot.server.resources.Club.entity.Club;
 import dot.server.open.service.OpenClubService;
+import dot.server.resources.Club.entity.Club;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

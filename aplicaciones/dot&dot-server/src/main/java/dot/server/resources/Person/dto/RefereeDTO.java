@@ -1,7 +1,7 @@
 package dot.server.resources.Person.dto;
 
-import dot.server.resources.Person.entity.Referee;
 import dot.server.resources.MatchDefinitions.dto.CityDto;
+import dot.server.resources.Person.entity.Referee;
 import lombok.Data;
 
 import java.util.List;

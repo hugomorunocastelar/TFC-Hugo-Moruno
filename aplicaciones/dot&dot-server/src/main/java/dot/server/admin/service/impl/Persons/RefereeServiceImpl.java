@@ -1,7 +1,7 @@
 package dot.server.admin.service.impl.Persons;
 
-import dot.server.resources.MatchDefinitions.dto.CityDto;
 import dot.server.admin.service.Persons.RefereeService;
+import dot.server.resources.MatchDefinitions.dto.CityDto;
 import dot.server.resources.Person.dao.RefereeDao;
 import dot.server.resources.Person.dto.PersonDTO;
 import dot.server.resources.Person.dto.RefereeDTO;

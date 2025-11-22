@@ -1,8 +1,8 @@
 package dot.server.resources.Match.model.dto;
 
-import dot.server.resources.Match.model.GameDetails;
 import dot.server.resources.Definitions.Category;
 import dot.server.resources.Definitions.Division;
+import dot.server.resources.Match.model.GameDetails;
 import dot.server.resources.MatchDefinitions.dto.CityDto;
 import dot.server.resources.MatchDefinitions.dto.CompetitionDto;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package dot.server.resources.Person.dto;
 
-import dot.server.resources.Person.entity.Player;
 import dot.server.resources.Club.dto.TeamDto;
+import dot.server.resources.Person.entity.Player;
 import lombok.Data;
 
 import java.util.List;

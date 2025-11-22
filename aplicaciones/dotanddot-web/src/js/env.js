@@ -9,11 +9,7 @@ const API = {
     ROOT: `${BACK_IP}/auth`,
     LOGIN: `${BACK_IP}/auth/login`,
     REGISTER: `${BACK_IP}/auth/register`,
-    VALIDATE: {
-      ROOT: `${BACK_IP}/auth/validate`,
-      ADMIN: `${BACK_IP}/auth/test/admin`,
-      REFEREE: `${BACK_IP}/auth/test/ref`
-    }
+    VALIDATE: (ROLE) => `${BACK_IP}/auth/validate/${ROLE}`,
   },
   PERSON: {
     ROOT: `${ADMIN_BACK_IP}/person`,

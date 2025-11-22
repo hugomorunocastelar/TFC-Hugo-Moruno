@@ -1,9 +1,12 @@
 server:
   port: 5000
+
 spring:
   application:
-    name: server
-    version: 0.0.1
+    name: "Dot&Dot Server"
+    version: "1.0.0"
+  main:
+    banner-mode: off
   mail:
     host: smtp.gmail.com
     port: 587
@@ -16,26 +19,18 @@ spring:
           starttls:
             enable: true
   datasource:
+    #        SERVER
+    url: jdbc:mysql://mysql:3306/dotdot_db
     #        DEVELOPMENT
-#    url: jdbc:mysql://192.168.1.102:3307/dotdot_db
-    #        PRODUCCION
-    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
-
+#    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
-    password: pruebafct
+    password: dotdotdb
   jpa:
     #        database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create
-      show-sql: true
-      properties:
-          hibernate:
-              format_sql: true
-#logging:
-#  level:
-#    org:
-#      springframework: DEBUG
+      ddl-auto: update
+
 jwt:
   jwtSecret: 123456789012345678901234567890%$
   jwtExpirationMs: 86400000

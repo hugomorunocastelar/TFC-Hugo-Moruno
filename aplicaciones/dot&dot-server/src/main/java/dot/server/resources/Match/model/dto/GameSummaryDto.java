@@ -1,12 +1,13 @@
 package dot.server.resources.Match.model.dto;
 
+import dot.server.resources.Match.model.Game;
 import dot.server.resources.Match.model.dto.withoutGame.GameInitialSituationWOUTDto;
 import dot.server.resources.Match.model.dto.withoutGame.GameResultWOUTDto;
-import dot.server.resources.Match.model.Game;
 import dot.server.resources.MatchDefinitions.dto.LeagueDto;
 import lombok.Data;
 
-@Data public class GameSummaryDto implements DtoMapper<Game, GameSummaryDto> {
+@Data
+public class GameSummaryDto implements DtoMapper<Game, GameSummaryDto> {
     private long id;
     private String uniqueCode;
     private GameInitialSituationWOUTDto initialSituation;

@@ -18,19 +18,19 @@ public class MatchesController {
     }
 
     @GetMapping("/unplayed")
-    public ResponseEntity<?> getUnplayedMatches(){
+    public ResponseEntity<?> getUnplayedMatches() {
 
         return null;
     }
 
     @GetMapping("/ongoing")
-    public ResponseEntity<?> getOngoingMatches(){
+    public ResponseEntity<?> getOngoingMatches() {
 
         return null;
     }
 
     @GetMapping("/played")
-    public ResponseEntity<?> getPlayedMatches(){
+    public ResponseEntity<?> getPlayedMatches() {
 
         return null;
     }

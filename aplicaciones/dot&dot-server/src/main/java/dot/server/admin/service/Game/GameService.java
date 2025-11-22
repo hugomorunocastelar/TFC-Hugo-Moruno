@@ -11,10 +11,16 @@ import java.util.Optional;
 @Service
 public interface GameService {
     List<GameDto> findAll();
+
     List<GameSummaryDto> findSummerizedAll();
+
     GameSummaryDto getOutstandingMatch();
+
     Optional<GameDto> findById(Long id);
+
     GameDto create(GameDto gameDto);
+
     Optional<GameDto> update(Long id, GameDto gameDto);
+
     boolean delete(Long id);
 }

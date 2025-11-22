@@ -12,7 +12,7 @@ public enum SanctionType {
     private char code;
     private String name;
 
-    SanctionType(char code, String name){
+    SanctionType(char code, String name) {
         this.code = code;
         this.name = name;
     }

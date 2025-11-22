@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Game;
 
 import dot.server.admin.service.Game.GameService;
+import dot.server.resources.Match.model.Game;
 import dot.server.resources.Match.model.dto.GameDto;
 import dot.server.resources.Match.model.dto.GameSummaryDto;
-import dot.server.resources.Match.model.Game;
 import dot.server.resources.Match.repository.GameRepository;
 import dot.server.resources.MatchDefinitions.dao.LeagueDao;
 import dot.server.resources.MatchDefinitions.dto.LeagueDto;

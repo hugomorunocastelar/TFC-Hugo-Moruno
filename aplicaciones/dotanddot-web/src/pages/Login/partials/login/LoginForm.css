@@ -14,7 +14,7 @@
     text-align: center;
     background-color: var(--color-neutral-0);
     opacity: 0;
-    border-radius: 5px;
+    border-radius: 3px;
     color: var(--color-red);
     border: 2px solid var(--color-red);
 
@@ -45,7 +45,7 @@
   & input {
     background-color: var(--color-palette-green-2);
     border: none;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 0 10px;
     margin-bottom: 10px;
     flex-grow: 1;
@@ -91,7 +91,7 @@
   background-color: var(--color-palette-green-2);
   color: var(--color-palette-green-4);
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
 
   transition: background-color 0.3s ease-in-out;
 

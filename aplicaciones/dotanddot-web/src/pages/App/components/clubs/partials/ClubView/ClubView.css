@@ -5,7 +5,7 @@
 .clubview-card {
   display: flex;
   flex-direction: column;
-  border-radius: 15px;
+  border-radius: 3px;
   box-shadow: 0px 1px 1px 2px #0000001c;
   overflow: hidden;
   background-color: var(--color-neutral-0);

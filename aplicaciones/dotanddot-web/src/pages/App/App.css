@@ -70,7 +70,7 @@
     height: 300px;
     width: 400px;
     border: 2px solid var(--color-palette-green-4);
-    border-radius: 5px;
+    border-radius: 3px;
     background-color: var(--color-palette-green-0);
     z-index: 5;
     &.hide {
@@ -84,7 +84,7 @@
     top: 60px;
     height: fit-content;
     width: fit-content;
-    border-radius: 5px;
+    border-radius: 3px;
     overflow: hidden;
     background-color: var(--color-palette-green-0);
     z-index: 5;
@@ -162,22 +162,6 @@
   display: flex;
   justify-content: center;
   z-index: 2;
-  background-color: var(--color-palette-green-0);
-
-  &::before {
-    content: "";
-    position: absolute;
-    background-image: url("../../../login/background-img.jpg");
-    background-position: center;
-    background-size: cover;
-    z-index: 1;
-    opacity: 0.5;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-  }
-
   & > * {
     z-index: 3;
   }

@@ -1,8 +1,8 @@
 package dot.server.resources.Match.model.dto.withoutGame;
 
 import dot.server.resources.Club.dto.TeamDto;
-import dot.server.resources.Match.model.dto.DtoMapper;
 import dot.server.resources.Match.model.GameInitialSituation;
+import dot.server.resources.Match.model.dto.DtoMapper;
 import lombok.Data;
 
 @Data

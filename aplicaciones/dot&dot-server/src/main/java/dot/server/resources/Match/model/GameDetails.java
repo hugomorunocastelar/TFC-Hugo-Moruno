@@ -1,9 +1,9 @@
 package dot.server.resources.Match.model;
 
 import dot.server.resources.Definitions.Category;
+import dot.server.resources.Definitions.Division;
 import dot.server.resources.MatchDefinitions.entity.City;
 import dot.server.resources.MatchDefinitions.entity.Competition;
-import dot.server.resources.Definitions.Division;
 import jakarta.persistence.*;
 import lombok.Data;
 

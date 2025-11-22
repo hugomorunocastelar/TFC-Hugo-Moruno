@@ -14,49 +14,49 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-  private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-  @Value("${jwt.jwtSecret}")
-  private String jwtSecret;
+    @Value("${jwt.jwtSecret}")
+    private String jwtSecret;
 
-  @Value("${jwt.jwtExpirationMs}")
-  private int jwtExpirationMs;
+    @Value("${jwt.jwtExpirationMs}")
+    private int jwtExpirationMs;
 
-  public String generateJwtToken(Authentication authentication) {
+    public String generateJwtToken(Authentication authentication) {
 
-    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-    return Jwts.builder()
-        .setSubject((userPrincipal.getUsername()))
-        .setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-        .signWith(key(), SignatureAlgorithm.HS256)
-        .compact();
-  }
-  
-  private Key key() {
-    return Keys.hmacShaKeyFor(jwtSecret.getBytes()); // Si jwSecret no está en Base64
-  }
-
-  public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key()).build()
-               .parseClaimsJws(token).getBody().getSubject();
-  }
-
-  public boolean validateJwtToken(String authToken) {
-    try {
-      Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
-      return true;
-    } catch (MalformedJwtException e) {
-      logger.error("Token JWT no válido: {}", e.getMessage());
-    } catch (ExpiredJwtException e) {
-      logger.error("El token JWT ha expirado: {}", e.getMessage());
-    } catch (UnsupportedJwtException e) {
-      logger.error("El token JWT no es compatible: {}", e.getMessage());
-    } catch (IllegalArgumentException e) {
-      logger.error("JWT afirma que la cadena está vacía: {}", e.getMessage());
+        return Jwts.builder()
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    return false;
-  }
+    private Key key() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes()); // Si jwSecret no está en Base64
+    }
+
+    public String getUserNameFromJwtToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key()).build()
+                .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
+            return true;
+        } catch (MalformedJwtException e) {
+            logger.error("Token JWT no válido: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            logger.error("El token JWT ha expirado: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.error("El token JWT no es compatible: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT afirma que la cadena está vacía: {}", e.getMessage());
+        }
+
+        return false;
+    }
 }

@@ -41,7 +41,8 @@ public class RoleServiceImpl implements RoleService {
         try {
             findByName(role.getName());
             throw new AlreadyExistsException(className);
-        } catch (DataNotFoundException ignored) {}
+        } catch (DataNotFoundException ignored) {
+        }
 
         if (role.getId() != null) role.setId(null);
 

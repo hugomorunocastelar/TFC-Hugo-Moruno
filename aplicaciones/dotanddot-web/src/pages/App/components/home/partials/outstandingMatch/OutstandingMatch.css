@@ -28,7 +28,7 @@
   padding: 10px;
   flex-grow: 1;
   background-color: var(--color-palette-green-3);
-  border-radius: 10px;
+  border-radius: 3px;
   box-shadow: 0px 1px 1px 1px #0000001c;
 
   display: flex;

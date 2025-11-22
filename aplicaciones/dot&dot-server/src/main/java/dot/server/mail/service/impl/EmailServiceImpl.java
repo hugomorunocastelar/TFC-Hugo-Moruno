@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService {
     public void enviarEmail(ContactForm form) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("dotanddot.app.contact@gmail.com");
-        message.setSubject("Solicitud de asistencia del usuario: "+form.getNombre());
+        message.setSubject("Solicitud de asistencia del usuario: " + form.getNombre());
         message.setText(
                 "Nombre: " + form.getNombre() + "\n" +
                         "Correo: " + form.getCorreo() + "\n\n" +
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(toEmail);
-            helper.setFrom("Dot & Dot verification service.");
+            helper.setFrom("Dot Dot verification service.");
             helper.setSubject("Verify your account.");
 
             String verificationUrl = "https://dot-dot.duckdns.org/server/verify?token=" + token;

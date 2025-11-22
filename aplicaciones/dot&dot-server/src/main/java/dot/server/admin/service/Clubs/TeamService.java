@@ -8,8 +8,12 @@ import java.util.Optional;
 public interface TeamService {
 
     TeamDto createTeam(TeamDto teamDto);
+
     Optional<TeamDto> getTeamById(Long id);
+
     List<TeamDto> getAllTeams();
+
     TeamDto updateTeam(Long id, TeamDto teamDto);
+
     void deleteTeam(Long id);
 }

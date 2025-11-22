@@ -9,5 +9,6 @@ import java.util.List;
 @Service
 public interface OpenClubService {
     Club findById(Long id);
+
     List<Club> findAll();
 }
