@@ -1,0 +1,109 @@
+.ValidateAccountPanel-wrapper {
+    padding: 24px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.ValidateAccountPanel {
+  max-width: 420px;
+  height: fit-content;
+  padding: 18px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background-color: var(--color-palette-green-0);
+  box-shadow: 0px 1px 1px 2px #4757331c;
+  border-top: 2px solid var(--color-palette-green-4);
+  z-index: 2;
+
+  .VA-Title {
+    margin: 12px;
+    margin-top: 0;
+    font-size: 40px;
+    color: var(--color-palette-blue-3);
+    text-align: center;
+  }
+
+  .VA-Form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .VA-Label {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 8px;
+      color: var(--color-palette-blue-2);
+      font-weight: 600;
+    }
+
+    .VA-Input {
+      width: 280px;
+      padding: 10px 12px;
+      letter-spacing: 4px;
+      font-size: 18px;
+      border: 1px solid var(--color-neutral-2);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .VA-Error {
+      color: var(--color-palette-red-3, #c0392b);
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .VA-Message {
+      color: var(--color-palette-green-3);
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .VA-Actions {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: auto auto;
+      width: 100%;
+
+      .VA-Button {
+        background-color: var(--color-palette-green-3);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: var(--color-palette-green-4);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .VA-Button--secondary {
+        background-color: transparent;
+        color: var(--color-palette-green-3);
+        border: 1px solid var(--color-palette-green-3);
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
