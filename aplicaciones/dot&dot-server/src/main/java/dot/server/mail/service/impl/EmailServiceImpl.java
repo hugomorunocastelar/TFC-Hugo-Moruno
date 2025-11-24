@@ -37,10 +37,10 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(toEmail);
-            helper.setFrom("Dot Dot verification service.");
+            helper.setFrom("dotanddot.app.contact@gmail.com");
             helper.setSubject("Verify your account.");
 
-            String verificationUrl = "https://dot-dot.duckdns.org/server/verify?token=" + token;
+            String verificationUrl = "https://dot-dot.duckdns.org/validate-account/"+token;
 
             String htmlContent = "<div style='background-color: #f8f9fa; padding: 20px; font-family: Arial, sans-serif;'>"
                     + "<h2 style='color: #343a40;'>¡Bienvenido!</h2>"

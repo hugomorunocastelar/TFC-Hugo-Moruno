@@ -5,10 +5,11 @@ import { register } from '../../../../js/AUTH.mjs';
 
 function RegisterForm() {
 
-  const [formData, setFormData] = useState({ user: "", email: "", password: "", passwordRepeat: "", lopd: false });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "", passwordRepeat: "", lopd: false });
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const [showRepeated, setShowRepeated] = useState(false);
+  const [lopdAccepted, setLopdAccepted] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,18 +18,20 @@ function RegisterForm() {
   };
 
   const handleLopdChange = (e) => {
-    const { value } = e.target;
-    let bool = value === 'on' ? true : false;
-    setFormData((prev) => ({ ...prev, lopd: bool }));
+    console.log(e.target.checked);
+    console.log(lopdAccepted);
+    const { checked } = e.target;
+    setLopdAccepted(checked);
+    setFormData((prev) => ({ ...prev, lopd: checked }));
   };
 
   const validateData = () => {
-    if (!formData.user || !formData.email || !formData.password || !formData.passwordRepeat) {
+    if (!formData.username || !formData.email || !formData.password || !formData.passwordRepeat) {
       setErrorMessage("All fields are required.");
       return false;
     }
 
-    if (formData.user.length < 3) {
+    if (formData.username.length < 3) {
       setErrorMessage("Username must be at least 3 characters.");
       return false;
     }
@@ -64,7 +67,7 @@ function RegisterForm() {
         if (response) {
           navigate('/validate-account');
         } else {
-          setFormData({ user: "", email: "", password: "", passwordRepeat: "", lopd: false });
+          setFormData({ username: "", email: "", password: "", passwordRepeat: "", lopd: false });
           setErrorMessage("Registration failed. Please check your data.");
         }
         })
@@ -88,7 +91,7 @@ function RegisterForm() {
         <div className='RegisterForm-Inputs'>
           <label>
             Username
-            <input type="user" name="user" placeholder='Enter your user' value={formData.user} onChange={handleChange} required />
+            <input type="username" name="username" placeholder='Enter your username' value={formData.username} onChange={handleChange} required />
           </label>
           <label>
             Email
@@ -129,12 +132,12 @@ function RegisterForm() {
             </button>
           </label>
           <label className='dataPolicy'>
-            <input type="checkbox" name="lopd" value={formData.lopd} onChange={handleLopdChange} required/>
+            <input type="checkbox" name="lopd" value={lopdAccepted} onClick={handleLopdChange} required/>
             <span>
-              He leído y acepto la 
-              <a href="/privacy-policy" className='privacyPolicyUrl'> Política de Privacidad </a>
-              y consiento el tratamiento de mis datos personales por Dot&Dot
-              con la finalidad de gestionar mi registro y el acceso a la plataforma.
+              I have read and accept the
+              <a href="/privacy-policy" className='privacyPolicyUrl'> Privacy Policy </a>
+              and I consent to the processing of my personal data by Dot&Dot
+              for the purpose of managing my registration and access to the platform.
             </span>
           </label>
         </div>

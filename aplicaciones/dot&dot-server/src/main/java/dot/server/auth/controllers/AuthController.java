@@ -85,15 +85,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(
-            @Valid @RequestBody SignupRequest signUpRequest
+        @RequestBody SignupRequest signUpRequest
     ) {
         if (!signUpRequest.isLopd()) {
             return ResponseEntity.badRequest().body("Por favor acepte la Lopd para continuar con el registro.");
         }
 
+        if (!signUpRequest.getPassword().equals(signUpRequest.getPasswordRepeat())) {
+            return ResponseEntity.badRequest().body("Las contraseñas no se corresponden entre si.");
+        }
+
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest()
-                    .body(new HttpResponse(HttpStatus.BAD_REQUEST, "Nombre de usario ocupado."));
+                    .body(new HttpResponse(HttpStatus.BAD_REQUEST, "Nombre de usuario ocupado."));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {

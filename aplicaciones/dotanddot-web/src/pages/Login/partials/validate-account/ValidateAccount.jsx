@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./ValidateAccount.css";
 import { maskEmail } from "../../../../js/secret/email.mjs";
+import { useParams } from "react-router-dom";
 
-const ValidateAccount = ({ onValidate, onResend, email = "placeholder@mail.com" }) => {
+function ValidateAccount() {
+    const { token } = useParams();
+
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");

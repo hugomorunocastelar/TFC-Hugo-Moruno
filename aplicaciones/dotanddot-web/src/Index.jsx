@@ -64,7 +64,7 @@ function Index() {
         <Route path="*" element={<Error />} />
         <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>} />
         <Route path="login" element={<Login />} />
-        <Route path="validate-account" element={<ValidateAccount />} />
+        <Route path="validate-account/:token" element={<ValidateAccount />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>
