@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Roles.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllRoles } from '../../../../js/cruds/roles.mjs';
 import API from '../../../../js/env';
 
@@ -106,59 +106,43 @@ function Roles() {
   };
 
   return (
-    <div className='Roles'>
-      <div className='Roles-Table'>
-        <div className='Roles-Table-Header'>
-          <h2>Roles</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentRoles.map(role => (
-              <tr key={role.id}>
-                <td>{role.name}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(role)}><EditButton /></button>
-                  <button onClick={() => handleDelete(role.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {roles.length === 0 && (
-              <tr>
-                <td colSpan="2">No roles found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {roles.length > 0 && (
-          <div className="Roles-Pagination">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
+    <div className='container'>
+      {!formOpen && (
+        <div className='data-table'>
+          <div className='table-header'>
+            <h2>Roles</h2>
+            <button onClick={openFormForCreate}><NewButton /></button>
           </div>
-        )}
-      </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRoles.map(role => (
+                <tr key={role.id}>
+                  <td>{role.name}</td>
+                  <td>
+                    <button onClick={() => openFormForEdit(role)}><EditButton /></button>
+                    <button onClick={() => handleDelete(role.id)}><DeleteButton /></button>
+                  </td>
+                </tr>
+              ))}
+              {roles.length === 0 && (
+                <tr>
+                  <td colSpan="2">No roles found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
+        </div>
+      )}
 
       {formOpen && (
-        <div className='Roles-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Role' : 'New Role'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -173,9 +157,9 @@ function Roles() {
                 disabled={!!formData.id}
               />
             </label>
-            <div className='Roles-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
-              <button type="button" onClick={closeForm}><CancelButton /></button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
+              <CancelButton onClick={closeForm}/>
             </div>
           </form>
         </div>

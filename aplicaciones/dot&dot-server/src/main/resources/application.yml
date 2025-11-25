@@ -11,7 +11,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: dotanddot.app.contact@gmail.com
-    password: dotanddot_2025
+    password: "nlyopscsntwvidss"
     properties:
       mail:
         smtp:
@@ -20,9 +20,9 @@ spring:
             enable: true
   datasource:
     #        SERVER
-#    url: jdbc:mysql://mysql:3306/dotdot_db
+    url: jdbc:mysql://mysql:3306/dotdot_db
     #        DEVELOPMENT
-    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
+#    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
     password: dotdotdb

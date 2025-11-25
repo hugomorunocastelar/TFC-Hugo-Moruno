@@ -1,0 +1,318 @@
+.RefereePage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.REF-Header {
+    border-bottom: 1px solid var(--color-neutral-2);
+    background-color: var(--color-palette-green-2);
+    color: var(--color-palette-green-0);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &>div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        & .Logo {
+            height: 50px;
+            width: fit-content;
+            margin-right: 20px;
+        }
+    }
+
+    .REF-Header-HomeButton {
+        background-color: var(--color-palette-green-0);
+        color: var(--color-palette-green-3);
+        border: none;
+        padding: 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & svg {
+            width: 25px;
+            height: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        &:hover {
+            background-color: var(--color-palette-green-1);
+        }
+    }
+}
+
+.REF-Header-Title {
+    margin: 0;
+    font-size: 24px;
+}
+
+
+
+.REF-Body {
+    display: flex;
+    flex: 1;
+}
+
+.REF-Aside {
+    width: 200px;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ddd;
+}
+
+.REF-Aside-Nav {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 10px;
+    padding: 10px;
+}
+
+.REF-Aside-Button {
+    background: none;
+    border: none;
+    color: #2e8b57;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.REF-Aside-Button:hover {
+    background-color: #e6f4ec;
+}
+
+.REF-Main {
+    flex: 1;
+    padding: 20px;
+
+    & section {
+        margin-bottom: 40px;
+    }
+}
+
+.REF-Crud {
+    overflow: hidden;
+
+    & .container {
+        display: flex;
+    }
+
+    & h2 {
+        margin: 0;
+        color: var(--color-palette-green-4);
+    }
+
+    & .data-table {
+        background-color: var(--color-palette-green-0);
+        border-radius: 3px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        width: 100%;
+
+        & .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        & table {
+            flex: 1;
+            overflow-x: auto;
+            background-color: var(--color-palette-green-0);
+            border-radius: 3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+
+            & table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 700px;
+            }
+
+            & th,
+            & td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+
+            & th {
+                background-color: #f0f0f0;
+            }
+
+            border: none !important;
+            border-collapse: unset !important;
+            border-spacing: 0;
+            flex: 1;
+            overflow-x: auto;
+            background-color: var(--color-palette-green-0);
+            border-radius: 3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 100%;
+
+            & th,
+            & td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+
+            & th {
+                background-color: #f0f0f0;
+            }
+
+            & thead {
+                border: 2px solid var(--color-palette-green-4);
+
+                & th {
+                    border: none !important;
+                    background-color: var(--color-palette-green-2) !important;
+                    color: var(--color-palette-green-4);
+                }
+            }
+
+            & tbody {
+                overflow-y: auto;
+                border: 2px solid var(--color-palette-green-4);
+
+                & tr:nth-child(even) {
+                    background-color: var(--color-palette-green-1);
+                }
+
+                & td {
+                    border: none !important;
+                    color: var(--color-palette-green-4);
+                }
+            }
+        }
+
+    }
+
+    & .data-form {
+        flex: 1;
+        padding: 15px;
+        border-radius: 3px;
+        background-color: var(--color-palette-green-1);
+        overflow-y: auto;
+        max-height: 90vh;
+
+        & h2 {
+            margin-top: 0;
+        }
+
+        & form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        & label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+        }
+
+        & input,
+        & select {
+            padding: 6px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        & .data-form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+
+            & button {
+                padding: 8px 12px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    & div>div button {
+        width: fit-content;
+        padding: 0;
+    }
+}
+
+.REF-Footer {
+    border-top: 1px solid var(--color-neutral-1);
+    background-color: #f0f0f0;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    & .Logo {
+        height: 20px;
+        margin-right: 20px;
+        width: fit-content;
+    }
+
+    & p {
+        width: fit-content;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .REF-Body {
+        flex-direction: column;
+    }
+
+    .REF-Aside {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .RefereePage-ScreenResolutionError {
+        display: block;
+    }
+}
+
+
+.RefereePage {
+    height: 100%;
+}
+
+.RefereePage-ScreenResolutionError {
+    display: none;
+    width: 100dvw;
+    height: 100dvh;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &>* {
+        padding: 0 20px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .RefereePage-ScreenResolutionError {
+        display: block;
+    }
+}

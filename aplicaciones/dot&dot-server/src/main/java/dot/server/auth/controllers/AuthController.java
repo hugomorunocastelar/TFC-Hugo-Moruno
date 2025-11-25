@@ -3,6 +3,7 @@ package dot.server.auth.controllers;
 
 import dot.server.auth.jwt.JwtUtils;
 import dot.server.auth.payload.request.LoginRequest;
+import dot.server.auth.payload.request.ResetPasswordRequest;
 import dot.server.auth.payload.request.SignupRequest;
 import dot.server.auth.payload.response.JwtResponse;
 import dot.server.auth.payload.response.HttpResponse;
@@ -65,7 +66,8 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -76,11 +78,33 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        User user = userService.findById(userDetails.getId());
+        if (!user.getEnabled()) {
+            List<VerificationToken> tokens = verificationTokenRepository.findByUserId(user.getId()).orElse(null);
+            boolean userHasBeenVerified = true;
+            if (tokens != null && !tokens.isEmpty())
+                for (VerificationToken token : tokens) {
+                    if (token.getType().equals("VERIFY")) userHasBeenVerified = false;
+                }
+
+            if (!userHasBeenVerified) {
+                sendEmail(user, "VERIFY");
+                return ResponseEntity.ok(
+                    new HttpResponse(HttpStatus.PRECONDITION_REQUIRED, "Usuario no verificado."));
+            }
+            return ResponseEntity.ok(
+                    new HttpResponse(HttpStatus.UNAUTHORIZED, "Usuario deshabilitado, contacta con un administrador.")
+            );
+        }
+        else
+            return ResponseEntity.ok(
+                new HttpResponse(HttpStatus.OK,
+                new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles))
+            );
     }
 
     @PostMapping("/register")
@@ -140,78 +164,108 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
-
-        String token = UUID.randomUUID().toString().substring(0, 5);
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-        verificationTokenRepository.save(verificationToken);
-
-        emailService.sendVerificationEmail(user.getEmail(), token);
+        sendEmail(user, "VERIFY");
 
         return ResponseEntity.ok(new HttpResponse(HttpStatus.OK, "Usuario registrado exitosamente, confirme su email para activar el usuario."));
     }
 
     @GetMapping("/verify")
     public ResponseEntity<?> verifyAccount(@RequestParam String token) {
-        VerificationToken optToken = verificationTokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Error: token no encontrado."));
+        VerificationToken tokenData = verificationTokenRepository.findByToken(token).orElse(null);
 
-        if (optToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "Token expirado"));
+        if (tokenData == null)
+            return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "El token no existe."));
+
+        User user = tokenData.getUser();
+
+        if (tokenData.getExpiryDate().isBefore(LocalDateTime.now())) {
+            sendEmail(user, "VERIFY");
+            return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "Token expirado. Se procede a reenviar el código."));
         }
 
-        User user = optToken.getUser();
         user.setEnabled(true);
         userRepository.save(user);
+        verificationTokenRepository.delete(tokenData);
 
         return ResponseEntity.ok(new HttpResponse(HttpStatus.OK, "Cuenta verificada con éxito."));
     }
 
-    @PostMapping("/forgot-password")
+    @GetMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null)
             return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "No existe una cuenta con ese correo."));
-        }
-
-        User user = userOpt.get();
-
-        userService.deleteById(user.getId());
-
-        String token = UUID.randomUUID().toString();
-        VerificationToken resetToken = new VerificationToken();
-        resetToken.setToken(token);
-        resetToken.setUser(user);
-        resetToken.setExpiryDate(LocalDateTime.now().plusHours(1));
-        verificationTokenRepository.save(resetToken);
-
-        String resetLink = "https://dot-dot.duckdns.org/server/reset-password?token=" + token;
-        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
-
+        if (!user.getEnabled())
+            return ResponseEntity.ok(new HttpResponse(HttpStatus.UNAUTHORIZED, "Usuario deshabilitado, contacta con un administrador."));
+        sendEmail(user, "RESETPASSWORD");
         return ResponseEntity.ok(new HttpResponse(HttpStatus.OK, "Se ha enviado un correo para restablecer la contraseña."));
     }
 
     @Transactional
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        Optional<VerificationToken> optToken = verificationTokenRepository.findByToken(token);
-        if (optToken.isEmpty()) {
+    public ResponseEntity<?> resetPassword(
+            @RequestBody ResetPasswordRequest request
+    ) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(request.getToken()).orElse(null);
+        if (verificationToken == null)
             return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "Token inválido."));
-        }
-
-        VerificationToken verificationToken = optToken.get();
 
         if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "El token ha expirado."));
+            sendEmail(verificationToken.getUser(), "RESETPASSWORD");
+            return ResponseEntity.badRequest().body(new HttpResponse(HttpStatus.BAD_REQUEST, "El token ha expirado. Se procede a reenviar el código."));
         }
 
-        User user = verificationToken.getUser();
-        user.setPassword(encoder.encode(newPassword));
-        userRepository.save(user);
+        if (request.getNewPassword().equals(request.getConfirmPassword())) {
+            User user = verificationToken.getUser();
+            user.setPassword(encoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+            verificationTokenRepository.delete(verificationToken);
+            return ResponseEntity.ok(new HttpResponse(HttpStatus.OK, "Contraseña actualizada con éxito."));
+        } else {
+            return ResponseEntity.ok().body(new HttpResponse(HttpStatus.BAD_REQUEST, "Las contraseñas deben ser iguales entre si."));
+        }
+    }
 
-        verificationTokenRepository.delete(verificationToken);
+    private void sendEmail(User user, String type) {
+        int plusHours = type.equals("RESETPASSWORD") ? 1 : 24;
+        boolean sendNewCode = true;
+        VerificationToken oldToken = null;
 
-        return ResponseEntity.ok(new HttpResponse(HttpStatus.OK, "Contraseña actualizada con éxito."));
+        List<VerificationToken> tokens = verificationTokenRepository.findByUserId(user.getId()).orElse(null);
+
+        if (tokens != null && !tokens.isEmpty())  {
+            for (VerificationToken token : tokens) {
+                if (token.getType().equals(type)) {
+                    sendNewCode = false;
+                    oldToken = token;
+                }
+            }
+        }
+
+        if (sendNewCode) {
+            String token = UUID.randomUUID().toString().substring(0, 19);
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setToken(token);
+            verificationToken.setUser(user);
+            verificationToken.setType(type);
+            verificationToken.setExpiryDate(LocalDateTime.now().plusHours(plusHours));
+            verificationTokenRepository.save(verificationToken);
+            if (type.equals("RESETPASSWORD")) {
+                String resetLink = "https://dot-dot.duckdns.org/reset-password?token=" + token;
+                emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+            }
+            else if (type.equals("VERIFY"))
+                emailService.sendVerificationEmail(user.getEmail(), token);
+
+        } else {
+            oldToken.setExpiryDate(LocalDateTime.now().plusHours(plusHours));
+            verificationTokenRepository.save(oldToken);
+            if (type.equals("RESETPASSWORD")) {
+                String resetLink = "https://dot-dot.duckdns.org/reset-password?token=" + oldToken.getToken();
+                emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+            }
+            else if (type.equals("VERIFY"))
+                emailService.sendVerificationEmail(user.getEmail(), oldToken.getToken());
+        }
     }
 }

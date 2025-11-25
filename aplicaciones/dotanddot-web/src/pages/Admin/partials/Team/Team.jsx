@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Team.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 import { getAllClubs } from '../../../../js/cruds/clubs.mjs';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
@@ -37,7 +37,6 @@ function Team() {
     setCurrentPage(page);
   };
 
-  // Fetch teams
   const fetchTeams = async () => {
     try {
       getAllTeams()
@@ -50,7 +49,6 @@ function Team() {
     }
   };
 
-  // Fetch persons for captain dropdown
   const fetchPersons = async () => {
     try {
       getAllPersons()
@@ -63,7 +61,6 @@ function Team() {
     }
   };
 
-  // Fetch clubs for club dropdown
   const fetchClubs = async () => {
     try {
       getAllClubs()
@@ -155,7 +152,6 @@ function Team() {
     }
   };
 
-  // Example categories - replace with your actual categories or fetch dynamically
   const categories = [
     'U10',
     'U12',
@@ -166,9 +162,9 @@ function Team() {
   ];
 
   return (
-    <div className='Team'>
-      <div className='Team-Table'>
-        <div className='Team-Table-Header'>
+    <div className='container'>
+      <div className='data-table'>
+        <div className='table-header'>
           <h2>Teams</h2>
           <button onClick={openFormForCreate}><NewButton /></button>
         </div>
@@ -202,23 +198,11 @@ function Team() {
             )}
           </tbody>
         </table>
-        {teams.length > 0 && (
-          <div className="Team-Pagination">
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
-          </div>
-        )}
+        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
       </div>
 
       {formOpen && (
-        <div className='Team-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Team' : 'New Team'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -278,8 +262,8 @@ function Team() {
                 ))}
               </select>
             </label>
-            <div className='Team-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>

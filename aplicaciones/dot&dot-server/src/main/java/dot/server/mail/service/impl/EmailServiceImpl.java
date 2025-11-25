@@ -20,11 +20,12 @@ public class EmailServiceImpl implements EmailService {
     public void enviarEmail(ContactForm form) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("dotanddot.app.contact@gmail.com");
-        message.setSubject("Solicitud de asistencia del usuario: " + form.getNombre());
+        message.setFrom(form.getEmail());
+        message.setSubject("Solicitud de asistencia del usuario: " + form.getName());
         message.setText(
-                "Nombre: " + form.getNombre() + "\n" +
-                        "Correo: " + form.getCorreo() + "\n\n" +
-                        form.getMensaje()
+                "Nombre: " + form.getName() + "\n" +
+                        "Correo: " + form.getEmail() + "\n\n" +
+                        form.getMessage()
         );
 
         mailSender.send(message);
@@ -71,8 +72,8 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(toEmail);
-            helper.setSubject("Restablece tu contraseña");
-            helper.setFrom("Dot & Dot verification service.");
+            helper.setFrom("dotanddot.app.contact@gmail.com");
+            helper.setSubject("Reset your password.");
 
             String htmlContent = "<div style='font-family: Arial; padding: 20px;'>"
                     + "<h2>¿Olvidaste tu contraseña?</h2>"

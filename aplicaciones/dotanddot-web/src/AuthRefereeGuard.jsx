@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { validateReferee, validateSession } from "./js/AUTH.mjs";
+import { validateRole, validateSession } from "./js/auth.mjs";
 import { getSession } from "./js/session.mjs";
+import Loader from "./pages/Loader/Loader";
 
 const AuthRefereeGuard = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -12,7 +13,7 @@ const AuthRefereeGuard = ({ children }) => {
     if (session) {
       validateSession().then((result) => {
         if (result) {
-          validateReferee().then((response) => {
+          validateRole("referee").then((response) => {
             setIsAuthenticated(response);
           })
         } else {
@@ -25,7 +26,7 @@ const AuthRefereeGuard = ({ children }) => {
   }, []);
 
   if (isAuthenticated === null) {
-    return <p>Validating referee session...</p>;
+    return <Loader />;
   }
 
   if (isAuthenticated === false) {

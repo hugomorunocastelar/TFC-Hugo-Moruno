@@ -29,7 +29,7 @@
   flex-grow: 1;
   margin-bottom: 10px;
 
-  & > div {
+  & label > div {
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -69,6 +69,12 @@
     padding: 10px;
     margin-left: 10px;
     background-color: transparent;
+  }
+
+  & .forgotPass {
+    font-size: 11px;
+    color: var(--color-link);
+    cursor: pointer;
   }
 }
 

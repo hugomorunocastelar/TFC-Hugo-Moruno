@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Users.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllUsers } from '../../../../js/cruds/users.mjs';
 import { getAllRoles } from '../../../../js/cruds/roles.mjs';
 import API from '../../../../js/env';
@@ -147,9 +147,9 @@ function Users() {
   };
 
   return (
-    <div className='Users'>
-      <div className='Users-Table'>
-        <div className='Users-Table-Header'>
+    <div className='container'>
+      <div className='data-table'>
+        <div className='table-header'>
           <h2>Users</h2>
           <button onClick={openFormForCreate}><NewButton /></button>
         </div>
@@ -183,30 +183,10 @@ function Users() {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="pagination" style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '5px' }}>
-          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
-          {[...Array(totalPages)].map((_, idx) => {
-            const pageNum = idx + 1;
-            return (
-              <button
-                key={pageNum}
-                onClick={() => goToPage(pageNum)}
-                style={{
-                  fontWeight: currentPage === pageNum ? 'bold' : 'normal',
-                  textDecoration: currentPage === pageNum ? 'underline' : 'none',
-                }}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
-          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
-        </div>
-      )}
+      <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
 
       {formOpen && (
-        <div className='Users-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit User' : 'New User'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -259,8 +239,8 @@ function Users() {
                 ))}
               </select>
             </label>
-            <div className='Users-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>

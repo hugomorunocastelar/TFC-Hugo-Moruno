@@ -9,7 +9,11 @@ const API = {
     ROOT: `${BACK_IP}/auth`,
     LOGIN: `${BACK_IP}/auth/login`,
     REGISTER: `${BACK_IP}/auth/register`,
-    VALIDATE: (ROLE) => `${BACK_IP}/auth/validate/${ROLE}`,
+    VERIFY: (TOKEN) => `${BACK_IP}/auth/verify?token=${TOKEN}`,
+    FORGOTPASSWORD: (EMAIL) => `${BACK_IP}/auth/forgot-password?email=${EMAIL}`,
+    RESETPASSWORD: `${BACK_IP}/auth/reset-password`,
+    VALIDATE:`${BACK_IP}/validate/user`,
+    ROLE: (ROLE) => `${BACK_IP}/validate/rol/${ROLE}`,
   },
   PERSON: {
     ROOT: `${ADMIN_BACK_IP}/person`,
@@ -133,10 +137,7 @@ const API = {
       ALL: `${OPEN_BACK_IP}/games`,
       OM: `${OPEN_BACK_IP}/games/outstanding-match`
     },
-    CONTACT: {
-      ROOT: `${OPEN_BACK_IP}/mail`,
-      SEND: `${OPEN_BACK_IP}/mail/contact`,
-    }
+    CONTACT: `${BACK_IP}/contact/public`
   }
 };
 

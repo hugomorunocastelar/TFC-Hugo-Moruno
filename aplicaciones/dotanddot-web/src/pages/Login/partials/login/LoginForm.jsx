@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "./LoginForm.css";
-import { login } from '../../../../js/AUTH.mjs';
+import { login } from '../../../../js/auth.mjs';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
@@ -20,14 +20,26 @@ function LoginForm() {
     } else {
       login(formData.user, formData.password)
       .then((response) => {
-        if(response) {
-          navigate('/');
-        } else {
-          setFormData({ user: "", password: "" });
-          setErrorMessage("May your user or password is wrong");
+        console.log("Login response:", response);
+        switch(response.status) {
+          case 200:
+            navigate('/');
+            break;
+          case 401:
+            setFormData({ user: "", password: "" });
+            setErrorMessage("Unauthorized: user disabled.\nContact with support.");
+            break;
+          case 428:
+            setFormData({ user: "", password: "" });
+            setErrorMessage("Precondition Required: please, verify your user.\nVerification email has been resent.");
+            break;
+          default:
+            setFormData({ user: "", password: "" });
+            setErrorMessage("An unexpected error occurred. Please try again later.");
+            break;
         }
       })
-    }
+    }  
   };
 
   function setErrorMessage(message) {
@@ -41,27 +53,32 @@ function LoginForm() {
     <>
     <div className='LoginForm-Data'>
       <div className='LoginForm-Inputs'>
-        <p>Username or Email</p>
-        <div>
-          <input type="user" name="user" placeholder='Enter your user' value={formData.user} onChange={handleChange} required />
-        </div>
-        <p>Password</p>
-        <div>
-          <input type={show ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} required />
-          <button type="button" onClick={() => setShow(!show)} className="passwordShower" >
-            {show ? (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
-                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
-                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
-                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
-              </svg>
-            )}
-          </button>
-        </div>
+        <label>
+          Username or Email
+          <div>
+            <input type="user" name="user" placeholder='Enter your user' value={formData.user} onChange={handleChange} required />
+          </div>
+        </label>
+        <label>
+          Password
+          <div>
+            <input type={show ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} required />
+            <button type="button" onClick={() => setShow(!show)} className="passwordShower" >
+              {show ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+                  <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                  <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                </svg>
+              )}
+            </button>
+          </div>
+        </label>
+        <a className='forgotPass' onClick={() => navigate('/forgot-password')}>Forgot password?</a>
       </div>
       {error && <p className='lp-error'>{error}</p>}
     </div>

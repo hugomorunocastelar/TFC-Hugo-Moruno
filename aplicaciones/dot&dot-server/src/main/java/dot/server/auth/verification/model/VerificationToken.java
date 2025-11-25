@@ -17,12 +17,15 @@ public class VerificationToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 6)
+    @Column(unique = true, nullable = false, length = 20)
     private String token;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
+
+    @Column(nullable = false)
+    private String type;
 
     private LocalDateTime expiryDate;
 }

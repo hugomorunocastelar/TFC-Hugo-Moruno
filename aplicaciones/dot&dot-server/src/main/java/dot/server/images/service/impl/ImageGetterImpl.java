@@ -1,10 +1,10 @@
-package dot.server.images.service;
+package dot.server.images.service.impl;
 
+import dot.server.images.service.ImageGetter;
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
-public class ImageGetter {
+public class ImageGetterImpl implements ImageGetter {
 
     private final File imagesRoot = new File("images");
 
@@ -22,6 +22,7 @@ public class ImageGetter {
         if (!imagesRoot.exists()) imagesRoot.mkdirs();
     }
 
+    @Override
     public Resource getUserImage(String userId, String filename) {
         File userFolder = new File(imagesRoot, userId);
         File imageFile = new File(userFolder, filename);
@@ -29,6 +30,7 @@ public class ImageGetter {
         return null;
     }
 
+    @Override
     public List<String> listUserImages(String userId) {
         File userFolder = new File(imagesRoot, userId);
         if (!userFolder.exists() || !userFolder.isDirectory()) return List.of();
@@ -39,6 +41,7 @@ public class ImageGetter {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<String> listAllImages() {
         if (!imagesRoot.exists() || !imagesRoot.isDirectory()) return List.of();
 

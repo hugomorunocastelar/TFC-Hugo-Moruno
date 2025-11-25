@@ -7,7 +7,7 @@ import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
 import API from '../../../../js/env';
 import { post, put, del } from '../../../../js/http';
-import './Person.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 
 function Person() {
@@ -28,7 +28,6 @@ function Person() {
     tutorId: '',
   });
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -152,7 +151,7 @@ function Person() {
       }
       await fetchPersons();
       closeForm();
-      setCurrentPage(1); // Reset to first page after changes
+      setCurrentPage(1);
     } catch (error) {
       console.error(error);
     }
@@ -164,7 +163,7 @@ function Person() {
       await del(API.PERSON.DELETE(id));
       await fetchPersons();
       if (selectedPerson && selectedPerson.id === id) closeForm();
-      setCurrentPage(1); // Reset to first page after deletion
+      setCurrentPage(1);
     } catch (error) {
       console.error(error);
     }
@@ -172,7 +171,6 @@ function Person() {
 
   const [tutors, setTutors] = useState([]);
 
-  // Pagination calculations
   const totalPages = Math.ceil(persons.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentPersons = persons.slice(startIndex, startIndex + itemsPerPage);
@@ -183,9 +181,9 @@ function Person() {
   };
 
   return (
-    <div className='Person'>
-      <div className='Person-Table'>
-        <div className='Person-Table-Header'>
+    <div className='container'>
+      {!formOpen && (<div className='data-table'>
+        <div className='table-header'>
           <h2>Persons</h2>
           <button onClick={openFormForCreate}><NewButton /></button>
         </div>
@@ -219,37 +217,11 @@ function Person() {
             )}
           </tbody>
         </table>
-
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="pagination" style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '5px' }}>
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            {[...Array(totalPages)].map((_, idx) => {
-              const pageNum = idx + 1;
-              return (
-                <button
-                  key={pageNum}
-                  onClick={() => goToPage(pageNum)}
-                  style={{
-                    fontWeight: currentPage === pageNum ? 'bold' : 'normal',
-                    textDecoration: currentPage === pageNum ? 'underline' : 'none',
-                  }}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
-          </div>
-        )}
-      </div>
+        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
+      </div>)}
 
       {formOpen && (
-        <div className='Person-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Person' : 'New Person'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -361,9 +333,9 @@ function Person() {
                   ))}
               </select>
             </label>
-            <div className='Person-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
-              <button type="button" onClick={closeForm}><CancelButton /></button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
+              <CancelButton onClick={closeForm}/>
             </div>
           </form>
         </div>

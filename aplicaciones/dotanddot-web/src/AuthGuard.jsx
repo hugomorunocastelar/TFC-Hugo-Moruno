@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { validateSession } from "./js/AUTH.mjs";
+import { validateSession } from "./js/auth.mjs";
 import { getSession } from "./js/session.mjs";
+import Loader from "./pages/Loader/Loader";
 
 const AuthGuard = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -19,7 +20,7 @@ const AuthGuard = ({ children }) => {
   }, []);
 
   if (isAuthenticated === null) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (isAuthenticated === false) {

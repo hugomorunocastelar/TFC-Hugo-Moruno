@@ -5,6 +5,7 @@ import Error from "./pages/Error/Error";
 import Home from "./pages/App/components/home/Home";
 import Competitions from "./pages/App/components/competitions/Competitions";
 import AuthGuard from "./AuthGuard";
+import AuthAdminGuard from "./AuthAdminGuard";
 import Admin from "./pages/Admin/Admin";
 import ShowCompetition from "./pages/App/components/showCompetition/ShowCompetition";
 import Clubs from "./pages/App/components/clubs/Clubs";
@@ -31,6 +32,10 @@ import Seasons from "./pages/Admin/partials/Seasons/Seasons";
 import AuthRefereeGuard from "./AuthRefereeGuard";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import ValidateAccount from "./pages/Login/partials/validate-account/ValidateAccount";
+import ForgotPassword from "./pages/Login/partials/forgot-password/ForgotPassword";
+import ResetPassword from "./pages/Login/partials/reset-password/ResetPassword";
+import WelcomeReferee from "./pages/Referee/partials/WelcomeReferee/WelcomeReferee";
+import Profile from "./pages/Profile/Profile";
 
 function Index() {
   return (
@@ -44,8 +49,9 @@ function Index() {
           <Route path="clubs/:id" element={<ClubView />} />
           <Route path="contact" element={<Contact />} />
         </Route>
-        <Route path="admin" element={<AuthGuard><Admin /></AuthGuard>}>
-          <Route path="" element={<Welcome />}></Route>
+        <Route path="profile" element={<AuthGuard ><Profile /></AuthGuard>} />
+        <Route path="admin" element={<AuthAdminGuard ><Admin /></AuthAdminGuard>}>
+          <Route path="" element={<Welcome />} />
           <Route path="users" element={<Users />} />
           <Route path="roles" element={<Roles />} />
           <Route path="person" element={<Person />} />
@@ -62,9 +68,16 @@ function Index() {
           <Route path="game" element={<Game />} />
         </Route>
         <Route path="*" element={<Error />} />
-        <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>} />
+        <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>}>
+          <Route path="" element={<WelcomeReferee />} />
+          <Route path="upcoming" element={<p>Upcoming</p>} />
+          <Route path="finished" element={<p>Upcoming</p>} />
+          <Route path="generate" element={<p>Upcoming</p>} />
+        </Route>
         <Route path="login" element={<Login />} />
         <Route path="validate-account/:token" element={<ValidateAccount />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>

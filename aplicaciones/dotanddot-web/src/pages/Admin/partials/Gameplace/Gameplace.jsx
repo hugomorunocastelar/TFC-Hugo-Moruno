@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Gameplace.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
 import { getAllGameplaces } from '../../../../js/cruds/gameplaces.mjs';
 import API from '../../../../js/env';
@@ -142,9 +142,9 @@ function Gameplace() {
   };
 
   return (
-    <div className='Gameplace'>
-      <div className='Gameplace-Table'>
-        <div className='Gameplace-Table-Header'>
+    <div className='container'>
+      <div className='data-table'>
+        <div className='table-header'>
           <h2>Gameplaces</h2>
           <button onClick={openFormForCreate}><NewButton /></button>
         </div>
@@ -178,23 +178,11 @@ function Gameplace() {
             )}
           </tbody>
         </table>
-        {gameplaces.length > 0 && (
-          <div className="pagination">
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
-          </div>
-        )}
+        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
       </div>
 
       {formOpen && (
-        <div className='Gameplace-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Gameplace' : 'New Gameplace'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -246,8 +234,8 @@ function Gameplace() {
                 ))}
               </select>
             </label>
-            <div className='Gameplace-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>

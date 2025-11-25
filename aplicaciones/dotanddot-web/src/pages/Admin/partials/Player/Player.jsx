@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Player.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
 import API from '../../../../js/env';
 import { getAllPlayers } from '../../../../js/cruds/players.mjs';
@@ -155,9 +155,9 @@ function Player() {
   };
 
   return (
-    <div className='Player'>
-      <div className='Player-Table'>
-        <div className='Player-Table-Header'>
+    <div className='container'>
+      <div className='data-table'>
+        <div className='table-header'>
           <h2>Players</h2>
           <button onClick={openFormForCreate}><NewButton /></button>
         </div>
@@ -189,23 +189,11 @@ function Player() {
             )}
           </tbody>
         </table>
-        {totalPages > 1 && (
-          <div className="pagination">
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
-          </div>
-        )}
+        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
       </div>
 
       {formOpen && (
-        <div className='Player-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Player' : 'New Player'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -249,8 +237,8 @@ function Player() {
                 ))}
               </select>
             </label>
-            <div className='Player-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>

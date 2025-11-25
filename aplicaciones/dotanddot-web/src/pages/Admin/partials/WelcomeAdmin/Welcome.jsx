@@ -5,10 +5,10 @@ import adminImage from "/welcome/welcome.jpeg";
 function Welcome() {
   return (
     <div className="welcome-container">
-      <img src={adminImage} alt="Administración Dot & Dot" className="welcome-image" />
-      <h1>Bienvenido/a al panel de administración</h1>
+      <img src={adminImage} alt="Dot & Dot Administration" className="welcome-image" />
+      <h1>Welcome to the administration panel</h1>
       <p>
-        Aquí puedes gestionar todos los datos de la aplicación <strong>Dot & Dot</strong> para el control de ligas de voleibol.
+        Here you can manage all data from the <strong>Dot & Dot</strong> application for volleyball league management.
       </p>
     </div>
   );

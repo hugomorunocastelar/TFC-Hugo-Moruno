@@ -1,0 +1,16 @@
+.pagination {
+  display: flex;
+  gap: 2px;
+  justify-content: space-between;
+  align-items: end;
+  margin-top: 12px;
+
+  button {
+    padding: 8px 12px !important;
+    border-radius: 4px;
+    background: var(--color-palette-green-1);
+    border: 1px solid var(--color-palette-green-3);
+    color: var(--color-palette-green-4);
+    cursor: pointer;
+  }
+}

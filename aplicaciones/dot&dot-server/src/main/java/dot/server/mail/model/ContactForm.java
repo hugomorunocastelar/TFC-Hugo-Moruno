@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ContactForm {
-    private String nombre;
-    private String correo;
-    private String mensaje;
+    private String name;
+    private String email;
+    private String message;
 }

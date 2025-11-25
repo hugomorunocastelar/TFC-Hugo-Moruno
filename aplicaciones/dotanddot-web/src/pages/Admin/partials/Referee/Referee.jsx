@@ -6,7 +6,7 @@ import DeleteButton from '../../components/buttons/delete/DeleteButton';
 import CreateButton from '../../components/buttons/create/CreateButton';
 import UpdateButton from '../../components/buttons/update/UpdateButton';
 import CancelButton from '../../components/buttons/cancel/CancelButton';
-import './Referee.css';
+import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
 import { getAllReferees } from '../../../../js/cruds/referees.mjs';
@@ -155,59 +155,49 @@ function Referee() {
   };
 
   return (
-    <div className='Referee'>
-      <div className='Referee-Table'>
-        <div className='Referee-Table-Header'>
-          <h2>Referees</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>No License</th>
-              <th>Level License</th>
-              <th>City</th>
-              <th>Person</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentReferees.map(referee => (
-              <tr key={referee.id}>
-                <td>{referee.noLicense}</td>
-                <td>{referee.lvlLicense}</td>
-                <td>{referee.city ? referee.city.name : ''}</td>
-                <td>{referee.dni ? `${referee.dni.name} ${referee.dni.surnames || ''}` : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(referee)}><EditButton /></button>
-                  <button onClick={() => handleDelete(referee.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {referees.length === 0 && (
-              <tr>
-                <td colSpan="5">No referees found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {totalPages > 1 && (
-          <div className="Referee-Pagination">
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
+    <div className='container'>
+      {!formOpen && (
+        <div className='data-table'>
+          <div className='table-header'>
+            <h2>Referees</h2>
+            <button onClick={openFormForCreate}><NewButton /></button>
           </div>
-        )}
-      </div>
+          <table>
+            <thead>
+              <tr>
+                <th>No License</th>
+                <th>Level License</th>
+                <th>City</th>
+                <th>Person</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentReferees.map(referee => (
+                <tr key={referee.id}>
+                  <td>{referee.noLicense}</td>
+                  <td>{referee.lvlLicense}</td>
+                  <td>{referee.city ? referee.city.name : ''}</td>
+                  <td>{referee.dni ? `${referee.dni.name} ${referee.dni.surnames || ''}` : ''}</td>
+                  <td>
+                    <button onClick={() => openFormForEdit(referee)}><EditButton /></button>
+                    <button onClick={() => handleDelete(referee.id)}><DeleteButton /></button>
+                  </td>
+                </tr>
+              ))}
+              {referees.length === 0 && (
+                <tr>
+                  <td colSpan="5">No referees found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
+        </div>
+      )}
 
       {formOpen && (
-        <div className='Referee-Form'>
+        <div className='data-form'>
           <h2>{formData.id ? 'Edit Referee' : 'New Referee'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
@@ -262,8 +252,8 @@ function Referee() {
                 ))}
               </select>
             </label>
-            <div className='Referee-Form-Actions'>
-              <button type="submit">{formData.id ? <UpdateButton /> : <CreateButton />}</button>
+            <div className='data-form-buttons'>
+              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <button type="button" onClick={closeForm}><CancelButton /></button>
             </div>
           </form>

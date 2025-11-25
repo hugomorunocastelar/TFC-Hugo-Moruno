@@ -1,0 +1,25 @@
+.welcome-container {
+  text-align: center;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: var(--color-palette-green-0);
+  box-shadow: 0px 1px 1px 2px #4757331c ;
+
+  & h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  & p {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+}
+
+
+.welcome-image {
+  max-height: 600px;
+  width: 100%;
+  object-fit: cover;
+}

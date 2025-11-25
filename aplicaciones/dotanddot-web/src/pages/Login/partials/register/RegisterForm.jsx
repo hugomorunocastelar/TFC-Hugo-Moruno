@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './RegisterForm.css';
 import { useNavigate } from 'react-router-dom';
-import { register } from '../../../../js/AUTH.mjs';
+import { register } from '../../../../js/auth.mjs';
 
 function RegisterForm() {
 

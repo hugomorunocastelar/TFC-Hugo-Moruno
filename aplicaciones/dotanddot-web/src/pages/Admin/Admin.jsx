@@ -8,20 +8,20 @@ function Admin() {
   const navigate = useNavigate();
 
   const pages = {
-    Persona: 'person',
-    Árbitro: 'referee',
-    Entrenador: 'coach',
-    Jugador: 'player',
-    Usuario: 'users',
-    Rol: 'roles',
-    Clubes: 'clubs',
-    Ciudad: 'city',
-    Liga: 'league',
-    Competicion: 'competition',
-    Equipo: 'team',
-    Cancha: 'gameplace',
-    Temporada: 'seasons',
-    Partido: 'game'
+    Person: 'person',
+    Referee: 'referee',
+    Coach: 'coach',
+    Player: 'player',
+    User: 'users',
+    Role: 'roles',
+    Club: 'clubs',
+    City: 'city',
+    League: 'league',
+    Competition: 'competition',
+    Team: 'team',
+    Gameplace: 'gameplace',
+    Season: 'seasons',
+    Game: 'game'
   };
 
   function goto(route) {
@@ -33,10 +33,10 @@ function Admin() {
       <header className='AP-Header'>
         <div>
           <Logo />
-          <h1 className='AP-Header-Title'>Panel de Administración</h1>
+          <h1 className='AP-Header-Title'>Administration Panel</h1>
         </div>
         <button className='AP-Header-HomeButton' onClick={() => {navigate('/')}}>
-          Volver al Inicio
+          Back to Home
         </button>
       </header>
 

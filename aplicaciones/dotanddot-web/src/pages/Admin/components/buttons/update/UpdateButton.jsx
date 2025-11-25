@@ -1,9 +1,9 @@
 import React from 'react';
 import './UpdateButton.css';
 
-function UpdateButton({ onClick }) {
+function UpdateButton({ onClick, type = 'button' }) {
   return (
-    <button className="btn-update" onClick={onClick}>
+    <button className="btn-update" type={type} onClick={onClick}>
       Update
     </button>
   );
