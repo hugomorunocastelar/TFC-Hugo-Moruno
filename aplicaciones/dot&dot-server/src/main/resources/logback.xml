@@ -7,6 +7,14 @@
 <!--        </encoder>-->
 <!--    </appender>-->
 
+    <appender name="exceptions" class="ch.qos.logback.core.FileAppender">
+        <file>logs/exceptions.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss} EXCEPTION [%logger{0}] -> %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss} %-5level[%logger{0}] -> %msg%n</pattern>
@@ -16,6 +24,10 @@
 <!--    <logger name="elk_kpiAiRequests" level="INFO" additivity="false">-->
 <!--        <appender-ref ref="kpiRequests"/>-->
 <!--    </logger>-->
+
+    <logger name="exceptions-log" level="INFO" additivity="false">
+        <appender-ref ref="exceptions"/>
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="Console"/>

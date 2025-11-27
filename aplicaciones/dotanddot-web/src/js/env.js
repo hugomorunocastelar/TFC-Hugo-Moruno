@@ -15,6 +15,9 @@ const API = {
     VALIDATE:`${BACK_IP}/validate/user`,
     ROLE: (ROLE) => `${BACK_IP}/validate/rol/${ROLE}`,
   },
+  CONTACT: {
+    SEND: `${BACK_IP}/contact/public`
+  },
   PERSON: {
     ROOT: `${ADMIN_BACK_IP}/person`,
     ALL: `${ADMIN_BACK_IP}/person`,
@@ -86,6 +89,7 @@ const API = {
     READ: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
     UPDATE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
+    GAMES: (refereeId) => `${BACK_IP}/referee/games/${refereeId}`,
   },
   SEASONS: {
     ROOT: `${ADMIN_BACK_IP}/seasons`,
@@ -110,6 +114,7 @@ const API = {
     READ: (id) => `${ADMIN_BACK_IP}/users/${id}`,
     UPDATE: (id) => `${ADMIN_BACK_IP}/users/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/users/${id}`,
+    UPDATESELF: `${OPEN_BACK_IP}/users/self`,
   },
   ROLES: {
     ROOT: `${ADMIN_BACK_IP}/roles`,
@@ -132,12 +137,21 @@ const API = {
       ROOT: `${OPEN_BACK_IP}/clubs`,
       ALL: `${OPEN_BACK_IP}/clubs`
     },
+    CITIES: {
+      ROOT: `${OPEN_BACK_IP}/cities`,
+      ALL: `${OPEN_BACK_IP}/cities`
+    },
     GAMES: {
       ROOT: `${OPEN_BACK_IP}/games`,
       ALL: `${OPEN_BACK_IP}/games`,
       OM: `${OPEN_BACK_IP}/games/outstanding-match`
     },
     CONTACT: `${BACK_IP}/contact/public`
+  }
+  ,
+  IMAGE: {
+    SAVE: `${BACK_IP}/image/save`,
+    GET: (filename) => `${BACK_IP}/image/get/${filename}`
   }
 };
 

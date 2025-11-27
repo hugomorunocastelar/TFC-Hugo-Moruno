@@ -1,6 +1,6 @@
 package dot.server.open.service;
 
-import dot.server.resources.MatchDefinitions.entity.League;
+import dot.server.data.MatchDefinitions.entity.League;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package dot.server.open.controller;
 
 import dot.server.admin.service.Game.GameService;
-import dot.server.resources.Match.model.dto.GameSummaryDto;
+import dot.server.data.Match.model.dto.GameSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllCoaches } from '../../../../js/cruds/coaches.mjs';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import CoachTable from './partials/CoachTable.jsx';
+import CoachForm from './partials/CoachForm.jsx';
+import '../shared-styles.css';
 
 function Coach() {
   const [coaches, setCoaches] = useState([]);
@@ -27,6 +24,8 @@ function Coach() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(coaches.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -37,19 +36,20 @@ function Coach() {
     setCurrentPage(page);
   };
 
-  // Fetch coaches
-  const fetchCoaches = async () => {
+  const fetchCoaches = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllCoaches()
-      .then((response) => {
-        if (response) setCoaches(response);
-      })
+        .then((response) => { setCoaches(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
-  // Fetch teams for dropdown
   const fetchTeams = async () => {
     try {
       getAllTeams()
@@ -62,7 +62,6 @@ function Coach() {
     }
   };
 
-  // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
       getAllPersons()
@@ -137,7 +136,7 @@ function Coach() {
       } else {
         await post(API.COACH.CREATE, bodyData);
       }
-      await fetchCoaches();
+      await fetchCoaches(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -148,7 +147,7 @@ function Coach() {
     if (!window.confirm('Are you sure you want to delete this coach?')) return;
     try {
       await del(API.COACH.DELETE(id));
-      await fetchCoaches();
+      await fetchCoaches(true);
       if (selectedCoach && selectedCoach.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -156,107 +155,28 @@ function Coach() {
   };
 
   return (
-    <div className='container'>
-      {!formOpen && (<div className='data-table'>
-        <div className='table-header'>
-          <h2>Coaches</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>No License</th>
-              <th>Level License</th>
-              <th>Team</th>
-              <th>Person</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCoaches.map(coach => (
-              <tr key={coach.id}>
-                <td>{coach.noLicense}</td>
-                <td>{coach.lvlLicense}</td>
-                <td>{coach.team ? coach.team.name : ''}</td>
-                <td>{coach.dni ? `${coach.dni.name} ${coach.dni.surnames || ''}` : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(coach)}><EditButton /></button>
-                  <button onClick={() => handleDelete(coach.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {coaches.length === 0 && (
-              <tr>
-                <td colSpan="5">No coaches found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>)}
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Coach' : 'New Coach'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              No License*:
-              <input
-                type="text"
-                name="noLicense"
-                value={formData.noLicense}
-                onChange={handleInputChange}
-                required
-                maxLength={20}
-              />
-            </label>
-            <label>
-              Level License*:
-              <input
-                type="text"
-                name="lvlLicense"
-                value={formData.lvlLicense}
-                onChange={handleInputChange}
-                required
-                maxLength={3}
-              />
-            </label>
-            <label>
-              Team:
-              <select
-                name="teamId"
-                value={formData.teamId}
-                onChange={handleInputChange}
-              >
-                <option value="">None</option>
-                {teams.map(team => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Person:
-              <select
-                name="personId"
-                value={formData.personId}
-                onChange={handleInputChange}
-              >
-                <option value="">None</option>
-                {persons.map(person => (
-                  <option key={person.id} value={person.id}>
-                    {person.name} {person.surnames || ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <CancelButton onClick={closeForm}/>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <CoachForm
+          formData={formData}
+          teams={teams}
+          persons={persons}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <CoachTable
+          currentCoaches={currentCoaches}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

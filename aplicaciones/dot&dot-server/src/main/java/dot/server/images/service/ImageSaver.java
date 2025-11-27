@@ -7,5 +7,5 @@ import java.io.IOException;
 
 @Service
 public interface ImageSaver {
-    public String saveUserImage(String userId, MultipartFile image) throws IOException;
+    String saveUserImage(String userId, MultipartFile image) throws IOException;
 }

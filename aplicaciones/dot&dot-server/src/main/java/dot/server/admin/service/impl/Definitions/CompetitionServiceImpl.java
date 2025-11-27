@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Definitions;
 
 import dot.server.admin.service.Definitions.CompetitionService;
-import dot.server.resources.MatchDefinitions.dao.CompetitionDao;
-import dot.server.resources.MatchDefinitions.dto.CompetitionDto;
-import dot.server.resources.MatchDefinitions.entity.Competition;
+import dot.server.data.MatchDefinitions.dao.CompetitionDao;
+import dot.server.data.MatchDefinitions.dto.CompetitionDto;
+import dot.server.data.MatchDefinitions.entity.Competition;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -13,7 +13,6 @@ import ClubView from "./pages/App/components/clubs/partials/ClubView/ClubView";
 import Contact from "./pages/App/components/contact/Contact";
 import Referee from "./pages/Referee/Referee";
 
-// Admin partials
 import Users from "./pages/Admin/partials/Users/Users";
 import Person from "./pages/Admin/partials/Person/Person";
 import Referees from "./pages/Admin/partials/Referee/Referee";
@@ -35,7 +34,8 @@ import ValidateAccount from "./pages/Login/partials/validate-account/ValidateAcc
 import ForgotPassword from "./pages/Login/partials/forgot-password/ForgotPassword";
 import ResetPassword from "./pages/Login/partials/reset-password/ResetPassword";
 import WelcomeReferee from "./pages/Referee/partials/WelcomeReferee/WelcomeReferee";
-import Profile from "./pages/Profile/Profile";
+import MyGames from "./pages/Referee/partials/MyGames/MyGames";
+import Profile from "./pages/profile/Profile";
 
 function Index() {
   return (
@@ -70,6 +70,7 @@ function Index() {
         <Route path="*" element={<Error />} />
         <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>}>
           <Route path="" element={<WelcomeReferee />} />
+          <Route path="my-games" element={<MyGames />} />
           <Route path="upcoming" element={<p>Upcoming</p>} />
           <Route path="finished" element={<p>Upcoming</p>} />
           <Route path="generate" element={<p>Upcoming</p>} />

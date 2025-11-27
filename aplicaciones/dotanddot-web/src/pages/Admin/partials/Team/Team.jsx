@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
 import { getAllClubs } from '../../../../js/cruds/clubs.mjs';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import TeamTable from './partials/TeamTable.jsx';
+import TeamForm from './partials/TeamForm.jsx';
+import '../shared-styles.css';
 
 function Team() {
   const [teams, setTeams] = useState([]);
@@ -27,6 +24,8 @@ function Team() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(teams.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -37,15 +36,17 @@ function Team() {
     setCurrentPage(page);
   };
 
-  const fetchTeams = async () => {
+  const fetchTeams = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllTeams()
-      .then((response) => {
-        if (response) 
-          setTeams(response);
-      })
+        .then((response) => { setTeams(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -134,7 +135,7 @@ function Team() {
       } else {
         await post(API.TEAM.CREATE, bodyData);
       }
-      await fetchTeams();
+      await fetchTeams(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -145,129 +146,39 @@ function Team() {
     if (!window.confirm('Are you sure you want to delete this team?')) return;
     try {
       await del(API.TEAM.DELETE(id));
-      await fetchTeams();
+      await fetchTeams(true);
       if (selectedTeam && selectedTeam.id === id) closeForm();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const categories = [
-    'U10',
-    'U12',
-    'U14',
-    'U16',
-    'U18',
-    'Senior',
-  ];
+  const categories = [ 'U10', 'U12', 'U14', 'U16', 'U18', 'Senior' ];
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Teams</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Captain</th>
-              <th>Club</th>
-              <th>Category</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentTeams.map(team => (
-              <tr key={team.id}>
-                <td>{team.name}</td>
-                <td>{team.dniCaptain ? `${team.dniCaptain.name} ${team.dniCaptain.surnames || ''}` : ''}</td>
-                <td>{team.idClub ? team.idClub.name : ''}</td>
-                <td>{team.category}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(team)}><EditButton /></button>
-                  <button onClick={() => handleDelete(team.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {teams.length === 0 && (
-              <tr>
-                <td colSpan="5">No teams found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Team' : 'New Team'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              Captain*:
-              <select
-                name="dniCaptainId"
-                value={formData.dniCaptainId}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a captain</option>
-                {persons.map(person => (
-                  <option key={person.id} value={person.id}>
-                    {person.name} {person.surnames || ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Club*:
-              <select
-                name="idClubId"
-                value={formData.idClubId}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a club</option>
-                {clubs.map(club => (
-                  <option key={club.id} value={club.id}>
-                    {club.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Category*:
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a category</option>
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <TeamForm
+          formData={formData}
+          persons={persons}
+          clubs={clubs}
+          categories={categories}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <TeamTable
+          currentTeams={currentTeams}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

@@ -1,10 +1,10 @@
 package dot.server.admin.service.impl.Places;
 
 import dot.server.admin.service.Places.GameplacesService;
-import dot.server.resources.MatchDefinitions.dao.GameplaceDao;
-import dot.server.resources.MatchDefinitions.dto.CityDto;
-import dot.server.resources.MatchDefinitions.dto.GameplaceDto;
-import dot.server.resources.MatchDefinitions.entity.Gameplace;
+import dot.server.data.MatchDefinitions.dao.GameplaceDao;
+import dot.server.data.MatchDefinitions.dto.CityDto;
+import dot.server.data.MatchDefinitions.dto.GameplaceDto;
+import dot.server.data.MatchDefinitions.entity.Gameplace;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

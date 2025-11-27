@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
 import API from '../../../../js/env';
 import { getAllPlayers } from '../../../../js/cruds/players.mjs';
 import { getAllPersons } from '../../../../js/cruds/persons.mjs';
+import Loader from '../../../Loader/Loader.jsx';
+import PlayerTable from './partials/PlayerTable.jsx';
+import PlayerForm from './partials/PlayerForm.jsx';
+import '../shared-styles.css';
 
 function Player() {
   const [players, setPlayers] = useState([]);
@@ -26,6 +23,8 @@ function Player() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(players.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -37,15 +36,17 @@ function Player() {
   };
 
   // Fetch players
-  const fetchPlayers = async () => {
+  const fetchPlayers = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllPlayers()
-      .then((response) => {
-        if (response) 
-          setPlayers(response);
-      })
+        .then((response) => { setPlayers(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -136,7 +137,7 @@ function Player() {
       } else {
         await post(API.PLAYER.CREATE, bodyData);
       }
-      await fetchPlayers();
+      await fetchPlayers(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -147,7 +148,7 @@ function Player() {
     if (!window.confirm('Are you sure you want to delete this player?')) return;
     try {
       await del(API.PLAYER.DELETE(id));
-      await fetchPlayers();
+      await fetchPlayers(true);
       if (selectedPlayer && selectedPlayer.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -155,94 +156,28 @@ function Player() {
   };
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Players</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>No Shirt</th>
-              <th>Team</th>
-              <th>Person</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentPlayers.map(player => (
-              <tr key={player.id}>
-                <td>{player.noShirt}</td>
-                <td>{player.team ? player.team.name : ''}</td>
-                <td>{player.dni ? `${player.dni.name} ${player.dni.surnames || ''}` : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(player)}><EditButton /></button>
-                  <button onClick={() => handleDelete(player.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {players.length === 0 && (
-              <tr>
-                <td colSpan="4">No players found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Player' : 'New Player'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              No Shirt*:
-              <input
-                type="number"
-                name="noShirt"
-                value={formData.noShirt}
-                onChange={handleInputChange}
-                required
-                min={0}
-              />
-            </label>
-            <label>
-              Team:
-              <select
-                name="teamId"
-                value={formData.teamId}
-                onChange={handleInputChange}
-              >
-                <option value="">None</option>
-                {teams.map(team => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Person:
-              <select
-                name="personId"
-                value={formData.personId}
-                onChange={handleInputChange}
-              >
-                <option value="">None</option>
-                {persons.map(person => (
-                  <option key={person.id} value={person.id}>
-                    {person.name} {person.surnames || ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <PlayerForm
+          formData={formData}
+          teams={teams}
+          persons={persons}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <PlayerTable
+          currentPlayers={currentPlayers}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

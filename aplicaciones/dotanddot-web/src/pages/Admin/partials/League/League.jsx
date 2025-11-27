@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllLeagues } from '../../../../js/cruds/leagues.mjs';
 import { getAllCompetitions } from '../../../../js/cruds/competition.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import LeagueTable from './partials/LeagueTable.jsx';
+import LeagueForm from './partials/LeagueForm.jsx';
+import '../shared-styles.css';
 
 function League() {
   const [leagues, setLeagues] = useState([]);
@@ -25,6 +22,8 @@ function League() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(leagues.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -35,14 +34,17 @@ function League() {
     setCurrentPage(page);
   };
 
-  const fetchLeagues = async () => {
+  const fetchLeagues = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllLeagues()
-      .then((response) => {
-        if (response) setLeagues(response);
-      })
+        .then((response) => { setLeagues(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -118,7 +120,7 @@ function League() {
       } else {
         await post(API.LEAGUE.CREATE, bodyData);
       }
-      await fetchLeagues();
+      await fetchLeagues(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -129,125 +131,38 @@ function League() {
     if (!window.confirm('Are you sure you want to delete this league?')) return;
     try {
       await del(API.LEAGUE.DELETE(id));
-      await fetchLeagues();
+      await fetchLeagues(true);
       if (selectedLeague && selectedLeague.id === id) closeForm();
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Example categories - replace with your actual categories or fetch dynamically
-  const categories = [
-    'U10',
-    'U12',
-    'U14',
-    'U16',
-    'U18',
-    'Senior',
-  ];
+  const categories = [ 'U10', 'U12', 'U14', 'U16', 'U18', 'Senior' ];
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Leagues</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Competition</th>
-              <th>Code Prefix</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentLeagues.map(league => (
-              <tr key={league.id}>
-                <td>{league.name}</td>
-                <td>{league.category}</td>
-                <td>{league.competition ? league.competition.name : ''}</td>
-                <td>{league.codePrefix}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(league)}><EditButton /></button>
-                  <button onClick={() => handleDelete(league.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {leagues.length === 0 && (
-              <tr>
-                <td colSpan="5">No leagues found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit League' : 'New League'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              Category*:
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a category</option>
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Competition*:
-              <select
-                name="competitionId"
-                value={formData.competitionId}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a competition</option>
-                {competitions.map(comp => (
-                  <option key={comp.id} value={comp.id}>
-                    {comp.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Code Prefix*:
-              <input
-                type="text"
-                name="codePrefix"
-                value={formData.codePrefix}
-                onChange={handleInputChange}
-                required
-                maxLength={20}
-              />
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <LeagueForm
+          formData={formData}
+          competitions={competitions}
+          categories={categories}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <LeagueTable
+          currentLeagues={currentLeagues}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

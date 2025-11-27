@@ -1,32 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getAllTeams } from '../../../../js/cruds/teams.mjs';
-import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
-import API from '../../../../js/env';
+import { getAllLeagues } from '../../../../js/cruds/leagues.mjs';
+import { getAllCompetitions } from '../../../../js/cruds/competition.mjs';
+import { getAllCities } from '../../../../js/cruds/cities.mjs';
+import { getAllReferees } from '../../../../js/cruds/referees.mjs';
+import { getAllGames, createGame, updateGame, deleteGame } from '../../../../js/cruds/games.mjs';
+import Loader from '../../../Loader/Loader.jsx';
+import GameTable from './partials/GameTable.jsx';
+import GameForm from './partials/GameForm.jsx';
+import '../shared-styles.css';
+import './partials/GameForm.css';
+import './partials/GameTable.css';
 
 function Game() {
     const [games, setGames] = useState([]);
     const [teams, setTeams] = useState([]);
+    const [leagues, setLeagues] = useState([]);
+    const [competitions, setCompetitions] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [referees, setReferees] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [formOpen, setFormOpen] = useState(false);
     const [formData, setFormData] = useState({
         id: null,
-        localId: '',
-        visitantId: '',
+        relevance: 0,
         leagueId: '',
-        gameDate: '',
-        gameTime: '',
-        gameplaceId: '',
-        status: 'pending',
+        category: '',
+        division: '',
+        competitionId: '',
+        cityId: '',
+        date: '',
+        localTeamId: '',
+        visitTeamId: '',
+        principalRefereeId: '',
+        secondaryRefereeId: '',
+        scorerId: '',
+        lineReferee1Id: '',
+        lineReferee2Id: '',
+        lineReferee3Id: '',
+        lineReferee4Id: '',
+        observations: '',
     });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const [loadingData, setLoadingData] = useState(true);
+    const fetchedRef = useRef(false);
 
     const totalPages = Math.ceil(games.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -37,55 +55,90 @@ function Game() {
         setCurrentPage(page);
     };
 
-    const fetchGames = async () => {
+    const fetchGames = async (force = false) => {
         try {
-            // Placeholder for API call to fetch games
-            setGames([]);
+            if (fetchedRef.current && !force) return;
+            fetchedRef.current = true;
+            setLoadingData(true);
+            const data = await getAllGames();
+            setGames(data || []);
+            setLoadingData(false);
         } catch (error) {
-            console.error(error);
+            console.error('Error fetching games:', error);
+            setGames([]);
+            setLoadingData(false);
         }
     };
 
-    const fetchTeams = async () => {
+    const fetchAllData = async () => {
         try {
-            const data = await getAllTeams();
-            setTeams(data || []);
+            const [teamsData, leaguesData, competitionsData, citiesData, refereesData] = await Promise.all([
+                getAllTeams(),
+                getAllLeagues(),
+                getAllCompetitions(),
+                getAllCities(),
+                getAllReferees(),
+            ]);
+            setTeams(teamsData || []);
+            setLeagues(leaguesData || []);
+            setCompetitions(competitionsData || []);
+            setCities(citiesData || []);
+            setReferees(refereesData || []);
         } catch (error) {
-            setTeams([]);
-            console.error(error);
+            console.error('Error fetching data:', error);
         }
     };
 
     useEffect(() => {
         fetchGames();
-        fetchTeams();
+        fetchAllData();
     }, []);
 
     function openFormForCreate() {
         setFormData({
             id: null,
-            localId: '',
-            visitantId: '',
+            relevance: 0,
             leagueId: '',
-            gameDate: '',
-            gameTime: '',
-            gameplaceId: '',
-            status: 'pending',
+            category: '',
+            division: '',
+            competitionId: '',
+            cityId: '',
+            date: '',
+            localTeamId: '',
+            visitTeamId: '',
+            principalRefereeId: '',
+            secondaryRefereeId: '',
+            scorerId: '',
+            lineReferee1Id: '',
+            lineReferee2Id: '',
+            lineReferee3Id: '',
+            lineReferee4Id: '',
+            observations: '',
         });
         setSelectedGame(null);
         setFormOpen(true);
-    };
+    }
 
     const openFormForEdit = (game) => {
         setFormData({
             id: game.id,
-            localId: game.localId || '',
-            visitantId: game.visitantId || '',
-            leagueId: game.leagueId || '',
-            gameDate: game.gameDate || '',
-            gameTime: game.gameTime || '',
-            gameplaceId: game.gameplaceId || '',
-            status: game.status || 'pending',
+            relevance: game.relevance || 0,
+            leagueId: game.league?.id || '',
+            category: game.details?.category || '',
+            division: game.details?.division || '',
+            competitionId: game.details?.competition?.id || '',
+            cityId: game.details?.city?.id || '',
+            date: game.details?.date ? new Date(game.details.date).toISOString().split('T')[0] : '',
+            localTeamId: game.initialSituation?.localTeam?.id || '',
+            visitTeamId: game.initialSituation?.visitTeam?.id || '',
+            principalRefereeId: game.refereeTeam?.principalReferee?.id || '',
+            secondaryRefereeId: game.refereeTeam?.secondaryReferee?.id || '',
+            scorerId: game.refereeTeam?.scorer?.id || '',
+            lineReferee1Id: game.refereeTeam?.lineReferee1?.id || '',
+            lineReferee2Id: game.refereeTeam?.lineReferee2?.id || '',
+            lineReferee3Id: game.refereeTeam?.lineReferee3?.id || '',
+            lineReferee4Id: game.refereeTeam?.lineReferee4?.id || '',
+            observations: game.observation?.observations || '',
         });
         setSelectedGame(game);
         setFormOpen(true);
@@ -94,16 +147,6 @@ function Game() {
     const closeForm = () => {
         setFormOpen(false);
         setSelectedGame(null);
-        setFormData({
-            id: null,
-            localId: '',
-            visitantId: '',
-            leagueId: '',
-            gameDate: '',
-            gameTime: '',
-            gameplaceId: '',
-            status: 'pending',
-        });
     };
 
     const handleInputChange = (e) => {
@@ -115,170 +158,77 @@ function Game() {
         e.preventDefault();
         try {
             const bodyData = {
-                localId: formData.localId,
-                visitantId: formData.visitantId,
-                leagueId: formData.leagueId,
-                gameDate: formData.gameDate,
-                gameTime: formData.gameTime,
-                gameplaceId: formData.gameplaceId,
-                status: formData.status,
+                relevance: parseInt(formData.relevance) || 0,
+                leagueId: formData.leagueId ? parseInt(formData.leagueId) : null,
+                category: formData.category || null,
+                division: formData.division || null,
+                competitionId: formData.competitionId ? parseInt(formData.competitionId) : null,
+                cityId: formData.cityId ? parseInt(formData.cityId) : null,
+                date: formData.date ? new Date(formData.date).toISOString() : null,
+                localTeamId: formData.localTeamId ? parseInt(formData.localTeamId) : null,
+                visitTeamId: formData.visitTeamId ? parseInt(formData.visitTeamId) : null,
+                principalRefereeId: formData.principalRefereeId ? parseInt(formData.principalRefereeId) : null,
+                secondaryRefereeId: formData.secondaryRefereeId ? parseInt(formData.secondaryRefereeId) : null,
+                scorerId: formData.scorerId ? parseInt(formData.scorerId) : null,
+                lineReferee1Id: formData.lineReferee1Id ? parseInt(formData.lineReferee1Id) : null,
+                lineReferee2Id: formData.lineReferee2Id ? parseInt(formData.lineReferee2Id) : null,
+                lineReferee3Id: formData.lineReferee3Id ? parseInt(formData.lineReferee3Id) : null,
+                lineReferee4Id: formData.lineReferee4Id ? parseInt(formData.lineReferee4Id) : null,
+                observations: formData.observations || null,
             };
 
             if (formData.id) {
-                await put(API.GAMES.UPDATE(formData.id), bodyData);
+                await updateGame(formData.id, bodyData);
             } else {
-                await post(API.GAMES.CREATE, bodyData);
+                await createGame(bodyData);
             }
-            await fetchGames();
+            await fetchGames(true);
             closeForm();
         } catch (error) {
-            console.error(error);
+            console.error('Error saving game:', error);
+            alert('Error al guardar el partido. Verifica que todos los campos requeridos estén completos.');
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this game?')) return;
+        if (!window.confirm('¿Estás seguro de que quieres eliminar este partido?')) return;
         try {
-            await del(API.GAMES.DELETE(id));
-            await fetchGames();
+            await deleteGame(id);
+            await fetchGames(true);
             if (selectedGame && selectedGame.id === id) closeForm();
         } catch (error) {
-            console.error(error);
+            console.error('Error deleting game:', error);
+            alert('Error al eliminar el partido.');
         }
     };
 
     return (
-        <div className='container'>
-        {!formOpen && (
-            <div className='data-table'>
-                <div className='table-header'>
-                    <h2>Games</h2>
-                    <button onClick={openFormForCreate}><NewButton /></button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Local</th>
-                            <th>Visitant</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentGames.map(game => (
-                            <tr key={game.id}>
-                                <td>{game.localId}</td>
-                                <td>{game.visitantId}</td>
-                                <td>{game.gameDate}</td>
-                                <td>{game.gameTime}</td>
-                                <td>{game.status}</td>
-                                <td>
-                                    <button onClick={() => openFormForEdit(game)}><EditButton /></button>
-                                    <button onClick={() => handleDelete(game.id)}><DeleteButton /></button>
-                                </td>
-                            </tr>
-                        ))}
-                        {games.length === 0 && (
-                            <tr>
-                                <td colSpan="6">No games found.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-            </div>
-        )}
-
-        {formOpen && (
-            <div className='data-form'>
-                <h2>{formData.id ? 'Edit Game' : 'New Game'}</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        Local*:
-                        <select
-                            name="localId"
-                            value={formData.localId}
-                            onChange={handleInputChange}
-                            required
-                        >
-                            <option value="">Select local team</option>
-                            {teams.filter(team => team.id !== formData.visitantId).map(team => (
-                                <option key={team.id} value={team.id}>{team.name || team.id}</option>
-                            ))}
-                        </select>
-                    </label>
-                    <label>
-                        Visitant*:
-                        <select
-                            name="visitantId"
-                            value={formData.visitantId}
-                            onChange={handleInputChange}
-                            required
-                        >
-                            <option value="">Select visitant team</option>
-                            {teams.filter(team => team.id !== formData.localId).map(team => (
-                                <option key={team.id} value={team.id}>{team.name || team.id}</option>
-                            ))}
-                        </select>
-                    </label>
-                    <label>
-                        League ID:
-                        <input
-                            type="text"
-                            name="leagueId"
-                            value={formData.leagueId}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                    <label>
-                        Game Date*:
-                        <input
-                            type="date"
-                            name="gameDate"
-                            value={formData.gameDate}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </label>
-                    <label>
-                        Game Time:
-                        <input
-                            type="time"
-                            name="gameTime"
-                            value={formData.gameTime}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                    <label>
-                        Gameplace ID:
-                        <input
-                            type="text"
-                            name="gameplaceId"
-                            value={formData.gameplaceId}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                    <label>
-                        Status:
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleInputChange}
-                        >
-                            <option value="pending">Pending</option>
-                            <option value="played">Played</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </label>
-                    <div className='data-form-buttons'>
-                        {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-                        <button type="button" onClick={closeForm}><CancelButton /></button>
-                    </div>
-                </form>
-            </div>
-        )}
+        <div className='admin-container'>
+            {loadingData ? (
+                <Loader />
+            ) : formOpen ? (
+                <GameForm
+                    formData={formData}
+                    teams={teams}
+                    leagues={leagues}
+                    competitions={competitions}
+                    cities={cities}
+                    referees={referees}
+                    onChange={handleInputChange}
+                    onSubmit={handleSubmit}
+                    onCancel={closeForm}
+                />
+            ) : (
+                <GameTable
+                    currentGames={currentGames}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={goToPage}
+                    onNew={openFormForCreate}
+                    onEdit={openFormForEdit}
+                    onDelete={handleDelete}
+                />
+            )}
         </div>
     );
 }

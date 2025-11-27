@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Definitions;
 
 import dot.server.admin.service.Definitions.SeasonService;
-import dot.server.resources.MatchDefinitions.dao.SeasonDao;
-import dot.server.resources.MatchDefinitions.dto.SeasonDto;
-import dot.server.resources.MatchDefinitions.entity.Season;
+import dot.server.data.MatchDefinitions.dao.SeasonDao;
+import dot.server.data.MatchDefinitions.dto.SeasonDto;
+import dot.server.data.MatchDefinitions.entity.Season;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

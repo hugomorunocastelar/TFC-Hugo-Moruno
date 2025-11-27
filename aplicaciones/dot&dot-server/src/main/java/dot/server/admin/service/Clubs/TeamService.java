@@ -1,6 +1,6 @@
 package dot.server.admin.service.Clubs;
 
-import dot.server.resources.Club.dto.TeamDto;
+import dot.server.data.Club.dto.TeamDto;
 
 import java.util.List;
 import java.util.Optional;

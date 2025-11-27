@@ -1,23 +1,23 @@
 package dot.server.admin.service.impl.Persons;
 
 import dot.server.admin.service.Persons.CoachService;
-import dot.server.resources.Club.dao.TeamDao;
-import dot.server.resources.Club.dto.TeamDto;
-import dot.server.resources.Club.entity.Team;
-import dot.server.resources.Person.dao.CoachDao;
-import dot.server.resources.Person.dao.PersonDao;
-import dot.server.resources.Person.dto.CoachDTO;
-import dot.server.resources.Person.dto.PersonDTO;
-import dot.server.resources.Person.entity.Coach;
-import dot.server.resources.Person.entity.Person;
+import dot.server.data.Club.dao.TeamDao;
+import dot.server.data.Club.dto.TeamDto;
+import dot.server.data.Club.entity.Team;
+import dot.server.data.Person.dao.CoachDao;
+import dot.server.data.Person.dao.PersonDao;
+import dot.server.data.Person.dto.CoachDTO;
+import dot.server.data.Person.dto.PersonDTO;
+import dot.server.data.Person.entity.Coach;
+import dot.server.data.Person.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-import static dot.server.resources.Person.dto.CoachDTO.from;
-import static dot.server.resources.Person.dto.CoachDTO.to;
+import static dot.server.data.Person.dto.CoachDTO.from;
+import static dot.server.data.Person.dto.CoachDTO.to;
 
 @Service
 public class CoachServiceImpl implements CoachService {

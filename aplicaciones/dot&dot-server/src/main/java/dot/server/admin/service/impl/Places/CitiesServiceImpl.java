@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Places;
 
 import dot.server.admin.service.Places.CitiesService;
-import dot.server.resources.MatchDefinitions.dao.CityDao;
-import dot.server.resources.MatchDefinitions.dto.CityDto;
-import dot.server.resources.MatchDefinitions.entity.City;
+import dot.server.data.MatchDefinitions.dao.CityDao;
+import dot.server.data.MatchDefinitions.dto.CityDto;
+import dot.server.data.MatchDefinitions.entity.City;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import CityTable from './partials/CityTable.jsx';
+import CityForm from './partials/CityForm.jsx';
+import '../shared-styles.css';
 
 function City() {
   const [cities, setCities] = useState([]);
@@ -20,9 +17,13 @@ function City() {
     region: '',
     firstPC: '',
     lastPC: '',
+    latitude: null,
+    longitude: null,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(cities.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -33,14 +34,20 @@ function City() {
     setCurrentPage(page);
   };
 
-  const fetchCities = async () => {
+  const fetchCities = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllCities()
-      .then((response) => {
-        if (response) setCities(response);
-      })
+        .then((response) => {
+          setCities(response || []);
+          setLoadingData(false);
+        })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -55,13 +62,23 @@ function City() {
       region: '',
       firstPC: '',
       lastPC: '',
+      latitude: null,
+      longitude: null,
     });
     setSelectedCity(null);
     setFormOpen(true);
   };
 
   const openFormForEdit = (city) => {
-    setFormData(city);
+    setFormData({
+      id: city.id,
+      name: city.name,
+      region: city.region,
+      firstPC: city.firstPC,
+      lastPC: city.lastPC,
+      latitude: city.latitude || null,
+      longitude: city.longitude || null,
+    });
     setSelectedCity(city);
     setFormOpen(true);
   };
@@ -75,6 +92,8 @@ function City() {
       region: '',
       firstPC: '',
       lastPC: '',
+      latitude: null,
+      longitude: null,
     });
   };
 
@@ -91,6 +110,8 @@ function City() {
         region: formData.region,
         firstPC: formData.firstPC,
         lastPC: formData.lastPC,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
       };
 
       if (formData.id) {
@@ -98,7 +119,7 @@ function City() {
       } else {
         await post(API.CITIES.CREATE, bodyData);
       }
-      await fetchCities();
+      await fetchCities(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -109,7 +130,7 @@ function City() {
     if (!window.confirm('Are you sure you want to delete this city?')) return;
     try {
       await del(API.CITIES.DELETE(id));
-      await fetchCities();
+      await fetchCities(true);
       if (selectedCity && selectedCity.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -117,97 +138,21 @@ function City() {
   };
 
   return (
-    <div className='container'>
-      {!formOpen && (<div className='data-table'>
-        <div className='table-header'>
-          <h2>Cities</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Region</th>
-              <th>First PC</th>
-              <th>Last PC</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCities.map(city => (
-              <tr key={city.id}>
-                <td>{city.name}</td>
-                <td>{city.region}</td>
-                <td>{city.firstPC}</td>
-                <td>{city.lastPC}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(city)}><EditButton /></button>
-                  <button onClick={() => handleDelete(city.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {cities.length === 0 && (
-              <tr>
-                <td colSpan="5">No cities found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>)}
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit City' : 'New City'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              Region:
-              <input
-                type="text"
-                name="region"
-                value={formData.region}
-                onChange={handleInputChange}
-                maxLength={50}
-              />
-            </label>
-            <label>
-              First PC:
-              <input
-                type="text"
-                name="firstPC"
-                value={formData.firstPC}
-                onChange={handleInputChange}
-                required
-                maxLength={10}
-              />
-            </label>
-            <label>
-              Last PC:
-              <input
-                type="text"
-                name="lastPC"
-                value={formData.lastPC}
-                onChange={handleInputChange}
-                maxLength={10}
-              />
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <CancelButton onClick={closeForm}/>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <CityForm formData={formData} onChange={handleInputChange} onSubmit={handleSubmit} onCancel={closeForm} />
+      ) : (
+        <CityTable
+          currentCities={currentCities}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

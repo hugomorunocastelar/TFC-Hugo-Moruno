@@ -1,8 +1,8 @@
 package dot.server.admin.service.impl.Clubs;
 
 import dot.server.admin.service.Clubs.ClubService;
-import dot.server.resources.Club.dao.ClubDao;
-import dot.server.resources.Club.entity.Club;
+import dot.server.data.Club.dao.ClubDao;
+import dot.server.data.Club.entity.Club;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

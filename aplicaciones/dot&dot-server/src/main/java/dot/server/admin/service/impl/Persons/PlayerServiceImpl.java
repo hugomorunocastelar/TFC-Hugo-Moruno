@@ -1,11 +1,11 @@
 package dot.server.admin.service.impl.Persons;
 
 import dot.server.admin.service.Persons.PlayerService;
-import dot.server.resources.Club.dto.TeamDto;
-import dot.server.resources.Person.dao.PlayerDao;
-import dot.server.resources.Person.dto.PersonDTO;
-import dot.server.resources.Person.dto.PlayerDTO;
-import dot.server.resources.Person.entity.Player;
+import dot.server.data.Club.dto.TeamDto;
+import dot.server.data.Person.dao.PlayerDao;
+import dot.server.data.Person.dto.PersonDTO;
+import dot.server.data.Person.dto.PlayerDTO;
+import dot.server.data.Person.entity.Player;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

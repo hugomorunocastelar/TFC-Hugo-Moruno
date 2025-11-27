@@ -1,11 +1,11 @@
 package dot.server.admin.service.impl.Persons;
 
 import dot.server.admin.service.Persons.RefereeService;
-import dot.server.resources.MatchDefinitions.dto.CityDto;
-import dot.server.resources.Person.dao.RefereeDao;
-import dot.server.resources.Person.dto.PersonDTO;
-import dot.server.resources.Person.dto.RefereeDTO;
-import dot.server.resources.Person.entity.Referee;
+import dot.server.data.MatchDefinitions.dto.CityDto;
+import dot.server.data.Person.dao.RefereeDao;
+import dot.server.data.Person.dto.PersonDTO;
+import dot.server.data.Person.dto.RefereeDTO;
+import dot.server.data.Person.entity.Referee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

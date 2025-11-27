@@ -19,8 +19,6 @@ function ClubView() {
       <div className="clubview-card">
         <h2 className="clubview-title">{club.name}</h2>
         <div className="clubview-details">
-          <p><strong>ID:</strong> {club.id}</p>
-          <p><strong>Nombre:</strong> {club.name}</p>
           <p><strong>Ciudad:</strong> {club.idCity?.name}</p>
         </div>
       </div>

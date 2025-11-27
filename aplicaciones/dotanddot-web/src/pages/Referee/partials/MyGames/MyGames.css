@@ -1,0 +1,223 @@
+.my-games-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.my-games-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.my-games-loading,
+.my-games-error,
+.my-games-empty {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.my-games-error {
+  color: var(--color-error);
+}
+
+.my-games-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.game-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.game-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.game-code {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.game-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-upcoming {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-playing {
+  background: #fff3e0;
+  color: #f57c00;
+  animation: pulse 2s infinite;
+}
+
+.status-finished {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.game-card-body {
+  margin-bottom: 1rem;
+}
+
+.game-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.team-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.team-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.vs {
+  font-weight: bold;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  padding: 0 0.5rem;
+}
+
+.game-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.detail-item svg {
+  flex-shrink: 0;
+}
+
+.game-league {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f0f4ff;
+  border-radius: 6px;
+}
+
+.league-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.league-name {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.game-card-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.game-manage-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.game-manage-btn:hover {
+  background: var(--primary-color-dark);
+  transform: scale(1.02);
+}
+
+.game-manage-btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .my-games-container {
+    padding: 1rem;
+  }
+
+  .my-games-list {
+    grid-template-columns: 1fr;
+  }
+
+  .game-teams {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .vs {
+    transform: rotate(90deg);
+    padding: 0.25rem 0;
+  }
+}

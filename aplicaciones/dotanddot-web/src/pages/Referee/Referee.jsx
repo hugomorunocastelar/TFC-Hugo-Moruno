@@ -7,6 +7,7 @@ function Referee() {
   const navigate = useNavigate();
 
   const pages = {
+    Games: 'my-games',
     Upcoming: 'upcoming',
     Finished: 'finished',
     Generate: 'generate',

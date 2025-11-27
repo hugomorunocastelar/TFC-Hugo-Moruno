@@ -1,6 +1,6 @@
 package dot.server.admin.service.Places;
 
-import dot.server.resources.MatchDefinitions.dto.CityDto;
+import dot.server.data.MatchDefinitions.dto.CityDto;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package dot.server.admin.service.Places;
 
-import dot.server.resources.MatchDefinitions.dto.GameplaceDto;
+import dot.server.data.MatchDefinitions.dto.GameplaceDto;
 
 import java.util.List;
 import java.util.Optional;

@@ -37,9 +37,11 @@ function Contact() {
     setStatus('');
     try {
       const result = await sendContactEmail(form.name, form.email, form.message);
-      if (result) {
+      if (result.status === 200) {
         setStatus('Message sent!');
         setForm({ name: '', email: '', message: '' });
+      } else if (result.status === 503) {
+        setStatus(result.message || 'Service unavailable. Please try again later.');
       } else {
         setStatus('Failed to send. Try again.');
       }

@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllClubs } from '../../../../js/cruds/clubs.mjs';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import ClubsTable from './partials/ClubsTable.jsx';
+import ClubsForm from './partials/ClubsForm.jsx';
+import '../shared-styles.css';
 
 function Clubs() {
   const [clubs, setClubs] = useState([]);
@@ -23,6 +20,8 @@ function Clubs() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(clubs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -33,15 +32,17 @@ function Clubs() {
     setCurrentPage(page);
   };
 
-  // Fetch clubs - replace URL with your API endpoint
-  const fetchClubs = async () => {
+  const fetchClubs = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllClubs()
-      .then((response) => {
-        if (response) setClubs(response);
-      })
+        .then((response) => { setClubs(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -109,7 +110,7 @@ function Clubs() {
       } else {
         await post(API.CLUBS.CREATE, bodyData);
       }
-      await fetchClubs();
+      await fetchClubs(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -120,7 +121,7 @@ function Clubs() {
     if (!window.confirm('Are you sure you want to delete this club?')) return;
     try {
       await del(API.CLUBS.DELETE(id));
-      await fetchClubs();
+      await fetchClubs(true);
       if (selectedClub && selectedClub.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -128,78 +129,21 @@ function Clubs() {
   };
 
   return (
-    <div className='container'>
-      {!formOpen && (<div className='data-table'>
-        <div className='table-header'>
-          <h2>Clubs</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>City</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentClubs.map(club => (
-              <tr key={club.id}>
-                <td>{club.name}</td>
-                <td>{club.idCity?.name || ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(club)}><EditButton /></button>
-                  <button onClick={() => handleDelete(club.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {clubs.length === 0 && (
-              <tr>
-                <td colSpan="3">No clubs found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>)}
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Club' : 'New Club'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              City*:
-              <select
-                name="idCity"
-                value={formData.idCity}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a city</option>
-                {cities.map(city => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <CancelButton onClick={closeForm}/>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <ClubsForm formData={formData} cities={cities} onChange={handleInputChange} onSubmit={handleSubmit} onCancel={closeForm} />
+      ) : (
+        <ClubsTable
+          currentClubs={currentClubs}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

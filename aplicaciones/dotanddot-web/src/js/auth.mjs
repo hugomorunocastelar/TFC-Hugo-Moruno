@@ -144,3 +144,16 @@ export async function resetPassword(token, password, passwordRepeat) {
     return false;
   }
 }
+
+export async function updateSelfUser(body) {
+  try {
+    const response = await http.put(API.USERS.UPDATESELF, body);
+    if (!response.ok) {
+      throw new Error('Update user failed');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Update self user error:', error);
+    return false;
+  }
+}

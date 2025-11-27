@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Places;
 
 import dot.server.admin.service.Places.CitiesService;
-import dot.server.resources.MatchDefinitions.dto.CityDto;
+import dot.server.data.MatchDefinitions.dto.CityDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

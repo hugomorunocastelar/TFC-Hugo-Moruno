@@ -54,12 +54,12 @@ public class UserController {
             @PathVariable Long id,
             @Valid @RequestBody UserDto userDto
     ) {
-        var password = userDto.getPassword();
-        userDto.setPassword(passwordEncoder.encode(password));
-        var updated = serv.update(id, UserDto.from(userDto));
-        if (updated == null) {
-            return ResponseEntity.badRequest().build();
+        if (userDto.getPassword() != null) {
+            var password = userDto.getPassword();
+            userDto.setPassword(passwordEncoder.encode(password));
         }
+        var updated = serv.update(id, UserDto.from(userDto));
+        if (updated == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(UserDto.to(updated));
     }
 

@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Clubs;
 
 import dot.server.admin.service.Clubs.TeamService;
-import dot.server.resources.Club.dto.TeamDto;
+import dot.server.data.Club.dto.TeamDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

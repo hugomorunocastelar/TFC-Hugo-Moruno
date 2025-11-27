@@ -8,20 +8,28 @@ function Admin() {
   const navigate = useNavigate();
 
   const pages = {
-    Person: 'person',
-    Referee: 'referee',
-    Coach: 'coach',
-    Player: 'player',
-    User: 'users',
-    Role: 'roles',
-    Club: 'clubs',
-    City: 'city',
-    League: 'league',
-    Competition: 'competition',
-    Team: 'team',
-    Gameplace: 'gameplace',
-    Season: 'seasons',
-    Game: 'game'
+    Data: {
+      Person: 'person',
+      Referee: 'referee',
+      Coach: 'coach',
+      Player: 'player',
+    },
+
+    Auth: {
+      User: 'users',
+      Role: 'roles',
+    },
+
+    Organization: {
+      Game: 'game',
+      Team: 'team',
+      Club: 'clubs',
+      Gameplace: 'gameplace',
+      City: 'city',
+      League: 'league',
+      Season: 'seasons',
+      Competition: 'competition',
+    }
   };
 
   function goto(route) {
@@ -47,14 +55,19 @@ function Admin() {
       <div className='AP-Body'>
         <aside className='AP-Aside'>
           <nav className='AP-Aside-Nav'>
-            {Object.entries(pages).map(([label, route]) => (
-              <button
-                key={route}
-                className='AP-Aside-Button'
-                onClick={() => goto(route)}
-              >
-                {label}
-              </button>
+            {Object.entries(pages).map(([groupName, groupPages]) => (
+              <div key={groupName} className="AP-Aside-Group">
+                <h3 className="AP-Aside-Group-Title">{groupName}</h3>
+                {Object.entries(groupPages).map(([label, route]) => (
+                  <button
+                    key={route}
+                    className='AP-Aside-Button'
+                    onClick={() => goto(route)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             ))}
           </nav>
         </aside>

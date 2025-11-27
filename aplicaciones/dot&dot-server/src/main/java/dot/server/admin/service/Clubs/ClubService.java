@@ -1,7 +1,7 @@
 package dot.server.admin.service.Clubs;
 
 
-import dot.server.resources.Club.entity.Club;
+import dot.server.data.Club.entity.Club;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

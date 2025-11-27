@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface ImageGetter {
-    public Resource getUserImage(String userId, String filename);
-    public List<String> listUserImages(String userId);
-    public List<String> listAllImages();
+    Resource getUserImage(String userId, String filename);
+    List<String> listUserImages(String userId);
+    List<String> listAllImages();
 }

@@ -1,6 +1,6 @@
 package dot.server.admin.service.Definitions;
 
-import dot.server.resources.MatchDefinitions.dto.SeasonDto;
+import dot.server.data.MatchDefinitions.dto.SeasonDto;
 
 import java.util.List;
 import java.util.Optional;

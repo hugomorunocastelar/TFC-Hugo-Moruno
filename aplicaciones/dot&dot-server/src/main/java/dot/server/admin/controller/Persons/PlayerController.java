@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Persons;
 
 import dot.server.admin.service.Persons.PlayerService;
-import dot.server.resources.Person.dto.PlayerDTO;
+import dot.server.data.Person.dto.PlayerDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

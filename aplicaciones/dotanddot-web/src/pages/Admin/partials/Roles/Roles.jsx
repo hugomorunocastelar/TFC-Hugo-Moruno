@@ -9,6 +9,7 @@ import CancelButton from '../../components/buttons/cancel/CancelButton';
 import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllRoles } from '../../../../js/cruds/roles.mjs';
 import API from '../../../../js/env';
+import '../shared-styles.css';
 
 function Roles() {
   const [roles, setRoles] = useState([]);
@@ -106,14 +107,15 @@ function Roles() {
   };
 
   return (
-    <div className='container'>
+    <div className='admin-container'>
       {!formOpen && (
-        <div className='data-table'>
-          <div className='table-header'>
+        <div className='admin-table-container'>
+          <div className='admin-table-header'>
             <h2>Roles</h2>
-            <button onClick={openFormForCreate}><NewButton /></button>
+            <NewButton onClick={openFormForCreate} />
           </div>
-          <table>
+          <div className='admin-table-wrapper'>
+            <table className='admin-table'>
             <thead>
               <tr>
                 <th>Name</th>
@@ -125,39 +127,48 @@ function Roles() {
                 <tr key={role.id}>
                   <td>{role.name}</td>
                   <td>
-                    <button onClick={() => openFormForEdit(role)}><EditButton /></button>
-                    <button onClick={() => handleDelete(role.id)}><DeleteButton /></button>
+                    <div className='admin-table-actions'>
+                      <EditButton onClick={() => openFormForEdit(role)} />
+                      <DeleteButton onClick={() => handleDelete(role.id)} />
+                    </div>
                   </td>
                 </tr>
               ))}
               {roles.length === 0 && (
                 <tr>
-                  <td colSpan="2">No roles found.</td>
+                  <td colSpan="2" className='admin-no-data'>No roles found.</td>
                 </tr>
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
           <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
         </div>
       )}
 
       {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Role' : 'New Role'}</h2>
+        <div className='admin-form-container'>
+          <div className='admin-form-header'>
+            <h2>{formData.id ? 'Edit Role' : 'New Role'}</h2>
+          </div>
           <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={20}
-                disabled={!!formData.id}
-              />
-            </label>
-            <div className='data-form-buttons'>
+            <div className='admin-form-section'>
+              <div className='admin-form-grid'>
+                <label>
+                  <span>Name*</span>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    maxLength={20}
+                    disabled={!!formData.id}
+                  />
+                </label>
+              </div>
+            </div>
+            <div className='admin-form-buttons'>
               {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
               <CancelButton onClick={closeForm}/>
             </div>

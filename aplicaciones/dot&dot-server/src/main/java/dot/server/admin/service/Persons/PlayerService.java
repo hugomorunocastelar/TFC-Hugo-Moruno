@@ -1,6 +1,6 @@
 package dot.server.admin.service.Persons;
 
-import dot.server.resources.Person.dto.PlayerDTO;
+import dot.server.data.Person.dto.PlayerDTO;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllSeasons } from '../../../../js/cruds/seasons.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import SeasonsTable from './partials/SeasonsTable.jsx';
+import SeasonsForm from './partials/SeasonsForm.jsx';
+import '../shared-styles.css';
 
 function Seasons() {
   const [seasons, setSeasons] = useState([]);
@@ -22,6 +19,8 @@ function Seasons() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(seasons.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -32,15 +31,17 @@ function Seasons() {
     setCurrentPage(page);
   };
 
-  // Fetch seasons
-  const fetchSeasons = async () => {
+  const fetchSeasons = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllSeasons()
-      .then((response) => {
-        if (response) setSeasons(response);
-      })
+        .then((response) => { setSeasons(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -100,7 +101,7 @@ function Seasons() {
       } else {
         await post(API.SEASONS.CREATE, bodyData);
       }
-      await fetchSeasons();
+      await fetchSeasons(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -111,7 +112,7 @@ function Seasons() {
     if (!window.confirm('Are you sure you want to delete this season?')) return;
     try {
       await del(API.SEASONS.DELETE(id));
-      await fetchSeasons();
+      await fetchSeasons(true);
       if (selectedSeason && selectedSeason.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -119,84 +120,26 @@ function Seasons() {
   };
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Seasons</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentSeasons.map(season => (
-              <tr key={season.id}>
-                <td>{season.name}</td>
-                <td>{season.startDate ? season.startDate.substring(0,10) : ''}</td>
-                <td>{season.endDate ? season.endDate.substring(0,10) : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(season)}><EditButton /></button>
-                  <button onClick={() => handleDelete(season.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {seasons.length === 0 && (
-              <tr>
-                <td colSpan="4">No seasons found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Season' : 'New Season'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={100}
-              />
-            </label>
-            <label>
-              Start Date*:
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              End Date*:
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <SeasonsForm
+          formData={formData}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <SeasonsTable
+          currentSeasons={currentSeasons}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

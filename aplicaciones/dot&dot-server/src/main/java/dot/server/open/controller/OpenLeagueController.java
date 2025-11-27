@@ -1,7 +1,7 @@
 package dot.server.open.controller;
 
 import dot.server.open.service.OpenLeagueService;
-import dot.server.resources.MatchDefinitions.entity.League;
+import dot.server.data.MatchDefinitions.entity.League;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

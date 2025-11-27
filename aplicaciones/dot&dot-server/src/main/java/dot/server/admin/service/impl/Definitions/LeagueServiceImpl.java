@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Definitions;
 
 import dot.server.admin.service.Definitions.LeagueService;
-import dot.server.resources.MatchDefinitions.dao.LeagueDao;
-import dot.server.resources.MatchDefinitions.dto.LeagueDto;
-import dot.server.resources.MatchDefinitions.entity.League;
+import dot.server.data.MatchDefinitions.dao.LeagueDao;
+import dot.server.data.MatchDefinitions.dto.LeagueDto;
+import dot.server.data.MatchDefinitions.entity.League;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

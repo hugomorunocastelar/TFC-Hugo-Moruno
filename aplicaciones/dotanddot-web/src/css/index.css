@@ -1,12 +1,27 @@
 @import url("./colors.css");
 
+@font-face {
+  font-family: 'Nexa';
+  src: url('/font/Nexa-ExtraLight.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nexa';
+  src: url('/font/Nexa-Heavy.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
 
   & * {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Nexa', sans-serif;
   }
 }
 

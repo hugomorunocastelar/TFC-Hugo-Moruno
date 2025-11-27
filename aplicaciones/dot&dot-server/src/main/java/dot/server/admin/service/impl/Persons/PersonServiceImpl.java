@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Persons;
 
 import dot.server.admin.service.Persons.PersonService;
-import dot.server.resources.Person.dao.PersonDao;
-import dot.server.resources.Person.dto.PersonDTO;
-import dot.server.resources.Person.entity.Person;
+import dot.server.data.Person.dao.PersonDao;
+import dot.server.data.Person.dto.PersonDTO;
+import dot.server.data.Person.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

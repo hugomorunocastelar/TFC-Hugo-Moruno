@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Definitions;
 
 import dot.server.admin.service.Definitions.CompetitionService;
-import dot.server.resources.MatchDefinitions.dto.CompetitionDto;
+import dot.server.data.MatchDefinitions.dto.CompetitionDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

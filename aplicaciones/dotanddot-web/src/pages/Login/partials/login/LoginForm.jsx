@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import "./LoginForm.css";
 import { login } from '../../../../js/auth.mjs';
+import { getProfilePic} from '../../../../js/images/images.mjs';
+import { getSession, saveSession } from '../../../../js/session.mjs';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
@@ -19,12 +21,20 @@ function LoginForm() {
       setErrorMessage("All data is obligatory.");
     } else {
       login(formData.user, formData.password)
-      .then((response) => {
-        console.log("Login response:", response);
+      .then(async (response) => {
         switch(response.status) {
-          case 200:
+          case 200: {
+            const session = getSession();
+            if (session?.token) {
+              const profilePicUrl = await getProfilePic();
+              if (profilePicUrl) {
+                const updatedSession = { ...session, avatar: profilePicUrl };
+                saveSession(updatedSession);
+              }
+            }
             navigate('/');
             break;
+          }
           case 401:
             setFormData({ user: "", password: "" });
             setErrorMessage("Unauthorized: user disabled.\nContact with support.");

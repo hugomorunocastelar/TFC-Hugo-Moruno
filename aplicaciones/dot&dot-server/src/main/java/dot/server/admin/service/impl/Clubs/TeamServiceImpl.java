@@ -1,9 +1,9 @@
 package dot.server.admin.service.impl.Clubs;
 
 import dot.server.admin.service.Clubs.TeamService;
-import dot.server.resources.Club.dao.TeamDao;
-import dot.server.resources.Club.dto.TeamDto;
-import dot.server.resources.Club.entity.Team;
+import dot.server.data.Club.dao.TeamDao;
+import dot.server.data.Club.dto.TeamDto;
+import dot.server.data.Club.entity.Team;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

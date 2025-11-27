@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllCities } from '../../../../js/cruds/cities.mjs';
 import { getAllGameplaces } from '../../../../js/cruds/gameplaces.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import GameplaceTable from './partials/GameplaceTable.jsx';
+import GameplaceForm from './partials/GameplaceForm.jsx';
+import '../shared-styles.css';
 
 function Gameplace() {
   const [gameplaces, setGameplaces] = useState([]);
@@ -25,6 +22,8 @@ function Gameplace() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(gameplaces.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -35,19 +34,20 @@ function Gameplace() {
     setCurrentPage(page);
   };
 
-  // Fetch gameplaces
-  const fetchGameplaces = async () => {
+  const fetchGameplaces = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllGameplaces()
-      .then((response) => {
-        if (response) setGameplaces(response);
-      })
+        .then((response) => { setGameplaces(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
-  // Fetch cities for dropdown
   const fetchCities = async () => {
     try {
       getAllCities()
@@ -123,7 +123,7 @@ function Gameplace() {
       } else {
         await post(API.GAMEPLACE.CREATE, bodyData);
       }
-      await fetchGameplaces();
+      await fetchGameplaces(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -134,7 +134,7 @@ function Gameplace() {
     if (!window.confirm('Are you sure you want to delete this gameplace?')) return;
     try {
       await del(API.GAMEPLACE.DELETE(id));
-      await fetchGameplaces();
+      await fetchGameplaces(true);
       if (selectedGameplace && selectedGameplace.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -142,104 +142,27 @@ function Gameplace() {
   };
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Gameplaces</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Gamefields</th>
-              <th>Address</th>
-              <th>City</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentGameplaces.map(gp => (
-              <tr key={gp.id}>
-                <td>{gp.name}</td>
-                <td>{gp.gamefields}</td>
-                <td>{gp.address}</td>
-                <td>{gp.idCity ? gp.idCity.name : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(gp)}><EditButton /></button>
-                  <button onClick={() => handleDelete(gp.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {gameplaces.length === 0 && (
-              <tr>
-                <td colSpan="5">No gameplaces found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Gameplace' : 'New Gameplace'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              Gamefields*:
-              <input
-                type="number"
-                name="gamefields"
-                value={formData.gamefields}
-                onChange={handleInputChange}
-                min={1}
-                required
-              />
-            </label>
-            <label>
-              Address*:
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                required
-                maxLength={100}
-              />
-            </label>
-            <label>
-              City*:
-              <select
-                name="idCity"
-                value={formData.idCity}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a city</option>
-                {cities.map(city => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <GameplaceForm
+          formData={formData}
+          cities={cities}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <GameplaceTable
+          currentGameplaces={currentGameplaces}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

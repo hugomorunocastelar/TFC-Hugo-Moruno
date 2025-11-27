@@ -12,6 +12,8 @@ public interface UserService {
 
     User findById(Long id);
 
+    User findByUsername(String username);
+
     List<User> findAll();
 
     User update(Long id, User user);

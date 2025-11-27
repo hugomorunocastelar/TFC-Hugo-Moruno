@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Persons;
 
 import dot.server.admin.service.Persons.CoachService;
-import dot.server.resources.Person.dto.CoachDTO;
+import dot.server.data.Person.dto.CoachDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

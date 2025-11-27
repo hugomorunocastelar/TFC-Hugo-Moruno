@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Places;
 
 import dot.server.admin.service.Places.GameplacesService;
-import dot.server.resources.MatchDefinitions.dto.GameplaceDto;
+import dot.server.data.MatchDefinitions.dto.GameplaceDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

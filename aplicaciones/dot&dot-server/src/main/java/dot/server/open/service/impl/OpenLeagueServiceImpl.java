@@ -1,8 +1,8 @@
 package dot.server.open.service.impl;
 
 import dot.server.open.service.OpenLeagueService;
-import dot.server.resources.MatchDefinitions.dao.LeagueDao;
-import dot.server.resources.MatchDefinitions.entity.League;
+import dot.server.data.MatchDefinitions.dao.LeagueDao;
+import dot.server.data.MatchDefinitions.entity.League;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

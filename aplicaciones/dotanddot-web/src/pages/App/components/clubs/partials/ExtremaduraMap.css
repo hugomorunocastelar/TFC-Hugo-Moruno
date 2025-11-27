@@ -1,0 +1,74 @@
+.extremadura-map-container {
+  width: 100%;
+  margin: 0 auto;
+  max-height: 800px;
+  overflow: hidden;
+}
+
+.extremadura-map-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.extremadura-map-loading {
+  text-align: center;
+  padding: 2rem;
+}
+
+.extremadura-map-svg {
+  width: 100%;
+  height: auto;
+}
+
+.extremadura-map-legend {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.extremadura-map-legend p {
+  margin: 0;
+}
+
+.city-marker {
+  cursor: pointer;
+}
+
+.city-marker-text {
+  font-family: system-ui;
+  fill: #333;
+  pointer-events: none;
+}
+
+.club-item {
+  cursor: pointer;
+}
+
+.club-item-background {
+  fill: rgba(255, 255, 255, 0.85);
+}
+
+.club-item-circle {
+  fill: #4A90E2;
+  stroke: #fff;
+}
+
+.club-item-text {
+  font-family: system-ui;
+  fill: #333;
+  cursor: pointer;
+}
+
+.geography-default {
+  outline: none;
+}
+
+.geography-hover {
+  fill: #D8D8D8;
+  outline: none;
+}
+
+.geography-pressed {
+  outline: none;
+}

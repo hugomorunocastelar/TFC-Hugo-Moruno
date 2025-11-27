@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Definitions;
 
 import dot.server.admin.service.Definitions.SeasonService;
-import dot.server.resources.MatchDefinitions.dto.SeasonDto;
+import dot.server.data.MatchDefinitions.dto.SeasonDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

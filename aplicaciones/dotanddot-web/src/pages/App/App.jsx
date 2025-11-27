@@ -3,10 +3,11 @@ import './App.css'
 import Logo from '../../components/Logo/Logo'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import * as session from "../../js/session.mjs";
-import Profile from '../Profile/Profile';
 import { validateSession } from '../../js/auth.mjs';
 
 function App() {
+
+  const sessionUser = session.getSession();
 
   const [selectedOption, setSelectedOption] = useState('home');
   const [isLogged, setLogged] = useState(false);
@@ -14,7 +15,6 @@ function App() {
   const [isReferee, setReferee] = useState(false);
   const [username, setUsername] = useState();
   const [user, setUser] = useState({});
-  const [pfp, setPfp] = useState();
   
   const navigate = useNavigate();
   
@@ -73,8 +73,8 @@ function App() {
                   (
                     <button onClick={() => navigate('/profile')} className='LoggedButton'>
                       <p>{username.toUpperCase()}</p>
-                      {pfp ? (
-                        <img src={pfp} alt="Profile Picture" className="profile-pic" />
+                      {sessionUser.avatar ? (
+                        <img src={sessionUser.avatar} alt="Profile Picture" className="profile-pic" />
                       ) : (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>

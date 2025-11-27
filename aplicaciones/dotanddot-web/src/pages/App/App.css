@@ -175,6 +175,9 @@
   padding: 20px 0;
   background-color: var(--color-palette-green-0);
 
+  &:has(.form-wrapper) {
+    background-color: transparent;
+  }
 }
 
 .HP-Footer {

@@ -1,6 +1,6 @@
 package dot.server.admin.service.Definitions;
 
-import dot.server.resources.MatchDefinitions.dto.LeagueDto;
+import dot.server.data.MatchDefinitions.dto.LeagueDto;
 
 import java.util.List;
 

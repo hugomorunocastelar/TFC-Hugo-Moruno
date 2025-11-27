@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllUsers } from '../../../../js/cruds/users.mjs';
 import { getAllRoles } from '../../../../js/cruds/roles.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import UsersTable from './partials/UsersTable.jsx';
+import UsersForm from './partials/UsersForm.jsx';
+import '../shared-styles.css';
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -25,15 +22,20 @@ function Users() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllUsers()
-      .then((response) => {
-        if (response) setUsers(response);
-      })
+        .then((response) => { setUsers(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -119,7 +121,7 @@ function Users() {
       } else {
         await post(API.USERS.CREATE, bodyData);
       }
-      await fetchUsers();
+      await fetchUsers(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -130,7 +132,7 @@ function Users() {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
       await del(API.USERS.DELETE(id));
-      await fetchUsers();
+      await fetchUsers(true);
       if (selectedUser && selectedUser.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -147,105 +149,29 @@ function Users() {
   };
 
   return (
-    <div className='container'>
-      <div className='data-table'>
-        <div className='table-header'>
-          <h2>Users</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Roles</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map(user => (
-              <tr key={user.id}>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>{user.roles ? user.roles.map(r => r.name).join(', ') : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(user)}><EditButton /></button>
-                  <button onClick={() => handleDelete(user.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan="4">No users found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit User' : 'New User'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Username*:
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-                disabled={!!formData.id}
-              />
-            </label>
-            <label>
-              Email*:
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                maxLength={150}
-              />
-            </label>
-            <label>
-              Password{formData.id ? ' (leave blank to keep current)' : '*'}:
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                {...(!formData.id && { required: true })}
-                maxLength={120}
-              />
-            </label>
-            <label>
-              Roles*:
-              <select
-                name="roles"
-                multiple
-                value={formData.roles}
-                onChange={handleInputChange}
-                required
-              >
-                {roles.map(role => (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <button type="button" onClick={closeForm}><CancelButton /></button>
-            </div>
-          </form>
-        </div>
-      )}
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : !formOpen ? (
+          <UsersTable
+            currentUsers={currentUsers}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={goToPage}
+            onNew={openFormForCreate}
+            onEdit={openFormForEdit}
+            onDelete={handleDelete}
+          />
+      ) : (
+            <UsersForm
+              formData={formData}
+              roles={roles}
+              onChange={handleInputChange}
+              onSubmit={handleSubmit}
+              onCancel={closeForm}
+            />
+          )
+      }
     </div>
   );
 }

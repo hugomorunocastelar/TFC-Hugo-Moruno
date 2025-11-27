@@ -1,8 +1,10 @@
 package dot.server.admin.service.Game;
 
 
-import dot.server.resources.Match.model.dto.GameDto;
-import dot.server.resources.Match.model.dto.GameSummaryDto;
+import dot.server.data.Match.model.dto.GameDto;
+import dot.server.data.Match.model.dto.GameSummaryDto;
+import dot.server.data.Match.model.dto.request.CreateGameRequest;
+import dot.server.data.Match.model.dto.request.UpdateGameRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +19,12 @@ public interface GameService {
     GameSummaryDto getOutstandingMatch();
 
     Optional<GameDto> findById(Long id);
+    
+    Optional<GameDto> findByUniqueCode(String uniqueCode);
 
-    GameDto create(GameDto gameDto);
+    GameDto create(CreateGameRequest request);
 
-    Optional<GameDto> update(Long id, GameDto gameDto);
+    Optional<GameDto> update(Long id, UpdateGameRequest request);
 
     boolean delete(Long id);
 }

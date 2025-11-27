@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import "./Clubs.css";
-import ClubsTable from './partials/ClubsTable';
+import ExtremaduraMap from './partials/ExtremaduraMap.jsx';
 import { getPublic } from '../../../../js/http';
 import API from '../../../../js/env';
 
@@ -19,11 +18,12 @@ function Clubs() {
     }).then((data) => {
       setClubs(data);
     })
+    .catch(error => console.error('Error fetching clubs:', error));
   }, []);
 
   return (
     <div>
-      <ClubsTable clubs={clubs} />
+      <ExtremaduraMap clubs={clubs} />
     </div>
   )
 }

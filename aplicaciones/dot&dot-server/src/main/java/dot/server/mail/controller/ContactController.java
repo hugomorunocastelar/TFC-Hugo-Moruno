@@ -34,9 +34,9 @@ public class ContactController {
             @RequestBody ContactForm form,
             @RequestHeader("Authorization") String token
     ) {
-        String username = jwtUtils.getUserNameFromJwtToken(token);
+        String username = jwtUtils.getUserNameFromJwtToken(token.replace("Bearer ", ""));
         if (messages.containsKey(username)) {
-            if(messages.get(username).isBefore(LocalDateTime.now().minusMinutes(10)))
+            if(messages.get(username).isAfter(LocalDateTime.now().minusMinutes(10)))
                 return ResponseEntity.ok(new HttpResponse(
                     HttpStatus.SERVICE_UNAVAILABLE,
                     "Espera 10 minutos para enviar otro mensaje")

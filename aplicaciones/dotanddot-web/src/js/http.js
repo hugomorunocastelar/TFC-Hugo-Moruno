@@ -35,7 +35,7 @@ export function get(URL) {
   });
 }
 
-export function post(URL, body = {}) {
+export function post(URL, body = {}, stringify = true) {
 
   if (session.getSession() == null) throw new Error('No Session found');
 
@@ -47,7 +47,23 @@ export function post(URL, body = {}) {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(body)
+    body: stringify ? JSON.stringify(body) : body
+  })
+}
+
+export function postImage(URL, body = {}) {
+
+  if (session.getSession() == null) throw new Error('No Session found');
+
+  const token = session.getSession().token;
+
+  return fetch(URL, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      // "Content-Type": "multipart/form-data"
+    },
+    body: body
   })
 }
 

@@ -56,14 +56,28 @@
     
     &:nth-child(1) p {
       font-size: 16px ;
+      width: fit-content;
     }
     
-    &:nth-child(2) {
-      width: 80%;
-      
+    &:nth-child(2) {      
       & p {
         text-align: end;
       }
     } 
+
+    &:nth-child(3) p {
+      font-size: 16px ;
+      width: fit-content;
+      align-self: flex-end;
+    }
+
+    .time {
+      display: flex;
+      justify-content: end;
+      gap: 16px;
+      p {
+        font-size: 14px !important;
+      }
+    }
   }
 }

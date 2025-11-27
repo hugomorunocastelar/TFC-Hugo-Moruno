@@ -29,8 +29,8 @@ function NextMatches() {
                 </td>
                 <td>
                   <div className='time'>
-                    <p>{`${new Date(elem.result.timeStart).getUTCDate()}-${new Date(elem.result.timeStart).getUTCMonth()}-${new Date(elem.result.timeStart).getUTCFullYear()}`}</p>
                     <p>{`${new Date(elem.result.timeStart).getUTCHours()}:${new Date(elem.result.timeStart).getUTCMinutes() == 0 ? '00' : new Date(elem.result.timeStart).getUTCMinutes()}`}</p>
+                    <p>{`${new Date(elem.result.timeStart).getUTCDate()}-${new Date(elem.result.timeStart).getUTCMonth()}-${new Date(elem.result.timeStart).getUTCFullYear()}`}</p>
                   </div>
                 </td>
               </tr>

@@ -1,6 +1,6 @@
 package dot.server.admin.service.Persons;
 
-import dot.server.resources.Person.dto.CoachDTO;
+import dot.server.data.Person.dto.CoachDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

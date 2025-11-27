@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Persons;
 
 import dot.server.admin.service.Persons.RefereeService;
-import dot.server.resources.Person.dto.RefereeDTO;
+import dot.server.data.Person.dto.RefereeDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

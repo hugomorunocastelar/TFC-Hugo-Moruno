@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
-import NewButton from '../../components/buttons/new/NewButton';
-import EditButton from '../../components/buttons/edit/EditButton';
-import DeleteButton from '../../components/buttons/delete/DeleteButton';
-import CreateButton from '../../components/buttons/create/CreateButton';
-import UpdateButton from '../../components/buttons/update/UpdateButton';
-import CancelButton from '../../components/buttons/cancel/CancelButton';
-import Paginator from '../../../../components/Paginator/Paginator';
 import { getAllCompetitions } from '../../../../js/cruds/competition.mjs';
 import API from '../../../../js/env';
+import Loader from '../../../Loader/Loader.jsx';
+import CompetitionTable from './partials/CompetitionTable.jsx';
+import CompetitionForm from './partials/CompetitionForm.jsx';
+import '../shared-styles.css';
 
 function Competition() {
   const [competitions, setCompetitions] = useState([]);
@@ -22,6 +19,8 @@ function Competition() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingData, setLoadingData] = useState(true);
+  const fetchedRef = useRef(false);
 
   const totalPages = Math.ceil(competitions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -32,14 +31,17 @@ function Competition() {
     setCurrentPage(page);
   };
 
-  const fetchCompetitions = async () => {
+  const fetchCompetitions = async (force = false) => {
     try {
+      if (fetchedRef.current && !force) return;
+      fetchedRef.current = true;
+      setLoadingData(true);
       getAllCompetitions()
-      .then((response) => {
-        if (response) setCompetitions(response);
-      })
+        .then((response) => { setCompetitions(response || []); setLoadingData(false); })
+        .catch((e) => { console.error(e); setLoadingData(false); });
     } catch (error) {
       console.error(error);
+      setLoadingData(false);
     }
   };
 
@@ -102,7 +104,7 @@ function Competition() {
       } else {
         await post(API.COMPETITION.CREATE, bodyData);
       }
-      await fetchCompetitions();
+      await fetchCompetitions(true);
       closeForm();
     } catch (error) {
       console.error(error);
@@ -113,7 +115,7 @@ function Competition() {
     if (!window.confirm('Are you sure you want to delete this competition?')) return;
     try {
       await del(API.COMPETITION.DELETE(id));
-      await fetchCompetitions();
+      await fetchCompetitions(true);
       if (selectedCompetition && selectedCompetition.id === id) closeForm();
     } catch (error) {
       console.error(error);
@@ -121,84 +123,26 @@ function Competition() {
   };
 
   return (
-    <div className='container'>
-      {!formOpen && (<div className='data-table'>
-        <div className='table-header'>
-          <h2>Competitions</h2>
-          <button onClick={openFormForCreate}><NewButton /></button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCompetitions.map(comp => (
-              <tr key={comp.id}>
-                <td>{comp.name}</td>
-                <td>{comp.dayStart ? comp.dayStart.split('T')[0] : ''}</td>
-                <td>{comp.dayEnd ? comp.dayEnd.split('T')[0] : ''}</td>
-                <td>
-                  <button onClick={() => openFormForEdit(comp)}><EditButton /></button>
-                  <button onClick={() => handleDelete(comp.id)}><DeleteButton /></button>
-                </td>
-              </tr>
-            ))}
-            {competitions.length === 0 && (
-              <tr>
-                <td colSpan="4">No competitions found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <Paginator currentPage={currentPage} totalPages={totalPages} onPageChange={goToPage} />
-      </div>)}
-
-      {formOpen && (
-        <div className='data-form'>
-          <h2>{formData.id ? 'Edit Competition' : 'New Competition'}</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name*:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                maxLength={50}
-              />
-            </label>
-            <label>
-              Start Date*:
-              <input
-                type="date"
-                name="dayStart"
-                value={formData.dayStart}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              End Date*:
-              <input
-                type="date"
-                name="dayEnd"
-                value={formData.dayEnd}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <div className='data-form-buttons'>
-              {formData.id ? <UpdateButton type="submit" /> : <CreateButton type="submit" />}
-              <CancelButton onClick={closeForm}/>
-            </div>
-          </form>
-        </div>
+    <div className='admin-container'>
+      {loadingData ? (
+        <Loader />
+      ) : formOpen ? (
+        <CompetitionForm
+          formData={formData}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      ) : (
+        <CompetitionTable
+          currentCompetitions={currentCompetitions}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onNew={openFormForCreate}
+          onEdit={openFormForEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

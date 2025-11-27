@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Definitions;
 
 import dot.server.admin.service.Definitions.LeagueService;
-import dot.server.resources.MatchDefinitions.dto.LeagueDto;
+import dot.server.data.MatchDefinitions.dto.LeagueDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

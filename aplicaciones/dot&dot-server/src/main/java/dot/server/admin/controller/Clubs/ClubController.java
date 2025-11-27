@@ -1,7 +1,7 @@
 package dot.server.admin.controller.Clubs;
 
 import dot.server.admin.service.Clubs.ClubService;
-import dot.server.resources.Club.entity.Club;
+import dot.server.data.Club.entity.Club;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

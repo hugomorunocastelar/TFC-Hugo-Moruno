@@ -33,11 +33,8 @@ export function createUser(userData) {
 };
 
 export function updateUser(id, userData) {
-  return fetch(API.USERS.UPDATE(id), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData),
-  }).then(response => {
+  return put(API.USERS.UPDATE(id), userData)
+  .then(response => {
     if (!response.ok) {
       throw new Error(`Update user ${id} failed`);
     }

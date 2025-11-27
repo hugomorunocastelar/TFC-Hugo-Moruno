@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import { getSession, removeSession, saveSession } from '../../js/session.mjs';
-import * as http from '../../js/http.js';
+import { updateSelfUser } from '../../js/auth.mjs';
 import API from '../../js/env.js';
+import { saveUserImage } from '../../js/images/images.mjs';
 import { useNavigate } from 'react-router-dom';
+import CancelButton from '../Admin/components/buttons/cancel/CancelButton.jsx';
+import UpdateButton from '../Admin/components/buttons/update/UpdateButton.jsx';
 
 function Profile() {
   const sessionUser = getSession();
@@ -14,6 +17,10 @@ function Profile() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [showPwdPrompt, setShowPwdPrompt] = useState(false);
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [pwdError, setPwdError] = useState('');
 
   const navigate = useNavigate();
 
@@ -31,7 +38,6 @@ function Profile() {
 
   function formatRole(role) {
     if (!role) return '';
-    // remove prefix ROLE_ if present
     const withoutPrefix = role.replace(/^ROLE_/i, '');
     return withoutPrefix.charAt(0).toUpperCase() + withoutPrefix.slice(1).toLowerCase();
   }
@@ -43,11 +49,10 @@ function Profile() {
     setStatus('');
   };
 
-  
-
   const handleAvatar = (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    setAvatarFile(file);
     const reader = new FileReader();
     reader.onload = () => setAvatarPreview(reader.result);
     reader.readAsDataURL(file);
@@ -57,29 +62,48 @@ function Profile() {
     const errs = {};
     if (!form.email.trim()) errs.email = 'Email is required';
     else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) errs.email = 'Invalid email';
-    // password change removed from profile form
     return errs;
   };
 
-  const handleSave = async (e) => {
+  const handleSave = (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) {
       setErrors(errs);
       return;
     }
+    setPwdError('');
+    setPasswordConfirm('');
+    setShowPwdPrompt(true);
+  };
+
+  const performSave = async (password) => {
+    setShowPwdPrompt(false);
     setLoading(true);
     setStatus('');
     try {
-      const body = { email: form.email };
-      const res = await http.put(API.USERS.UPDATE(user.id), body);
-      if (!res.ok) throw new Error('Update failed');
-      const data = await res.json();
+      const body = { email: form.email, password: password };
+      const data = await updateSelfUser(body);
+      if (!data) throw new Error('Update failed');
       const updatedSession = { ...sessionUser, ...data };
       saveSession(updatedSession);
       setUser(updatedSession);
+      if (avatarFile) {
+        try {
+          const token = sessionUser?.token || '';
+          const uploadResult = await saveUserImage(avatarFile, token);
+          if (!uploadResult) {
+            console.error('Avatar upload failed');
+          } else {
+            updatedSession.avatar = avatarPreview;
+            saveSession(updatedSession);
+            setUser(updatedSession);
+          }
+        } catch (upErr) {
+          console.error('Avatar upload error:', upErr);
+        }
+      }
       setStatus('Profile updated successfully');
-      // password fields removed
     } catch (error) {
       console.error('Profile save error:', error);
       setStatus('Failed to update profile');
@@ -152,8 +176,6 @@ function Profile() {
                     {errors.email && <div className="form-error">{errors.email}</div>}
                   </label>
                 </div>
-              
-
               <div className="form-actions">
                 <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 <button type="submit" className="save-btn" disabled={loading}>{loading ? 'Saving...' : 'Save changes'}</button>
@@ -163,6 +185,25 @@ function Profile() {
             </form>
           </div>
         </div>
+        {showPwdPrompt && (
+          <div className="modal-backdrop">
+            <div className="modal">
+              <h3>Confirm changes</h3>
+              <p>Please enter your current password to confirm changes.</p>
+              <input
+                type="password"
+                value={passwordConfirm}
+                onChange={(e) => { setPasswordConfirm(e.target.value); setPwdError(''); }}
+                placeholder="Current password"
+              />
+              {pwdError && <div className="form-error">{pwdError}</div>}
+              <div className="modal-actions">
+                <CancelButton onClick={() => setShowPwdPrompt(false)}>Cancel</CancelButton>
+                <UpdateButton onClick={() => { if (!passwordConfirm) { setPwdError('Password is required'); return; } performSave(passwordConfirm); }}>Confirm</UpdateButton>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
