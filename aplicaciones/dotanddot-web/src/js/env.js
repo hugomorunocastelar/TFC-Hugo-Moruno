@@ -90,6 +90,11 @@ const API = {
     UPDATE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/referees/${id}`,
     GAMES: (refereeId) => `${BACK_IP}/referee/games/${refereeId}`,
+    GET_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}`,
+    START_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/start`,
+    UPDATE_POINTS: (uniqueCode, setId) => `${BACK_IP}/referee/matches/${uniqueCode}/sets/${setId}/points`,
+    ADD_SANCTION: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/sanctions`,
+    FINISH_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/finish`,
   },
   SEASONS: {
     ROOT: `${ADMIN_BACK_IP}/seasons`,
@@ -124,6 +129,11 @@ const API = {
     UPDATE: (id) => `${ADMIN_BACK_IP}/roles/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/roles/${id}`,
   },
+  ADMIN: {
+    GAME: {
+      BY_CODE: (uniqueCode) => `${ADMIN_BACK_IP}/games/code/${uniqueCode}`
+    }
+  },
   GAMES: {
     ROOT: `${ADMIN_BACK_IP}/games`,
     ALL: `${ADMIN_BACK_IP}/games`,
@@ -131,6 +141,7 @@ const API = {
     READ: (id) => `${ADMIN_BACK_IP}/games/${id}`,
     UPDATE: (id) => `${ADMIN_BACK_IP}/games/${id}`,
     DELETE: (id) => `${ADMIN_BACK_IP}/games/${id}`,
+    REFEREEABLE: `${ADMIN_BACK_IP}/games/refereeable`,
   },
   OPEN: {
     CLUBS: {
@@ -144,14 +155,37 @@ const API = {
     GAMES: {
       ROOT: `${OPEN_BACK_IP}/games`,
       ALL: `${OPEN_BACK_IP}/games`,
-      OM: `${OPEN_BACK_IP}/games/outstanding-match`
+      OM: `${OPEN_BACK_IP}/games/outstanding-match`,
+      READ: (id) => `${OPEN_BACK_IP}/games/${id}`
+    },
+    COMPETITIONS: {
+      ROOT: `${OPEN_BACK_IP}/competitions`,
+      ALL: `${OPEN_BACK_IP}/competitions`,
+      READ: (id) => `${OPEN_BACK_IP}/competitions/${id}`
+    },
+    LEAGUES: {
+      ROOT: `${OPEN_BACK_IP}/leagues`,
+      ALL: `${OPEN_BACK_IP}/leagues`,
+      READ: (id) => `${OPEN_BACK_IP}/leagues/${id}`
     },
     CONTACT: `${BACK_IP}/contact/public`
-  }
-  ,
+  },
+  MATCHES: {
+    BASE: `${OPEN_BACK_IP}/matches`,
+    LEAGUE: (leagueId) => `${OPEN_BACK_IP}/matches/league/${leagueId}`,
+    LIVE: (uniqueCode) => `${OPEN_BACK_IP}/matches/live/${uniqueCode}`,
+    LIVE_STATS: (uniqueCode) => `${OPEN_BACK_IP}/matches/live/${uniqueCode}/stats`
+  },
   IMAGE: {
     SAVE: `${BACK_IP}/image/save`,
     GET: (filename) => `${BACK_IP}/image/get/${filename}`
+  },
+  USER: {
+    FAVORITES: `${BACK_IP}/user/favorites`,
+    ADD_FAVORITE: (gameId) => `${BACK_IP}/user/favorites/${gameId}`,
+    REMOVE_FAVORITE: (gameId) => `${BACK_IP}/user/favorites/${gameId}`,
+    CHECK_FAVORITE: (gameId) => `${BACK_IP}/user/favorites/check/${gameId}`,
+    COUNT_FAVORITES: `${BACK_IP}/user/favorites/count`
   }
 };
 

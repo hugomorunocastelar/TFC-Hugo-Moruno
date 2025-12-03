@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { del, post, put } from '../../../../js/http';
 import { getAllUsers } from '../../../../js/cruds/users.mjs';
 import { getAllRoles } from '../../../../js/cruds/roles.mjs';
+import { getAllReferees } from '../../../../js/cruds/referees.mjs';
 import API from '../../../../js/env';
 import Loader from '../../../Loader/Loader.jsx';
 import UsersTable from './partials/UsersTable.jsx';
@@ -18,6 +19,7 @@ function Users() {
     email: '',
     password: '',
     roles: [],
+    refereeId: null,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,6 +42,7 @@ function Users() {
   };
 
   const [roles, setRoles] = useState([]);
+  const [referees, setReferees] = useState([]);
 
   const fetchRoles = async () => {
     try {
@@ -52,9 +55,21 @@ function Users() {
     }
   };
 
+  const fetchReferees = async () => {
+    try {
+      getAllReferees()
+      .then((response) => {
+        if (response) setReferees(response);
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
     fetchRoles();
+    fetchReferees();
   }, []);
 
   function openFormForCreate() {
@@ -64,6 +79,7 @@ function Users() {
       email: '',
       password: '',
       roles: [],
+      refereeId: null,
     });
     setSelectedUser(null);
     setFormOpen(true);
@@ -76,6 +92,7 @@ function Users() {
       email: user.email,
       password: '',
       roles: user.roles ? user.roles.map(role => role.id) : [],
+      refereeId: user.refereeId || null,
     });
     setSelectedUser(user);
     setFormOpen(true);
@@ -90,6 +107,7 @@ function Users() {
       email: '',
       password: '',
       roles: [],
+      refereeId: null,
     });
   };
 
@@ -113,6 +131,7 @@ function Users() {
         email: formData.email,
         password: formData.password || undefined,
         roles: formData.roles.map(roleId => ({ id: roleId })),
+        refereeId: formData.refereeId || null,
       };
       if (!bodyData.password) delete bodyData.password;
 
@@ -166,6 +185,7 @@ function Users() {
             <UsersForm
               formData={formData}
               roles={roles}
+              referees={referees}
               onChange={handleInputChange}
               onSubmit={handleSubmit}
               onCancel={closeForm}

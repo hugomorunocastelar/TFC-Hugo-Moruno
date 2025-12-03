@@ -25,7 +25,7 @@ public class GameRefereeTeam {
     private Referee secondaryReferee;
 
     @ManyToOne
-    @JoinColumn(name = "scorer_id", nullable = false)
+    @JoinColumn(name = "scorer_id")
     private Referee scorer;
 
     @ManyToOne

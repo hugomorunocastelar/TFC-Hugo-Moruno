@@ -2,6 +2,7 @@ package dot.server.auth.user.model.dto;
 
 import dot.server.auth.role.model.Role;
 import dot.server.auth.user.model.User;
+import dot.server.data.Person.entity.Referee;
 import lombok.Data;
 
 import java.time.Instant;
@@ -17,6 +18,7 @@ public class UserDto {
     private String email;
     private String password;
     private Set<Role> roles;
+    private Long refereeId;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -29,6 +31,7 @@ public class UserDto {
         dto.setEmail(user.getEmail());
         dto.setPassword(user.getPassword());
         dto.setRoles(user.getRoles());
+        dto.setRefereeId(user.getReferee() != null ? user.getReferee().getId() : null);
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
@@ -43,6 +46,11 @@ public class UserDto {
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setRoles(dto.getRoles());
+        if (dto.getRefereeId() != null) {
+            Referee referee = new Referee();
+            referee.setId(dto.getRefereeId());
+            user.setReferee(referee);
+        }
         user.setCreatedAt(dto.getCreatedAt());
         user.setUpdatedAt(dto.getUpdatedAt());
         return user;

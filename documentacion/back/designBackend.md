@@ -1,300 +1,766 @@
-# Diseño del Backend multimodal para los distintos Frontends de la aplicación DOT & DOT
+# **[DOT & DOT] Diseño del Backend**
 
 ## Idea 
 
-Para comenzar éste apartado, comenzaré con el leitmotiv. Principalmente se desarolla con el objetivo de ser el árbitro de las comunicaciones de este sistema de aplicaciones. Para ello, esta aplicación se encargará de cara al exterior de lo siguiente:
-  1. Registrar y autorizar las altas de los usuarios. Que estarán a cargo de los administradores.
-  2. Situar las barreras de los roles con los que la aplicación cuenta.
-  3. Manejar el almacenamiento, modificación y mostrado de los distintos partidos.
-  4. Definir si los dispositivos que acceden a la aplicación son válidos o no.
+El backend desarrollado actúa como árbitro central de las comunicaciones del ecosistema de aplicaciones. Esta aplicación se encarga de:
 
-Y de puertas a dentro manejará lo siguiente:
-  1. Persistencia y verificación de la integridad de los datos.
-  2. Comunicaciones con el sistema de bases de datos.
-  3. Acciones permitidas o prohibidas.
+**Responsabilidades externas:**
+1. Registrar y autorizar usuarios mediante sistema de verificación por email.
+2. Implementar control de acceso basado en roles (ROLE_ADMIN, ROLE_REFEREE, ROLE_USER).
+3. Gestionar el almacenamiento, modificación y visualización de partidos en tiempo real.
+4. Validar dispositivos y sesiones mediante tokens JWT con refresh tokens.
+5. Proporcionar endpoints públicos para consulta de información sin autenticación.
+6. Comunicación en tiempo real mediante WebSockets (STOMP) para actualización de partidos.
 
-## Comienzo
+**Responsabilidades internas:**
+1. Persistencia en base de datos MySQL con JPA/Hibernate.
+2. Verificación de integridad referencial y validaciones a nivel de entidad.
+3. Control de accesos mediante Spring Security con @PreAuthorize.
+4. Gestión de imágenes con almacenamiento en servidor.
+5. Servicio de correo electrónico para verificaciones y notificaciones.
+6. Broadcasting de eventos de partidos mediante WebSocket Service.
 
-Yendo en este apartado a detalles más concretos, comenzaré con una vista general del sistema de backend.
-Para ello, situaremos 4 áreas a mencionar:
-  1. Partidos.
-  2. Usuarios.
-  3. Público.
-  4. Páginas web.
+## Estructura del Sistema
 
+El backend se organiza en los siguientes módulos principales:
+
+1. **Admin** - Gestión completa de entidades (CRUD) con rol ROLE_ADMIN
+2. **Referee** - Endpoints específicos para árbitros durante partidos
+3. **Open/Public** - Información pública accesible sin autenticación
+4. **Auth** - Autenticación, registro, verificación y gestión de roles
+5. **WebSocket** - Comunicación bidireccional en tiempo real
+6. **Images** - Servicio de almacenamiento y recuperación de imágenes
+7. **Mail** - Envío de correos de verificación y contacto
 
 <div style="page-break-after: always;"></div>
 
-# Partidos
+# Modelo de Datos: Partidos
 
-Como tema principal de la aplicación tenemos el manejo de los partidos de voleibol. Para ello, se desarrollará una estructura que contará con los distintos endpoint con los que se arbitrará desde dispositivos móviles (tablets).
-
-En base a lo anterior se intenta desplegar una estructura que consiga el mismo desarrollo que el acta real.
+El sistema implementa una estructura completa que digitaliza el acta real de voleibol:
 
 <img src="../diagramas/acta-real.png" height="400">
 
-Sitúo entonces el diagrama que se incluye en la propuesta del proyecto para un desarrollo más extenso y detallado de su implementación.
+## Entidad Game (Partido)
 
-<img src="diagramas/dot&dotpartidos.png" height="200">
-
-<div style="page-break-after: always;"></div>
-
-Cómo se ve en el diagrama, compondremos la estructura del flujo de los partidos de:
-
-Partido:
-- Equipos:
-  - Entrenadores
-  - Jugadores
-
-- Sets
-  - Equipo:
-    - Entrenadores
-    - Jugadores
-  - Puntos:
-    - Jugador que lo marca
-
-Esta es la estructura de la propuesta, qué se presenta como una aproximación.
-
-#### ¿Por qué se elige esta estructura?
-
+```java
+@Entity
+public class Game {
+    private long id;
+    private String uniqueCode;                      // Código único del partido
+    private GameDetails details;                    // Detalles (fecha, ciudad, competición)
+    private GameInitialSituation initialSituation;  // Situación inicial (equipos, saque)
+    private GameRefereeTeam refereeTeam; // Equipo arbitral asignado
+    private GameObservations observation; // Observaciones del partido
+    private List<GameSanctions> sanctionsList;  // Lista de sanciones
+    private List<GameSet> sets;          // Sets del partido (ordenados)
+    private GameResult result;           // Resultado final
+    private boolean playing;             // Estado: en juego
+    private boolean finished;            // Estado: finalizado
+    private int relevance;               // Relevancia (partido destacado)
+    private League league;               // Liga a la que pertenece
+}
 ```
-Esta estructura se elige debido a que el objetivo de la aplicación es acercar el arbitraje más estricto al nivel más básico del voleibol. Para ello, se compone un sólo objeto denominado: Partido; que se compone de: Sets y Equipos (En un partido real de voleibol son los datos más importantes del acta real); que a su vez se componen de lo especificado en el esquema anterior. 
+<div style="page-break-after: always;"></div>
+
+## GameDetails (Detalles del Partido)
+
+```java
+@Entity
+public class GameDetails {
+    private long id;
+    private Game game;
+    private Category category;      // INFANTIL, CADETE, JUVENIL, SENIOR
+    private Division division;      // PRIMERA, SEGUNDA, TERCERA
+    private Competition competition; // Competición (Liga regular, Copa, etc.)
+    private City city;              // Ciudad donde se juega
+    private Date date;              // Fecha del partido
+    private Date timeStart;         // Hora de inicio real
+}
+```
+
+## GameSet (Set del Partido)
+
+```java
+@Entity
+public class GameSet {
+    private long id;
+    private String uniqueCode;      // Referencia al partido
+    private int setNumber;          // Número del set (1-5)
+    private int pointsLocal;        // Puntos equipo local
+    private int pointsVisit;        // Puntos equipo visitante
+    private Date timeStart;         // Hora de inicio del set
+    private Date timeEnd;           // Hora de fin del set
+    private String localAlignment;  // Alineación equipo local (JSON)
+    private String visitAlignment;  // Alineación equipo visitante (JSON)
+}
+```
+
+## GameInitialSituation (Situación Inicial)
+
+```java
+@Entity
+public class GameInitialSituation {
+    private long id;
+    private Game game;
+    private Team localTeam;         // Equipo local
+    private Team visitTeam;         // Equipo visitante
+    private Team servingTeam;       // Equipo que saca
+    private Team receivingTeam;     // Equipo que recibe
+    private Team leftTeam;          // Equipo situado a la izquierda
+    private Team rightTeam;         // Equipo situado a la derecha
+}
+```
+<div style="page-break-after: always;"></div>
+
+## GameSanctions (Sanciones del Partido)
+
+```java
+@Entity
+public class GameSanctions {
+    private long id;
+    private Game game;
+    private SanctionType type;      // YELLOW, RED, EXPULSION, DISQUALIFICATION
+    private Long teamId;            // Equipo sancionado
+    private String marcador;        // Marcador en el momento de la sanción
+    private Date timestamp;         // Momento de la sanción
+}
+```
+
+## GameResult (Resultado Final)
+
+```java
+@Entity
+public class GameResult {
+    private long id;
+    private Game game;
+    private Team winner;            // Equipo ganador
+    private Team loser;             // Equipo perdedor
+    private Date timeStart;         // Hora inicio del partido
+    private Date timeEnd;           // Hora fin del partido
+    private Long duration;          // Duración en milisegundos
+    private int setsWonByLocal;     // Sets ganados por local
+    private int setsWonByVisit;     // Sets ganados por visitante
+}
 ```
 
 <div style="page-break-after: always;"></div>
 
-# Detallaje en lenguaje java
+# Modelo de Datos: Personas y Equipos
 
-En base a la idea y propuesta se amplían las necesidades concretas detalladas aquí:
+## Person (Persona - Clase Base)
 
-Persona:
-- DNI.
-- Nombre.
-- Apellidos.
-- Fecha de nacimiento.
-- Dirección.
-- Teléfono.
-- Email.
-- DNI verificado (Booleano).
-- Tutelado (Booleano).
-- DNI del Tutor (Otra persona).
+```java
+@Entity
+public class Person {
+    private long id;
+    private String dni;             // DNI único (12 caracteres)
+    private String name;            // Nombre (20 caracteres)
+    private String surnames;        // Apellidos (60 caracteres)
+    private Date birthDate;         // Fecha de nacimiento
+    private String address;         // Dirección (100 caracteres)
+    private String phone;           // Teléfono (25 caracteres)
+    private String email;           // Email (70 caracteres)
+    private Boolean dniVerified;    // DNI verificado
+    private Boolean tutored;        // Es tutelado (menor)
+    private Person tutor;           // Tutor (si es menor)
+    
+    // Relaciones especializadas
+    private Coach coach;            // OneToOne si es entrenador
+    private Player player;          // OneToOne si es jugador
+    private Referee referee;        // OneToOne si es árbitro
+}
+```
 
-## Equipos
+## Player (Jugador)
 
-<img src="diagramas/equipos.png" height="200">
+```java
+@Entity
+public class Player {
+    private long id;
+    private String dni;             // FK a Person
+    private Integer shirtNumber;    // Número de camiseta
+    private Team team;              // Equipo al que pertenece
+    private Category category;      // Categoría del jugador
+}
+```
+<div style="page-break-after: always;"></div>
 
-Jugador (desciende de la clase Persona):
-- Atributos de la clase Persona.
-- Número de la camiseta (Predeterminado).
-- ID del equipo al que pertenece.
-- Categoría.
+## Coach (Entrenador)
 
-Entrenador (desciende de la clase Persona):
-- Atributos de la clase Persona.
-- Número de licencia.
-- Nivel de licencia.
-- ID del equipo al que pertenece.
+```java
+@Entity
+public class Coach {
+    private long id;
+    private String dni;             // FK a Person
+    private String licenseNumber;   // Número de licencia
+    private String licenseLevel;    // Nivel de licencia
+    private Team team;              // Equipo al que pertenece
+}
+```
 
-Técnico (Ampliación. Desciende de la clase Persona):
-- Atributos de la clase Persona.
-- Número de licencia.
-- Función.
-- ID del equipo al que pertenece.
+## Referee (Árbitro)
 
-Equipo:
-- Lista de Entrenadores (Máximo 3).
-- Lista de Cuerpo técnico.
-- Lista de Jugadores.
-- Capitán (Por defecto).
-- Nombre.
-- Id del Club.
-- Categoría.
+```java
+@Entity
+public class Referee {
+    private long id;
+    private String dni;             // FK a Person
+    private String licenseNumber;   // Número de licencia
+    private String licenseLevel;    // Nivel de licencia
+    private City city;              // Ciudad de residencia
+}
+```
 
-Equipo en partido (Hereda de Equipo):
-- Atributos de Equipo.
-- Capitán (En caso de ser distinto al por defecto).
-- Lista de jugadores que faltan al partido.
+## Team (Equipo)
 
-Club:
-- Nombre.
-- Id de la ciudad.
+```java
+@Entity
+public class Team {
+    private long id;
+    private String name;            // Nombre del equipo
+    private Person dniCaptain;      // Capitán del equipo
+    private Club idClub;            // Club al que pertenece
+    private Category category;      // Categoría del equipo
+}
+```
+
+## Club
+
+```java
+@Entity
+public class Club {
+    private long id;
+    private String name;            // Nombre del club
+    private City city;              // Ciudad del club
+}
+```
 
 <div style="page-break-after: always;"></div>
 
-## Datos
+# Modelo de Datos: Definiciones y Lugares
 
-<img src="diagramas/datos-partido.png" height="100">
+## City (Ciudad)
 
-Ciudad:
-- Nombre.
-- Región.
-- Rango CP.
+```java
+@Entity
+public class City {
+    private long id;
+    private String name;            // Nombre de la ciudad
+    private String region;          // Región/Provincia
+    private String cpRange;         // Rango de códigos postales
+}
+```
 
-Cancha: 
-- Nombre.
-- Id de la ciudad.
-- Dirección.
-- Número de pistas posibles.
+## Gameplace (Cancha/Pabellón)
 
-Detalles del Partido:
-- Código de identificación único.
-- Nombre de la competición.
-- Id de la ciudad.
-- División.
-- Categoría.
-- Situación de inicio.
+```java
+@Entity
+public class Gameplace {
+    private long id;
+    private String name;            // Nombre del pabellón
+    private City city;              // Ciudad donde está ubicado
+    private String address;         // Dirección completa
+    private Integer courtsNumber;   // Número de pistas disponibles
+}
+```
 
-Situación de inicio:
-- Equipo local.
-- Equipo visitante.
-- Equipo que saca.
-- Equipo que recibe.
-- Equipo situado en la izquierda.
-- Equipo situado en la derecha.
+## League (Liga)
+
+```java
+@Entity
+public class League {
+    private long id;
+    private String name;            // Nombre de la liga
+    private Competition competition; // Competición a la que pertenece
+    private Category category;      // Categoría
+    private Division division;      // División
+    private Season season;          // Temporada
+}
+```
+<div style="page-break-after: always;"></div>
+
+## Competition (Competición)
+
+```java
+@Entity
+public class Competition {
+    private long id;
+    private String name;            // Nombre de la competición
+    private String description;     // Descripción
+    private Season season;          // Temporada
+}
+```
+
+## Season (Temporada)
+
+```java
+@Entity
+public class Season {
+    private long id;
+    private String name;            // Ej: "National 2024-2025"
+    private Date startDate;         // Fecha de inicio
+    private Date endDate;           // Fecha de finalización
+    private Boolean active;         // Temporada activa
+}
+```
 
 <div style="page-break-after: always;"></div>
 
-## Arbitraje
+## Enumeraciones Implementadas
 
-<img src="diagramas/arbitraje.png" height="200">
+```java
+public enum Category {
+    PRE_BENJAMIN(0, "Pre-Benjamin", 6, 7),
+    BENJAMIN(1, "Benjamin", 8, 9),
+    ALEVIN(2, "Alevin", 10, 11),
+    INFANTILE(3, "Infantile", 12, 13),
+    CADET(4, "Cadet", 14, 15),
+    YOUTH(5, "Youth", 16, 17),
+    JUNIOR(6, "Junior", 18, 19),
+    ABSOLUTE(7, "Absolute", 20, 39),
+    SENIOR(8, "Senior", 40, 99);
+}
 
-Árbitro:
-- Atributos de la clase Persona.
-- Número de la licencia.
-- Nivel de la Licencia.
-- Id de la Ciudad.
+public enum Division {
+    MIXED('X', "Mixed"),
+    FEMININE('F', "Feminine"),
+    MASCULINE('M', "Masculine");
+}
 
-Equipo Arbitral:
-- Árbitro principal.
-- Lista de árbitros asistentes.
-
-Observaciones:
-- Lista de Observaciones.
-
-## Sanciones
-
-<img src="diagramas/amonestaciones.png" height="200">
-
-Sanción:
-- Tipo (Nº -> Jugador, C -> Entrenador, AC -> Entrenador asistente, T -> Téc. Fisioterapeuta, M -> Médico o Delegado, I -> Solicitud improcedente, D -> Demora (colectiva))
-- Equipo que causa.
-- Marcador.
-
-<div style="page-break-after: always;"></div>
-
-## Sets
-
-<img src="diagramas/set.png" height="200">
-
-Set:
-- Situación de inicio.
-- Hora de inicio.
-- Hora de fin.
-- Alineaciones.
-- Tiempos muertos.
-
-Alineación:
-- Jugador en cada posición.
-- Número de rotaciones.
-- Cambios.
-
-Punto:
-- Jugador que lo marca.
-- Número del punto.
+public enum SanctionType {
+    INDIVIDUAL('I', "Individual"),
+    COACH('C', "Coach"),
+    ASSISTANT_COACH('A', "Assistant Coach"),
+    SUPPORT('T', "Support"),
+    IMPROPER('S', "Improper solicitude"),
+    DELAY('D', "Delay");
+}
+```
 
 <div style="page-break-after: always;"></div>
 
-## Resultados
+# Sistema de Autenticación y Autorización
 
-<img src="diagramas/resultados.png" height="200">
+## Spring Security + JWT
 
-Resultado:
-- Lista de Sets.
-- Equipo ganador.
-- Equipo perdedor.
-- Hora inicio.
-- Hora fin.
-- Duración.
-- Puntaje.
+El sistema utiliza Spring Security con tokens JWT (JSON Web Tokens) para autenticación y autorización.
 
-Puntaje:
-- Puntos a favor de un equipo.
-- Puntos a favor del otro equipo.
-- Resultado.
+### User (Usuario del Sistema)
+
+```java
+@Entity
+@Table(name = "users")
+public class User {
+    private Long id;
+    private String username;        // Nombre de usuario único
+    private String email;           // Email único
+    private String password;        // Contraseña cifrada con BCrypt
+    private Boolean enabled;        // Usuario habilitado
+    private Boolean verified;       // Email verificado
+    private Set<Role> roles;        // Roles asignados
+    private Instant createdAt;      // Fecha de creación
+    private Instant updatedAt;      // Última actualización
+}
+```
+
+### Role (Roles del Sistema)
+
+```java
+@Entity
+@Table(name = "roles")
+public class Role {
+    private Long id;
+    private String name;            // Nombre del rol
+    private Instant createdAt;
+    private Instant updatedAt;
+}
+```
+
+### Roles Implementados
+
+- **ROLE_ADMIN**: Control total sobre la plataforma. CRUD completo de todas las entidades.
+- **ROLE_REFEREE**: Gestión de partidos asignados, registro de puntos y sanciones en tiempo real.
+- **ROLE_USER**: Acceso a perfil personal, consulta de información pública, favoritos.
+<div style="page-break-after: always;"></div>
+
+### Endpoints de Autenticación
+
+**AuthController** (`/auth`):
+
+1. **POST /auth/register**
+   - Registro de nuevos usuarios
+   - Envío de email de verificación
+   - Respuesta: {status: 201, message: "User created"}
+
+2. **POST /auth/login**
+   - Autenticación con username/email y password
+   - Respuesta: JWT token + refresh token
+   - Formato: {status: 200, message: {token, refreshToken, username, email, roles}}
+
+3. **GET /auth/verify?token={token}**
+   - Verificación de email mediante token
+   - Activa la cuenta del usuario
+
+4. **GET /auth/forgot-password?email={email}**
+   - Solicitud de reset de contraseña
+   - Envío de email con token de recuperación
+
+5. **POST /auth/reset-password**
+   - Reseteo de contraseña con token
+   - Body: {token, newPassword}
+
+6. **GET /auth/validate**
+   - Validación de sesión activa mediante JWT
+   - Requiere: Authorization: Bearer {token}
+
+7. **GET /auth/role/{role}**
+   - Verificación de rol específico del usuario autenticado
+   - Requiere: Authorization: Bearer {token}
+<div style="page-break-after: always;"></div>
+
+### PermissionController (`/permissions`)
+
+Gestión de permisos y roles (ROLE_ADMIN):
+
+1. **GET /permissions/roles** - Listar todos los roles
+2. **POST /permissions/roles** - Crear nuevo rol
+3. **PUT /permissions/users/{userId}/roles** - Asignar/modificar roles de usuario
+
+### Seguridad Implementada
+
+- **BCryptPasswordEncoder**: Cifrado de contraseñas con algoritmo BCrypt
+- **JWT**: Tokens firmados con secret key, expiración configurable
+- **Refresh Tokens**: Renovación de sesión sin re-autenticación
+- **CORS**: Configuración permisiva con `@CrossOrigin("*")` en controladores
+- **@PreAuthorize**: Anotaciones en métodos para control de acceso por rol
 
 <div style="page-break-after: always;"></div>
 
-# Sistema de usuarios
+# API REST: Módulo Admin
 
-Para el sistema de usuarios utilizaré la librería de Spring Security. Para ello crearé en principio los roles de:
-- ADMIN
-- PUBLIC
-- PLAYER
-- REFEREE
-- COACH
+El módulo admin proporciona endpoints CRUD completos para todas las entidades. Requiere **ROLE_ADMIN**.
 
-Cada uno de estos roles tendrá diferentes niveles de acceso y permisos dentro de la aplicación:
+## Estructura General de Controladores
 
-- **ADMIN**: Tiene control total sobre la plataforma. Puede crear, modificar y eliminar usuarios, gestionar partidos y modificar configuraciones del sistema.
-- **PUBLIC**: Solo tiene acceso a información pública, como resultados de partidos y estadísticas generales.
-- **PLAYER**: Puede acceder a su perfil, ver estadísticas personales y consultar información relevante de su equipo.
-- **REFEREE**: Puede gestionar partidos, registrar sanciones y validar resultados.
-- **COACH**: Puede gestionar su equipo, modificar alineaciones y consultar estadísticas de sus jugadores.
+Todos los controladores admin siguen el mismo patrón CRUD estándar:
 
-## Autenticación y Autorización
+- **GET** `/admin/{resource}` - Listar todos los elementos
+- **GET** `/admin/{resource}/{id}` - Obtener elemento por ID
+- **POST** `/admin/{resource}` - Crear nuevo elemento
+- **PUT** `/admin/{resource}/{id}` - Actualizar elemento
+- **DELETE** `/admin/{resource}/{id}` - Eliminar elemento
 
-La autenticación de usuarios se realizará mediante tokens JWT. Se implementará un sistema de registro y login seguro con cifrado de contraseñas utilizando BCrypt.
+## Controladores Implementados
 
-### Endpoints para autenticación:
-1. **`/auth/register`** → Permite a los administradores registrar nuevos usuarios.
-2. **`/auth/login`** → Devuelve un token JWT si las credenciales son correctas.
-3. **`/auth/logout`** → Invalida el token actual.
+### Gestión de Personas
+- **PersonController** (`/admin/persons`) - Personas del sistema
+- **PlayerController** (`/admin/players`) - Jugadores
+- **CoachController** (`/admin/coaches`) - Entrenadores
+- **RefereeController** (`/admin/referees`) - Árbitros
 
-## Gestión de Usuarios
+### Gestión de Clubes y Equipos
+- **ClubController** (`/admin/clubs`) - Clubes
+- **TeamController** (`/admin/teams`) - Equipos
 
-Para gestionar los usuarios, se utilizarán los siguientes endpoints:
+### Gestión de Ubicaciones
+- **CitiesController** (`/admin/cities`) - Ciudades
+- **GameplacesController** (`/admin/gameplaces`) - Pabellones/Canchas
 
-1. **`/users`** (GET) → Devuelve la lista de usuarios registrados.
-2. **`/users/{id}`** (GET) → Devuelve la información de un usuario específico.
-3. **`/users/{id}`** (PUT) → Permite modificar los datos de un usuario.
-4. **`/users/{id}`** (DELETE) → Elimina un usuario del sistema.
+### Gestión de Competiciones
+- **SeasonController** (`/admin/seasons`) - Temporadas
+- **CompetitionController** (`/admin/competitions`) - Competiciones
+- **LeagueController** (`/admin/leagues`) - Ligas
 
-## Seguridad y Control de Acceso
+### Gestión de Partidos
+- **GameController** (`/admin/games`) - Partidos
 
-Para reforzar la seguridad, se implementarán medidas adicionales como:
-- **CORS Policy**: Para restringir accesos no autorizados desde otros dominios.
-- **Rate Limiting**: Para evitar ataques de fuerza bruta en los endpoints de autenticación.
-- **Logs de Actividad**: Registro de eventos de acceso, modificaciones y eliminaciones de datos.
+<div style="page-break-after: always;"></div>
+## Endpoints Especializados del GameController
 
----
+Además de los endpoints CRUD estándar, GameController incluye:
 
-# Público
+#### GET /admin/games/code/{uniqueCode}
+Obtiene un partido por su código único en lugar de por ID numérico.
+- **Uso**: Búsqueda rápida cuando se conoce el código del partido (ej: "1A_PRE_AAA000")
+- **Response**: Objeto Game completo con todas sus relaciones
 
-El público tendrá acceso a la información pública de los partidos y estadísticas sin necesidad de autenticarse. Para ello, se desarrollarán los siguientes endpoints:
+#### GET /admin/games/refereeable
+Lista partidos disponibles para asignar árbitro.
+- **Filtros aplicados**: partidos no finalizados, no en curso, sin árbitro asignado
+- **Uso**: Vista para asignación de árbitros a partidos pendientes
 
-1. **`/public/matches`** (GET) → Lista de partidos disponibles con resultados y detalles básicos.
-2. **`/public/match/{id}`** (GET) → Información detallada de un partido específico.
-3. **`/public/standings`** (GET) → Clasificación y estadísticas de equipos y jugadores.
+<div style="page-break-after: always;"></div>
 
-Además, se podrán implementar filtros y opciones de búsqueda para que el público pueda encontrar información relevante de manera rápida y eficiente.
+# API REST: Módulo Referee
 
----
+El módulo referee proporciona endpoints específicos para árbitros durante la gestión de partidos. Requiere **ROLE_REFEREE**.
 
-# Páginas web
+## RefereeGamesController (`/referee/games`)
 
-Para la interacción web, se desarrollarán interfaces adaptadas a diferentes tipos de usuarios:
+### GET /referee/games/{refereeId}
+Obtiene todos los partidos asignados a un árbitro específico.
+- **Auth**: ROLE_REFEREE
+- **Response**: Lista de partidos asignados
 
-- **Página pública**: Información sobre la aplicación, calendario de partidos y acceso a estadísticas.
-- **Panel de administración**: Gestión de usuarios, equipos, partidos y configuración del sistema.
-- **Área de árbitros**: Registro de sanciones, control de partidos en tiempo real y validación de resultados.
-- **Portal de jugadores y entrenadores**: Consulta de estadísticas, gestión de equipos y análisis de rendimiento.
+## RefereeMatchController (`/referee/matches`)
 
-Estas interfaces se desarrollarán con tecnologías modernas como React o Angular para ofrecer una experiencia fluida e intuitiva.
+### GET /referee/matches/{uniqueCode}
+Obtiene los detalles completos de un partido por código único.
+- **Auth**: ROLE_REFEREE
+- **Response**: Objeto Game con todas sus relaciones
 
----
+### PUT /referee/matches/{uniqueCode}/start
+Inicia un partido, creando el primer set automáticamente.
+- **Auth**: ROLE_REFEREE
+- **Lógica**:
+  - Valida que el partido no esté ya en curso
+  - Crea GameSet #1 con puntos en 0
+  - Marca game.playing = true
+  - Broadcast WebSocket: "STARTED"
+- **Response**: Game actualizado
+<div style="page-break-after: always;"></div>
+
+### POST /referee/matches/{uniqueCode}/sets/{setId}/points
+Actualiza los puntos de un set durante el partido.
+- **Auth**: ROLE_REFEREE
+- **Body**: `{team: "local"|"visit", points: Integer}`
+- **Lógica**:
+  - Incrementa puntos del equipo especificado
+  - Valida reglas de finalización de set (25 puntos, diferencia de 2)
+  - Finaliza set automáticamente si cumple condiciones
+  - Crea siguiente set si es necesario
+  - Finaliza partido automáticamente si un equipo gana 3 sets
+  - Broadcast WebSocket: "POINT_UPDATE"
+- **Response**: Set actualizado
+
+### POST /referee/matches/{uniqueCode}/sanctions
+Registra una sanción durante el partido.
+- **Auth**: ROLE_REFEREE
+- **Body**: `{type: SanctionType, teamId: Long, marcador: String}`
+- **Lógica**:
+  - Crea GameSanctions con timestamp actual
+  - Asocia al partido y equipo correspondiente
+  - Broadcast WebSocket: "SANCTION_ADDED"
+- **Response**: Sanción creada
+
+### PUT /referee/matches/{uniqueCode}/finish
+Finaliza un partido manualmente.
+- **Auth**: ROLE_REFEREE
+- **Lógica**:
+  - Finaliza el set activo
+  - Calcula resultado final (ganador, perdedor, duración)
+  - Crea GameResult con estadísticas
+  - Marca game.finished = true
+  - Broadcast WebSocket: "FINISHED"
+- **Response**: Game finalizado con resultado
+
+<div style="page-break-after: always;"></div>
+
+# API REST: Módulo Open/Public
+
+El módulo open proporciona endpoints públicos accesibles sin autenticación para consulta de información.
+
+## OpenGameController (`/open/games`)
+
+### GET /open/games
+Lista todos los partidos disponibles para el público.
+- **Auth**: No requiere
+- **Response**: Lista de partidos con información básica
+
+### GET /open/games/outstanding
+Obtiene el partido destacado (mayor relevancia).
+- **Auth**: No requiere
+- **Response**: Partido destacado con información completa
+
+## OpenClubController (`/open/clubs`)
+
+### GET /open/clubs
+Lista todos los clubes registrados.
+- **Auth**: No requiere
+- **Response**: Lista de clubes
+
+### GET /open/clubs/{id}
+Obtiene información detallada de un club específico.
+- **Auth**: No requiere
+- **Response**: Club con equipos y jugadores
+
+<div style="page-break-after: always;"></div>
+## OpenCompetitionController (`/open/competitions`)
+
+### GET /open/competitions
+Lista todas las competiciones disponibles.
+- **Auth**: No requiere
+- **Response**: Lista de competiciones con ligas asociadas
+
+### GET /open/competitions/{id}
+Obtiene información detallada de una competición.
+- **Auth**: No requiere
+- **Response**: Competición con ligas y partidos
+
+## OpenLeagueController (`/open/leagues`)
+
+### GET /open/leagues
+Lista todas las ligas disponibles.
+- **Auth**: No requiere
+- **Response**: Lista de ligas
+
+### GET /open/leagues/{id}
+Obtiene información detallada de una liga específica.
+- **Auth**: No requiere
+- **Response**: Liga con clasificación y partidos
+
+<div style="page-break-after: always;"></div>
+
+# WebSocket: Comunicación en Tiempo Real
+
+## Configuración WebSocket
+
+Se utiliza STOMP (Simple Text Oriented Messaging Protocol) sobre WebSocket para comunicación bidireccional.
+
+### WebSocketConfig
+
+```java
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");  // Broadcast
+        config.setApplicationDestinationPrefixes("/app");
+    }
+    
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
+    }
+}
+```
+
+## RefereeWebSocketController
+
+### Endpoint: /app/games/{uniqueCode}/subscribe
+Cliente se suscribe a actualizaciones de un partido específico.
+- **Topic**: `/topic/games/{uniqueCode}`
+- **Eventos emitidos**:
+  - `STARTED` - Partido iniciado
+  - `POINT_UPDATE` - Puntos actualizados
+  - `SET_FINISHED` - Set finalizado
+  - `SANCTION_ADDED` - Sanción registrada
+  - `FINISHED` - Partido finalizado
+
+<div style="page-break-after: always;"></div>
+### LiveGameBroadcastService
+
+Servicio que gestiona el broadcasting de eventos:
+
+```java
+@Service
+public class LiveGameBroadcastService {
+    
+    public void broadcastGameUpdate(String uniqueCode, Game game, String eventType) {
+        GameUpdateMessage message = new GameUpdateMessage();
+        message.setEventType(eventType);
+        message.setGame(game);
+        message.setTimestamp(new Date());
+        
+        simpMessagingTemplate.convertAndSend(
+            "/topic/games/" + uniqueCode, 
+            message
+        );
+    }
+}
+```
+
+## Flujo de Comunicación
+
+1. Cliente se conecta: `new SockJS('/ws')`
+2. Cliente se suscribe: `/topic/games/{uniqueCode}`
+3. Árbitro actualiza puntos: POST `/referee/matches/{uniqueCode}/sets/{setId}/points`
+4. Backend procesa y guarda en BD
+5. Backend broadcast: `/topic/games/{uniqueCode}` con tipo "POINT_UPDATE"
+6. Todos los clientes suscritos reciben actualización instantánea
+
+<div style="page-break-after: always;"></div>
+
+# Servicios Adicionales
+
+## ImageController (`/images`)
+
+### GET /images/{profilepic}
+Obtiene la imagen de perfil del usuario autenticado.
+- **Auth**: Requiere JWT
+- **Response**: Imagen en bytes (image/jpeg)
+
+### POST /images/{profilepic}
+Sube una nueva imagen de perfil.
+- **Auth**: Requiere JWT
+- **Body**: MultipartFile (imagen)
+- **Response**: URL de la imagen guardada
+
+## ContactController (`/mail/contact`)
+
+### POST /mail/contact
+Envía un email de contacto desde el formulario público.
+- **Auth**: No requiere
+- **Body**: `{name, email, message}`
+- **Response**: Confirmación de envío
+
+## EmailService
+
+Servicio interno para envío de correos electrónicos:
+- Verificación de cuenta (con token)
+- Recuperación de contraseña (con token)
+- Notificaciones de sistema
+- Formularios de contacto
+
+## HealthController (`/health`)
+
+### GET /health
+Endpoint de health check para monitoreo.
+- **Auth**: No requiere
+- **Response**: `OK{1}`
+
+<div style="page-break-after: always;"></div>
 
 # Conclusión
 
-El backend multimodal para la aplicación DOT & DOT ha sido diseñado para ser seguro, escalable y flexible, permitiendo la integración con distintos frontends y dispositivos. Se ha establecido una estructura clara para la gestión de partidos, usuarios, arbitraje y resultados, asegurando la integridad de los datos y un acceso controlado basado en roles.
+El backend de DOT & DOT implementa una arquitectura REST robusta con comunicación en tiempo real mediante WebSockets, autenticación segura mediante JWT, y un modelo de datos completo que digitaliza el sistema de arbitraje de voleibol.
 
-El uso de Spring Boot junto con Spring Security proporcionará una arquitectura robusta, mientras que la utilización de JWT garantizará una autenticación segura y eficiente. Este sistema permitirá una experiencia optimizada para administradores, árbitros, jugadores y entrenadores, acercando el arbitraje digital al voleibol de una manera profesional y precisa.
+## Tecnologías Utilizadas
+
+- **Spring Boot 3.4.2** - Framework principal
+- **Spring Security** - Autenticación y autorización
+- **Spring Data JPA** - Persistencia con Hibernate
+- **MySQL** - Base de datos relacional
+- **JWT** - Tokens de autenticación
+- **WebSocket + STOMP** - Comunicación en tiempo real
+- **JavaMail** - Envío de correos
+- **Lombok** - Reducción de boilerplate
+
+## Características Implementadas
+
+1.  Sistema completo de autenticación con verificación por email  
+1.  Control de acceso basado en roles (Admin, Referee, User)  
+1.  CRUD completo de todas las entidades del sistema  
+1.  API de arbitraje con validación automática de reglas de voleibol  
+1.  Comunicación en tiempo real mediante WebSockets  
+1.  Endpoints públicos para consulta sin autenticación  
+1.  Gestión de imágenes de perfil  
+1.  Servicio de correo electrónico integrado  
+1.  Broadcasting automático de eventos de partidos  
+1.  Arquitectura en capas (Controller-Service-Repository)  
+1.  Validaciones a nivel de entidad y controlador  
+1.  Manejo centralizado de errores  
+1.  Logging de actividades  
+
+## Escalabilidad y Mantenimiento
+
+La arquitectura implementada permite:
+- Separación de responsabilidades por módulos
+- Fácil extensión con nuevos endpoints
+- Testing independiente por capas
+- Migración a microservicios si es necesario
+- Integración con servicios externos

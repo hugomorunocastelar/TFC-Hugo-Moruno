@@ -11,199 +11,198 @@ function PrivacyPolicy() {
             <main className="privacy-main">
                 <header>
                     <div className="privacy-title">
-                        <h1>Política de Privacidad — Dot&amp;Dot</h1>
-                        <button onClick={() => {navigate("/")}}>Volver</button>
+                        <h1>Privacy Policy — Dot&amp;Dot</h1>
+                        <button onClick={() => {navigate("/")}}>Back</button>
                     </div>
                     <p className="privacy-updated">
-                        Última actualización: 19 de noviembre de 2025
+                        Last updated: November 19, 2025
                     </p>
                 </header>
 
                 <section>
-                    <h2>1. Introducción</h2>
+                    <h2>1. Introduction</h2>
                     <p>
-                        En Dot&amp;Dot (en adelante, "Dot&amp;Dot", "nosotros" o "la Empresa") somos
-                        conscientes de la importancia de proteger la privacidad y los datos personales
-                        de las personas con las que interactuamos. La presente Política de Privacidad
-                        describe cómo recopilamos, utilizamos, almacenamos, protegemos y divulgamos los
-                        datos personales en cumplimiento de la normativa de protección de datos
-                        aplicable en España (LOPD/GDPR) y otras leyes relevantes.
+                        At Dot&amp;Dot (hereinafter, "Dot&amp;Dot", "we" or "the Company") we are
+                        aware of the importance of protecting the privacy and personal data
+                        of the people with whom we interact. This Privacy Policy
+                        describes how we collect, use, store, protect and disclose
+                        personal data in compliance with applicable data protection regulations
+                        in Spain (LOPD/GDPR) and other relevant laws.
                     </p>
                 </section>
 
                 <section>
-                    <h2>2. Responsable del tratamiento</h2>
+                    <h2>2. Data Controller</h2>
                     <p>
-                        Responsable: Dot&amp;Dot
+                        Controller: Dot&amp;Dot
                         <br />
-                        Domicilio: Calle Ejemplo, 1 — 28000, Ciudad (España)
+                        Address: Example Street, 1 — 28000, City (Spain)
                         <br />
-                        Email de contacto: privacidad@dotanddot.com
+                        Contact email: privacy@dotanddot.com
                     </p>
                 </section>
 
                 <section>
-                    <h2>3. Ámbito de aplicación</h2>
+                    <h2>3. Scope of Application</h2>
                     <p>
-                        Esta política se aplica a todos los datos personales que Dot&amp;Dot recopila a
-                        través de su sitio web, servicios, aplicaciones móviles, comunicaciones por
-                        correo electrónico, formularios, contratación de servicios, relaciones
-                        comerciales y cualquier otro canal en que se proporcionen datos personales a
-                        Dot&amp;Dot.
+                        This policy applies to all personal data that Dot&amp;Dot collects
+                        through its website, services, mobile applications, email communications,
+                        forms, service contracts, business relationships and any other channel
+                        through which personal data is provided to Dot&amp;Dot.
                     </p>
                 </section>
 
                 <section>
-                    <h2>4. Tipos de datos que recopilamos</h2>
+                    <h2>4. Types of Data We Collect</h2>
                     <p>
-                        Podemos recopilar, según la relación y los servicios contratados, las
-                        siguientes categorías de datos personales:
+                        We may collect, depending on the relationship and contracted services, the
+                        following categories of personal data:
                     </p>
                     <ul>
-                        <li>Identificativos: nombre, apellidos, NIF/CIF cuando proceda, fecha de nacimiento.</li>
-                        <li>Contacto: dirección postal, dirección de correo electrónico, números de teléfono.</li>
-                        <li>Datos de empleo y profesionales: empresa, cargo, datos del CV, referencias.</li>
-                        <li>Datos de facturación y transacciones: datos bancarios, historial de pagos y facturas.</li>
-                        <li>Datos técnicos: direcciones IP, datos de navegación, cookies y otros identificadores.</li>
-                        <li>Otros datos: cualquier otra información que nos facilite voluntariamente por
-                            motivos comerciales, de soporte o legales.</li>
+                        <li>Identification data: name, surnames, NIF/CIF when applicable, date of birth.</li>
+                        <li>Contact information: postal address, email address, phone numbers.</li>
+                        <li>Employment and professional data: company, position, CV data, references.</li>
+                        <li>Billing and transaction data: bank details, payment history and invoices.</li>
+                        <li>Technical data: IP addresses, browsing data, cookies and other identifiers.</li>
+                        <li>Other data: any other information you voluntarily provide for
+                            commercial, support or legal reasons.</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h2>5. Finalidades del tratamiento</h2>
-                    <p>Tratamos los datos personales para las siguientes finalidades:</p>
+                    <h2>5. Processing Purposes</h2>
+                    <p>We process personal data for the following purposes:</p>
                     <ul>
-                        <li>Prestar, gestionar y mejorar los servicios contratados.</li>
-                        <li>Gestionar la relación contractual, incluida la comunicación comercial y administrativa.</li>
-                        <li>Tramitar facturación, pagos, reclamaciones y obligaciones fiscales y contables.</li>
-                        <li>Responder a consultas, solicitudes de soporte y gestionar incidencias.</li>
-                        <li>Enviar comunicaciones comerciales y promocionales cuando se cuente con el consentimiento
-                            o exista una relación contractual que lo permita.</li>
-                        <li>Cumplir obligaciones legales, regulatorias y de seguridad.</li>
-                        <li>Analizar y optimizar el uso de nuestros servicios mediante herramientas de análisis.</li>
+                        <li>Provide, manage and improve contracted services.</li>
+                        <li>Manage the contractual relationship, including commercial and administrative communication.</li>
+                        <li>Process billing, payments, claims and tax and accounting obligations.</li>
+                        <li>Respond to inquiries, support requests and manage incidents.</li>
+                        <li>Send commercial and promotional communications when consent is obtained
+                            or there is a contractual relationship that permits it.</li>
+                        <li>Comply with legal, regulatory and security obligations.</li>
+                        <li>Analyze and optimize the use of our services through analysis tools.</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h2>6. Base jurídica del tratamiento</h2>
+                    <h2>6. Legal Basis for Processing</h2>
                     <p>
-                        Dependiendo de la finalidad, las bases legales para el tratamiento de datos pueden ser:
+                        Depending on the purpose, the legal bases for data processing may be:
                     </p>
                     <ul>
-                        <li>Consentimiento del interesado: para comunicaciones comerciales, boletines y tratamientos
-                            específicos que requieran autorización expresa.</li>
-                        <li>Ejecución de un contrato: cuando el tratamiento sea necesario para prestar un servicio
-                            o cumplir con un contrato suscrito con el interesado.</li>
-                        <li>Obligación legal: cuando se trate de cumplir obligaciones legales o fiscales.</li>
-                        <li>Interés legítimo: para prevención de fraude, seguridad del servicio, gestión administrativa
-                            y mejora de productos, siempre que no prevalezcan los derechos y libertades del afectado.</li>
+                        <li>Consent of the data subject: for commercial communications, newsletters and specific
+                            processing requiring express authorization.</li>
+                        <li>Contract execution: when processing is necessary to provide a service
+                            or comply with a contract signed with the data subject.</li>
+                        <li>Legal obligation: when it comes to complying with legal or tax obligations.</li>
+                        <li>Legitimate interest: for fraud prevention, service security, administrative management
+                            and product improvement, provided the rights and freedoms of the affected party do not prevail.</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h2>7. Conservación de los datos</h2>
+                    <h2>7. Data Retention</h2>
                     <p>
-                        Conservaremos los datos personales durante el tiempo necesario para cumplir con las finalidades
-                        descritas y para atender obligaciones legales, resolver disputas y hacer cumplir nuestros acuerdos.
-                        Cuando los datos ya no sean necesarios se suprimirán o anonimizarán, salvo que sea necesario conservarlos
-                        por prescripciones legales.
+                        We will retain personal data for the time necessary to fulfill the described purposes
+                        and to meet legal obligations, resolve disputes and enforce our agreements.
+                        When data is no longer necessary it will be deleted or anonymized, unless it is necessary to retain it
+                        due to legal requirements.
                     </p>
                 </section>
 
                 <section>
-                    <h2>8. Comunicaciones y cesiones</h2>
+                    <h2>8. Communications and Transfers</h2>
                     <p>
-                        No vendemos datos personales. Podemos compartir datos personales con:
+                        We do not sell personal data. We may share personal data with:
                     </p>
                     <ul>
-                        <li>Proveedores y subcontratistas que prestan servicios técnicos, administrativos, de pago o de soporte.</li>
-                        <li>Autoridades públicas cuando exista obligación legal o en cumplimiento de requerimientos legales.</li>
-                        <li>Socios comerciales con quien tengamos acuerdos para prestar servicios conjuntos, siempre con las
-                            garantías legales necesarias.</li>
+                        <li>Suppliers and subcontractors that provide technical, administrative, payment or support services.</li>
+                        <li>Public authorities when there is a legal obligation or in compliance with legal requirements.</li>
+                        <li>Business partners with whom we have agreements to provide joint services, always with the
+                            necessary legal guarantees.</li>
                     </ul>
                     <p>
-                        Cuando se transfieran datos fuera del Espacio Económico Europeo, garantizaremos mecanismos
-                        de protección adecuados (cláusulas contractuales estándar, decisiones de adecuación, etc.).
+                        When data is transferred outside the European Economic Area, we will ensure appropriate
+                        protection mechanisms (standard contractual clauses, adequacy decisions, etc.).
                     </p>
                 </section>
 
                 <section>
-                    <h2>9. Seguridad de los datos</h2>
+                    <h2>9. Data Security</h2>
                     <p>
-                        Implementamos medidas técnicas y organizativas apropiadas para proteger los datos personales frente
-                        a pérdida, acceso no autorizado, uso indebido, divulgación o alteración. Estas medidas incluyen controles
-                        de acceso, cifrado según necesidad, gestión de incidentes y revisiones periódicas de seguridad.
+                        We implement appropriate technical and organizational measures to protect personal data against
+                        loss, unauthorized access, misuse, disclosure or alteration. These measures include access controls,
+                        encryption as needed, incident management and periodic security reviews.
                     </p>
                 </section>
 
                 <section>
-                    <h2>10. Derechos de los interesados</h2>
+                    <h2>10. Rights of Data Subjects</h2>
                     <p>
-                        Los interesados tienen, en todo momento, los derechos reconocidos por la normativa de protección de datos:
+                        Data subjects have, at all times, the rights recognized by data protection regulations:
                     </p>
                     <ul>
-                        <li>Derecho de acceso: solicitar confirmación sobre si estamos tratando datos personales y acceder a ellos.</li>
-                        <li>Derecho de rectificación: solicitar la corrección de datos inexactos o incompletos.</li>
-                        <li>Derecho de supresión (derecho al olvido): solicitar la eliminación de los datos cuando proceda.</li>
-                        <li>Derecho de oposición: oponerse al tratamiento por motivos relacionados con su situación particular.</li>
-                        <li>Derecho de limitación del tratamiento: solicitar la limitación del tratamiento en determinados supuestos.</li>
-                        <li>Derecho a la portabilidad: recibir los datos en un formato estructurado y, cuando sea técnicamente posible,
-                            transferirlos a otro responsable.</li>
-                        <li>Derecho a retirar el consentimiento: cuando el tratamiento se base en el consentimiento, sin afectar la licitud
-                            del tratamiento previo a la retirada.</li>
+                        <li>Right of access: request confirmation about whether we are processing personal data and access to it.</li>
+                        <li>Right of rectification: request the correction of inaccurate or incomplete data.</li>
+                        <li>Right of erasure (right to be forgotten): request the deletion of data when appropriate.</li>
+                        <li>Right of objection: object to processing for reasons related to their particular situation.</li>
+                        <li>Right to restriction of processing: request the restriction of processing in certain cases.</li>
+                        <li>Right to data portability: receive data in a structured format and, when technically possible,
+                            transfer it to another controller.</li>
+                        <li>Right to withdraw consent: when processing is based on consent, without affecting the legality
+                            of processing prior to withdrawal.</li>
                     </ul>
                     <p>
-                        Para ejercer cualquier derecho puede enviar una solicitud a privacidad@dotanddot.com indicando el derecho que desea
-                        ejercer y aportando una copia de un documento que acredite su identidad. También puede presentar una reclamación ante
-                        la Agencia Española de Protección de Datos (AEPD) si considera que sus derechos no han sido respetados.
+                        To exercise any right you can send a request to privacy@dotanddot.com indicating the right you wish to
+                        exercise and providing a copy of a document that proves your identity. You can also file a complaint with
+                        the Spanish Data Protection Agency (AEPD) if you believe your rights have not been respected.
                     </p>
                 </section>
 
                 <section>
-                    <h2>11. Cookies y tecnologías similares</h2>
+                    <h2>11. Cookies and Similar Technologies</h2>
                     <p>
-                        Usamos cookies y otras tecnologías para recopilar información técnica sobre su navegación y para mejorar la experiencia
-                        de usuario. Al acceder a nuestro sitio se mostrará un aviso de cookies con información sobre tipos de cookies, finalidades
-                        y cómo configurarlas o rechazarlas. Puede ajustar sus preferencias en cualquier momento a través de la configuración de su navegador.
+                        We use cookies and other technologies to collect technical information about your browsing and to improve the user
+                        experience. When accessing our site, a cookie notice will be displayed with information about types of cookies, purposes
+                        and how to configure or reject them. You can adjust your preferences at any time through your browser settings.
                     </p>
                 </section>
 
                 <section>
-                    <h2>12. Menores</h2>
+                    <h2>12. Minors</h2>
                     <p>
-                        Nuestros servicios no están dirigidos a menores de edad. No recopilamos conscientemente datos de menores sin el
-                        consentimiento verificable de sus padres o tutores. Si detectamos que hemos recopilado datos de un menor sin
-                        la debida autorización lo eliminaremos de forma inmediata.
+                        Our services are not directed to minors. We do not knowingly collect data from minors without
+                        verifiable consent from their parents or guardians. If we detect that we have collected data from a minor without
+                        proper authorization we will delete it immediately.
                     </p>
                 </section>
 
                 <section>
-                    <h2>13. Cambios en la política</h2>
+                    <h2>13. Changes to the Policy</h2>
                     <p>
-                        Podemos actualizar esta Política de Privacidad ocasionalmente. Publicaremos cualquier cambio en esta página y,
-                        cuando corresponda, le notificaremos por otros medios (por ejemplo, correo electrónico) para informarle de cambios
-                        significativos.
+                        We may update this Privacy Policy occasionally. We will post any changes on this page and,
+                        when appropriate, we will notify you by other means (for example, email) to inform you of significant
+                        changes.
                     </p>
                 </section>
 
                 <section>
-                    <h2>14. Contacto</h2>
+                    <h2>14. Contact</h2>
                     <p>
-                        Si tiene preguntas, solicitudes o desea ejercer sus derechos, puede contactar con nuestro Delegado de Protección de Datos
-                        o el equipo responsable de privacidad en:
+                        If you have questions, requests or wish to exercise your rights, you can contact our Data Protection Officer
+                        or the privacy team at:
                     </p>
                     <p>
-                        Email: privacidad@dotanddot.com
+                        Email: privacy@dotanddot.com
                         <br />
-                        Dirección: Calle Ejemplo, 1 — 28000, Ciudad (España)
+                        Address: Example Street, 1 — 28000, City (Spain)
                     </p>
                 </section>
 
                 <footer className="privacy-footer">
                     <p className="privacy-footer-text">
-                        Dot&amp;Dot se compromete a proteger su privacidad y a cumplir con la normativa aplicable. Esta política describe nuestras prácticas
-                        generales; si necesita información específica sobre un tratamiento concreto, contacte con nosotros.
+                        Dot&amp;Dot is committed to protecting your privacy and complying with applicable regulations. This policy describes our general
+                        practices; if you need specific information about a particular processing, contact us.
                     </p>
                 </footer>
             </main>

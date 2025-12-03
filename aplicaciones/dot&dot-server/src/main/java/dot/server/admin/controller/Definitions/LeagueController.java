@@ -1,6 +1,7 @@
 package dot.server.admin.controller.Definitions;
 
 import dot.server.admin.service.Definitions.LeagueService;
+import dot.server.auth.payload.response.HttpResponse;
 import dot.server.data.MatchDefinitions.dto.LeagueDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ public class LeagueController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LeagueDto>> getAllLeagues() {
+    public ResponseEntity<?> getAllLeagues() {
         List<LeagueDto> leagues = leagueService.findAll();
         return ResponseEntity.ok(leagues);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LeagueDto> getLeagueById(@PathVariable Long id) {
+    public ResponseEntity<?> getLeagueById(@PathVariable Long id) {
         LeagueDto league = leagueService.findById(id);
         if (league == null) {
             return ResponseEntity.notFound().build();
@@ -35,13 +36,13 @@ public class LeagueController {
     }
 
     @PostMapping
-    public ResponseEntity<LeagueDto> createLeague(@RequestBody LeagueDto leagueDto) {
-        LeagueDto savedLeague = leagueService.save(leagueDto);
-        return new ResponseEntity<>(savedLeague, HttpStatus.CREATED);
+    public ResponseEntity<?> createLeague(@RequestBody LeagueDto leagueDto) {
+        LeagueDto created = leagueService.save(leagueDto);
+        return ResponseEntity.ok(new HttpResponse(HttpStatus.CREATED, created));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LeagueDto> updateLeague(@PathVariable Long id, @RequestBody LeagueDto leagueDto) {
+    public ResponseEntity<?> updateLeague(@PathVariable Long id, @RequestBody LeagueDto leagueDto) {
         LeagueDto existingLeague = leagueService.findById(id);
         if (existingLeague == null) return ResponseEntity.notFound().build();
         existingLeague.setName(leagueDto.getName());
@@ -54,7 +55,7 @@ public class LeagueController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLeague(@PathVariable Long id) {
+    public ResponseEntity<?> deleteLeague(@PathVariable Long id) {
         if (leagueService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }

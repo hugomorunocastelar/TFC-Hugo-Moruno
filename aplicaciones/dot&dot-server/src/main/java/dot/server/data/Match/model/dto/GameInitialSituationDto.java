@@ -8,7 +8,6 @@ import lombok.Data;
 public class GameInitialSituationDto implements DtoMapper<GameInitialSituation, GameInitialSituationDto> {
 
     private long id;
-    private GameDto game;
     private TeamDto localTeam;
     private TeamDto visitTeam;
     private TeamDto startingTeam;
@@ -19,7 +18,6 @@ public class GameInitialSituationDto implements DtoMapper<GameInitialSituation, 
         if (entity == null) return null;
         GameInitialSituationDto dto = new GameInitialSituationDto();
         dto.setId(entity.getId());
-        dto.setGame(new GameDto().to(entity.getGame()));
         dto.setLocalTeam(TeamDto.from(entity.getLocalTeam()));
         dto.setVisitTeam(TeamDto.from(entity.getVisitTeam()));
         dto.setStartingTeam(TeamDto.from(entity.getStartingTeam()));
@@ -32,7 +30,6 @@ public class GameInitialSituationDto implements DtoMapper<GameInitialSituation, 
         if (dto == null) return null;
         GameInitialSituation entity = new GameInitialSituation();
         entity.setId(dto.getId());
-        entity.setGame(new GameDto().from(dto.getGame()));
         entity.setLocalTeam(TeamDto.to(dto.getLocalTeam()));
         entity.setVisitTeam(TeamDto.to(dto.getVisitTeam()));
         entity.setStartingTeam(TeamDto.to(dto.getStartingTeam()));

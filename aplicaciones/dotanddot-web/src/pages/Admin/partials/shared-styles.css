@@ -1,12 +1,12 @@
-/* Shared Admin Partials Styles */
 
-/* Container */
+
+
 .admin-container {
   width: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Container */
+
 .admin-form-container {
   background: white;
   border-radius: 12px;
@@ -208,14 +208,14 @@
   font-size: 0.95rem;
 }
 
-/* Table Actions */
+
 .admin-table-actions {
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
-/* Badges */
+
 .admin-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -246,7 +246,7 @@
   color: #721c24;
 }
 
-/* No Data */
+
 .admin-no-data {
   text-align: center;
   padding: 3rem 1rem !important;
@@ -254,7 +254,7 @@
   font-style: italic;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .admin-container {
     padding: 1rem;

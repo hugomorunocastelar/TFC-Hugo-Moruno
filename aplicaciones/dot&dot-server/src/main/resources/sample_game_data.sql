@@ -1,28 +1,88 @@
+-- ============================================================================
+-- RESET ALL TABLES
+-- ============================================================================
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Delete data in reverse order of dependencies
+DELETE FROM game_set;
+DELETE FROM game_sanctions;
+DELETE FROM game_observations;
+DELETE FROM game_referee_team;
+DELETE FROM game_details;
+DELETE FROM game_initial_situation;
+DELETE FROM game_result;
+DELETE FROM game;
+DELETE FROM player;
+DELETE FROM coach;
+DELETE FROM referee;
+DELETE FROM team;
+DELETE FROM season;
+DELETE FROM league;
+DELETE FROM competition;
+DELETE FROM club;
+DELETE FROM gameplace;
+DELETE FROM person;
+DELETE FROM city;
+DELETE FROM user_roles;
+DELETE FROM users;
+DELETE FROM roles;
+
+-- Reset auto-increment counters
+ALTER TABLE roles AUTO_INCREMENT = 1;
+ALTER TABLE users AUTO_INCREMENT = 1;
+ALTER TABLE city AUTO_INCREMENT = 1;
+ALTER TABLE person AUTO_INCREMENT = 1;
+ALTER TABLE club AUTO_INCREMENT = 1;
+ALTER TABLE gameplace AUTO_INCREMENT = 1;
+ALTER TABLE competition AUTO_INCREMENT = 1;
+ALTER TABLE league AUTO_INCREMENT = 1;
+ALTER TABLE season AUTO_INCREMENT = 1;
+ALTER TABLE team AUTO_INCREMENT = 1;
+ALTER TABLE game AUTO_INCREMENT = 1;
+ALTER TABLE referee AUTO_INCREMENT = 1;
+ALTER TABLE coach AUTO_INCREMENT = 1;
+ALTER TABLE player AUTO_INCREMENT = 1;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================================
+-- INSERT SAMPLE DATA
+-- ============================================================================
+
 INSERT INTO roles (name)
 VALUES ('ROLE_USER'),
        ('ROLE_ADMIN'),
        ('ROLE_REFEREE');
 
-INSERT INTO users (username, password, email)
-VALUES ('admin', '$2a$10$ct32Oj3tMPd2id.W9QPxt.T4FX7L9C6pNKImaasanJnCMW8Gcv.sG', 'admin@dotdot.com'),
-       ('referee', '$2a$10$48NT70UvDCImcLFvbttJquGMy8rN6Za0qHXCNu8FBmdxdulzIkx0m', 'referee@dotdot.com');
+INSERT INTO users (id, username, password, email, enabled, created_at, updated_at)
+VALUES (1, 'hugo', '$2a$10$S8hm4f.FhdDawuEgiJ9Rbu8vSanFZqm.6w0Ydc.70EeHpsEZpYMjK', 'hugomoruno2003@gmail.com', TRUE, '2025-11-28 09:37:29.816506', '2025-11-28 09:38:26.794178'),
+       (2, 'admin', '$2a$10$S8hm4f.FhdDawuEgiJ9Rbu8vSanFZqm.6w0Ydc.70EeHpsEZpYMjK', 'admin@dotdot.com', TRUE, '2025-11-28 09:37:29.816506', '2025-11-28 09:37:29.816506'),
+       (3, 'referee', '$2a$10$S8hm4f.FhdDawuEgiJ9Rbu8vSanFZqm.6w0Ydc.70EeHpsEZpYMjK', 'referee@dotdot.com', TRUE, '2025-11-28 09:37:29.816506', '2025-11-28 09:37:29.816506');
 
 INSERT INTO user_roles (user_id, role_id)
-VALUES (1, 2),
-       (2, 3);
+VALUES (1, 1),
+       (1, 2),
+       (2, 2),
+       (3, 3);
 
-INSERT INTO city (id, name, region, firstPC, lastPC)
-VALUES (1, 'Cáceres', 'Extremadura', '10001', '10010')
-     , (2, 'Badajoz', 'Extremadura', '06001', '06010')
-     , (3, 'Mérida', 'Extremadura', '06800', '06809')
-     , (4, 'Plasencia', 'Extremadura', '10600', '10609')
-     , (5, 'Don Benito', 'Extremadura', '06400', '06409')
-     , (6, 'Almendralejo', 'Extremadura', '06200', '06209')
-     , (7, 'Navalmoral de la Mata', 'Extremadura', '10300', '10309')
-     , (8, 'Zafra', 'Extremadura', '06300', '06309')
-     , (9, 'Villanueva de la Serena', 'Extremadura', '06700', '06709')
-     , (10, 'Montijo', 'Extremadura', '06480', '06489')
-     , (11, 'Villanueva del Fresno', 'Extremadura', '06110', '06111');
+INSERT INTO city (id, name, region, firstPC, lastPC, latitude, longitude)
+VALUES (1, 'Cáceres', 'Extremadura', '10001', '10010', 39.4769, -6.3725)
+        , (2, 'Badajoz', 'Extremadura', '06001', '06010', 38.8794, -6.9706)
+        , (3, 'Mérida', 'Extremadura', '06800', '06809', 38.9161, -6.3437)
+        , (4, 'Plasencia', 'Extremadura', '10600', '10609', 40.0312, -6.0885)
+        , (5, 'Don Benito', 'Extremadura', '06400', '06409', 38.9569, -5.8613)
+        , (6, 'Almendralejo', 'Extremadura', '06200', '06209', 38.6839, -6.4073)
+        , (7, 'Navalmoral de la Mata', 'Extremadura', '10300', '10309', 39.8916, -5.5403)
+        , (8, 'Zafra', 'Extremadura', '06300', '06309', 38.4250, -6.4170)
+        , (9, 'Villanueva de la Serena', 'Extremadura', '06700', '06709', 38.9734, -5.7972)
+        , (10, 'Montijo', 'Extremadura', '06480', '06489', 38.9085, -6.6177)
+        , (11, 'Villanueva del Fresno', 'Extremadura', '06110', '06111', 38.3751, -7.1688)
+        , (12, 'Coria', 'Extremadura', '10800', '10809', 40.0159, -6.5395)
+        , (13, 'Trujillo', 'Extremadura', '10200', '10209', 39.4582, -5.8818)
+        , (14, 'Jerez de los Caballeros', 'Extremadura', '06380', '06389', 38.3208, -6.7725)
+        , (15, 'Olivenza', 'Extremadura', '06100', '06109', 38.6804, -7.1018)
+        , (16, 'Miajadas', 'Extremadura', '10100', '10109', 39.1517, -5.9088)
+        , (17, 'Talayuela', 'Extremadura', '10310', '10319', 39.9851, -5.6070);
 
 INSERT INTO gameplace (name, gamefields, address, city_id)
 VALUES ('Pabellón Multiusos Cáceres', 2, 'Av. de Pierre de Coubertin, s/n, Cáceres', 1),
@@ -38,12 +98,11 @@ VALUES ('Pabellón Multiusos Cáceres', 2, 'Av. de Pierre de Coubertin, s/n, Cá
        ('Pabellón Villanueva del Fresno', 1, 'Calle Dehesa Boyal, Villanueva del Fresno', 11);
 
 INSERT INTO competition (name, day_start, day_end)
-VALUES ('National', '2024-09-01', '2025-09-01'),
-       ('Judex', '2024-09-01', '2025-09-01'),
-       ('Federation', '2024-09-01', '2025-09-01'),
-       ('Friendly', '2024-09-01', '2025-09-01');
+VALUES ('National', '2025-09-01', '2026-06-30'),
+       ('Judex', '2025-09-01', '2026-06-30'),
+       ('Federation', '2025-09-01', '2026-06-30'),
+       ('Friendly', '2025-09-01', '2026-06-30');
 
--- Inserts para 20 adultos (1 cada 10 personas)
 INSERT INTO person (dni, name, surnames, birth_date, address, phone, email, dni_verified, tutored, tutor_id)
 VALUES ('10000001A', 'Carlos', 'García López', '1975-05-20', 'Calle Mayor 1, Badajoz', '924100001',
         'carlos.garcia1@example.com', TRUE, FALSE, NULL),
@@ -84,10 +143,8 @@ VALUES ('10000001A', 'Carlos', 'García López', '1975-05-20', 'Calle Mayor 1, B
        ('10000019S', 'Jorge', 'Romero Díaz', '1967-01-29', 'Calle Mayor 19, Badajoz', '924100019',
         'jorge.romero19@example.com', TRUE, FALSE, NULL),
        ('10000020T', 'Natalia', 'Santos Vega', '1979-06-18', 'Av. España 20, Cáceres', '927100020',
-        'natalia.santos20@example.com', TRUE, FALSE, NULL);
-
-INSERT INTO person (dni, name, surnames, birth_date, address, phone, email, dni_verified, tutored, tutor_id)
-VALUES ('20000001A', 'Lucía', 'Fernández Martín', '2009-03-20', 'Av. de España 21, Cáceres', '927200001',
+        'natalia.santos20@example.com', TRUE, FALSE, NULL),
+       ('20000001A', 'Lucía', 'Fernández Martín', '2009-03-20', 'Av. de España 21, Cáceres', '927200001',
         'lucia.fernandez21@example.com', TRUE, TRUE, NULL),
        ('20000002B', 'Daniel', 'Sánchez Ruiz', '2006-11-12', 'Calle Ancha 22, Mérida', '924200002',
         'daniel.sanchez22@example.com', TRUE, TRUE, NULL),
@@ -447,7 +504,7 @@ VALUES ('20000001A', 'Lucía', 'Fernández Martín', '2009-03-20', 'Av. de Espa�
         'isabel.navarro199@example.com', TRUE, TRUE, NULL),
        ('20000180X', 'Adrián', 'García Paredes', '2008-11-22', 'Calle Mayor 200, Badajoz', '924200180',
         'adrian.garcia200@example.com', TRUE, TRUE, NULL);
--- Clubs
+
 INSERT INTO club (id, name, id_city_id)
 VALUES (1, 'Voley Cáceres', 1),
        (2, 'Badajoz Voley Club', 2),
@@ -469,14 +526,59 @@ VALUES (1, 'Voley Cáceres', 1),
        (18, 'Los Santos Volley Power', 2),
        (19, 'Voley Almoharín', 5),
        (20, 'Moraleja Spikers', 1),
-       (21, 'EMD Villanueva del Fresno', 11);
+       (21, 'EMD Villanueva del Fresno', 11),
+       (22, 'Coria Volley', 12),
+       (23, 'Trujillo Net', 13),
+       (24, 'Jerez Volley', 14),
+       (25, 'Olivenza Smash', 15),
+       (26, 'Miajadas Spikers', 16),
+       (27, 'Talayuela Blocks', 17);
 
 INSERT INTO league (id, name, category, competition_id, code_prefix)
-VALUES (1, 'Group 1A Pre-Benjamín', 'PRE_BENJAMIN', 1, '1A_PRE'),
-       (2, 'Group 2B Benjamín', 'BENJAMIN', 2, '2B_BEN'),
-       (3, 'Group 1C Alevín', 'ALEVIN', 3, '1C_ALE'),
-       (4, 'Group 2D Infantil', 'INFANTILE', 2, '2D_INF'),
-       (5, 'Group 1A Senior', 'SENIOR', 1, '1A_SEN');
+VALUES 
+-- National Competition (id=1) - All categories
+(1, 'National Pre-Benjamín A', 'PRE_BENJAMIN', 1, '1A_PRE'),
+(2, 'National Benjamín A', 'BENJAMIN', 1, '1A_BEN'),
+(3, 'National Alevín A', 'ALEVIN', 1, '1A_ALE'),
+(4, 'National Infantil A', 'INFANTILE', 1, '1A_INF'),
+(5, 'National Cadete A', 'CADET', 1, '1A_CAD'),
+(6, 'National Juvenil A', 'YOUTH', 1, '1A_YOU'),
+(7, 'National Junior A', 'JUNIOR', 1, '1A_JUN'),
+(8, 'National Absoluto A', 'ABSOLUTE', 1, '1A_ABS'),
+(9, 'National Senior A', 'SENIOR', 1, '1A_SEN'),
+
+-- Judex Competition (id=2) - All categories
+(10, 'Judex Pre-Benjamín B', 'PRE_BENJAMIN', 2, '2B_PRE'),
+(11, 'Judex Benjamín B', 'BENJAMIN', 2, '2B_BEN'),
+(12, 'Judex Alevín B', 'ALEVIN', 2, '2B_ALE'),
+(13, 'Judex Infantil B', 'INFANTILE', 2, '2B_INF'),
+(14, 'Judex Cadete B', 'CADET', 2, '2B_CAD'),
+(15, 'Judex Juvenil B', 'YOUTH', 2, '2B_YOU'),
+(16, 'Judex Junior B', 'JUNIOR', 2, '2B_JUN'),
+(17, 'Judex Absoluto B', 'ABSOLUTE', 2, '2B_ABS'),
+(18, 'Judex Senior B', 'SENIOR', 2, '2B_SEN'),
+
+-- Federation Competition (id=3) - All categories
+(19, 'Federation Pre-Benjamín C', 'PRE_BENJAMIN', 3, '3C_PRE'),
+(20, 'Federation Benjamín C', 'BENJAMIN', 3, '3C_BEN'),
+(21, 'Federation Alevín C', 'ALEVIN', 3, '3C_ALE'),
+(22, 'Federation Infantil C', 'INFANTILE', 3, '3C_INF'),
+(23, 'Federation Cadete C', 'CADET', 3, '3C_CAD'),
+(24, 'Federation Juvenil C', 'YOUTH', 3, '3C_YOU'),
+(25, 'Federation Junior C', 'JUNIOR', 3, '3C_JUN'),
+(26, 'Federation Absoluto C', 'ABSOLUTE', 3, '3C_ABS'),
+(27, 'Federation Senior C', 'SENIOR', 3, '3C_SEN'),
+
+-- Friendly Competition (id=4) - All categories
+(28, 'Friendly Pre-Benjamín D', 'PRE_BENJAMIN', 4, '4D_PRE'),
+(29, 'Friendly Benjamín D', 'BENJAMIN', 4, '4D_BEN'),
+(30, 'Friendly Alevín D', 'ALEVIN', 4, '4D_ALE'),
+(31, 'Friendly Infantil D', 'INFANTILE', 4, '4D_INF'),
+(32, 'Friendly Cadete D', 'CADET', 4, '4D_CAD'),
+(33, 'Friendly Juvenil D', 'YOUTH', 4, '4D_YOU'),
+(34, 'Friendly Junior D', 'JUNIOR', 4, '4D_JUN'),
+(35, 'Friendly Absoluto D', 'ABSOLUTE', 4, '4D_ABS'),
+(36, 'Friendly Senior D', 'SENIOR', 4, '4D_SEN');
 
 INSERT INTO team (name, dni_captain_id, id_club_id, category)
 VALUES ('PreBen 1', 1, 1, 0),
@@ -496,63 +598,215 @@ VALUES ('PreBen 1', 1, 1, 0),
        ('Abs 1', 15, 5, 7),
        ('Abs 2', 16, 1, 7),
        ('Sen 1', 17, 2, 8),
-       ('Sen 2', 18, 3, 8);
+       ('Sen 2', 18, 3, 8),
+       ('PreBen 3', 19, 22, 0),
+       ('Benj 3',   20, 23, 1),
+       ('Alev 3',   1,  24, 2),
+       ('Inf 3',    2,  25, 3),
+       ('Cad 3',    3,  26, 4),
+       ('Sen 3',    4,  27, 8);
 
 INSERT INTO game (id, unique_code, playing, finished, relevance, league_id)
 VALUES (1, '1A_PREAAA000', false, false, 1, 1),
        (2, '1A_PREAAA001', false, false, 3, 1),
        (3, '1A_PREAAA002', false, false, 5, 1),
-
        (4, '2B_BENBBB000', true, false, 2, 2),
        (5, '2B_BENBBB001', true, false, 4, 2),
        (6, '2B_BENBBB002', true, false, 5, 2),
-
        (7, '1C_ALECCC000', false, true, 1, 3),
        (8, '1C_ALECCC001', false, true, 3, 3),
        (9, '1C_ALECCC002', false, true, 5, 3),
-
        (10, '2D_INFDDD000', false, false, 2, 4),
        (11, '2D_INFDDD001', true, false, 3, 4),
        (12, '2D_INFDDD002', false, true, 4, 4),
-
        (13, '1A_SENEEE000', false, false, 1, 5),
        (14, '1A_SENEEE001', true, false, 2, 5),
-       (15, '1A_SENEEE002', false, true, 3, 5);
+       (15, '1A_SENEEE002', false, true, 3, 5),
+       (16, '1A_PREAAA003', false, false, 2, 1),
+       (17, '2B_BENBBB003', true,  false, 3, 2),
+       (18, '1C_ALECCC003', false, true,  4, 3),
+       (19, '2D_INFDDD003', false, false, 2, 4),
+       (20, '1A_SENEEE003', true,  false, 5, 5);
 
-INSERT INTO game_result (unique_code, points_local, points_visit, winner_team_id, time_start, time_end, duration)
-VALUES ('1A_PREAAA000', 25, 20, 1, '2025-06-09 10:00:00', '2025-06-09 10:45:00', 45),
-       ('1A_PREAAA001', 22, 25, 3, '2025-06-09 11:00:00', '2025-06-09 11:40:00', 40),
-       ('1A_PREAAA002', 18, 25, 3, '2025-06-09 12:00:00', '2025-06-09 12:35:00', 35),
-       ('2B_BENBBB000', 18, 25, 5, '2025-06-09 13:00:00', '2025-06-09 13:50:00', 50),
-       ('2B_BENBBB001', 26, 24, 4, '2025-06-09 14:00:00', '2025-06-09 14:45:00', 45),
-       ('2B_BENBBB002', 30, 28, 5, '2025-06-09 15:00:00', '2025-06-09 15:40:00', 40),
-       ('1C_ALECCC000', 21, 23, 8, '2025-06-09 16:00:00', '2025-06-09 16:35:00', 35),
-       ('1C_ALECCC001', 25, 22, 7, '2025-06-09 17:00:00', '2025-06-09 17:45:00', 45),
-       ('1C_ALECCC002', 20, 25, 9, '2025-06-09 18:00:00', '2025-06-09 18:35:00', 35),
-       ('2D_INFDDD000', 18, 19, 1, '2025-06-09 19:00:00', '2025-06-09 19:30:00', 30),
-       ('2D_INFDDD001', 25, 17, 1, '2025-06-09 19:45:00', '2025-06-09 20:15:00', 30),
-       ('2D_INFDDD002', 24, 26, 2, '2025-06-09 20:30:00', '2025-06-09 21:00:00', 30),
-       ('1A_SENEEE000', 25, 20, 3, '2025-06-09 21:15:00', '2025-06-09 21:45:00', 30),
-       ('1A_SENEEE001', 22, 25, 5, '2025-06-09 22:00:00', '2025-06-09 22:30:00', 30),
-       ('1A_SENEEE002', 21, 25, 5, '2025-06-09 22:45:00', '2025-06-09 23:15:00', 30);
+-- Updated for volleyball structure: points_local/points_visit now store total accumulated points
+-- sets_won_local/sets_won_visit store sets won by each team (max 3 to win)
+-- Only finished games have results
+INSERT INTO game_result (unique_code, points_local, points_visit, sets_won_local, sets_won_visit, winner_team_id, time_start, time_end, duration)
+VALUES ('2B_BENBBB000', 94, 103, 2, 3, 5, '2025-06-09 13:00:00', '2025-06-09 13:50:00', 50),
+       ('2B_BENBBB001', 84, 72, 3, 1, 4, '2025-06-09 14:00:00', '2025-06-09 14:45:00', 45),
+       ('2B_BENBBB002', 75, 64, 3, 0, 5, '2025-06-09 15:00:00', '2025-06-09 15:40:00', 40),
+       ('1C_ALECCC000', 64, 75, 1, 3, 8, '2025-06-09 16:00:00', '2025-06-09 16:35:00', 35),
+       ('1C_ALECCC001', 75, 68, 3, 1, 7, '2025-06-09 17:00:00', '2025-06-09 17:45:00', 45),
+       ('1C_ALECCC002', 93, 105, 2, 3, 9, '2025-06-09 18:00:00', '2025-06-09 18:35:00', 35),
+       ('2D_INFDDD001', 75, 59, 3, 1, 1, '2025-06-09 19:45:00', '2025-06-09 20:15:00', 30),
+       ('2D_INFDDD002', 94, 103, 2, 3, 2, '2025-06-09 20:30:00', '2025-06-09 21:00:00', 30),
+       ('1A_SENEEE001', 88, 97, 2, 3, 5, '2025-06-09 22:00:00', '2025-06-09 22:30:00', 30),
+       ('1A_SENEEE002', 84, 101, 1, 3, 5, '2025-06-09 22:45:00', '2025-06-09 23:15:00', 30),
+       ('1C_ALECCC003', 97, 93, 3, 2, 9, '2025-06-10 18:00:00', '2025-06-10 18:45:00', 45);
+
+-- Game sets data: each game has 3-5 sets with set_number (1-5)
+-- Format: (unique_code, set_number, points_local, points_visit, local_alignment, visit_alignment, time_start, time_end)
+-- Only finished or playing games have sets data
+INSERT INTO game_set (unique_code, set_number, points_local, points_visit, local_alignment, visit_alignment, time_start, time_end)
+VALUES 
+-- Game 2B_BENBBB000: Visit wins 3-2 (sets: 25-22, 23-25, 20-25, 26-24, 15-17)
+('2B_BENBBB000', 1, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 13:00:00', '2025-06-09 13:12:00'),
+('2B_BENBBB000', 2, 23, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 13:14:00', '2025-06-09 13:26:00'),
+('2B_BENBBB000', 3, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 13:28:00', '2025-06-09 13:38:00'),
+('2B_BENBBB000', 4, 26, 24, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 13:40:00', '2025-06-09 13:53:00'),
+('2B_BENBBB000', 5, 15, 17, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 13:55:00', '2025-06-09 14:05:00'),
+
+-- Game 2B_BENBBB001: Local wins 3-1 (sets: 25-18, 22-25, 25-21, 25-20)
+('2B_BENBBB001', 1, 25, 18, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 14:00:00', '2025-06-09 14:11:00'),
+('2B_BENBBB001', 2, 22, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 14:13:00', '2025-06-09 14:24:00'),
+('2B_BENBBB001', 3, 25, 21, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 14:26:00', '2025-06-09 14:37:00'),
+('2B_BENBBB001', 4, 25, 20, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 14:39:00', '2025-06-09 14:49:00'),
+
+-- Game 2B_BENBBB002: Local wins 3-0 (sets: 25-21, 25-20, 25-23)
+('2B_BENBBB002', 1, 25, 21, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 15:00:00', '2025-06-09 15:12:00'),
+('2B_BENBBB002', 2, 25, 20, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 15:14:00', '2025-06-09 15:24:00'),
+('2B_BENBBB002', 3, 25, 23, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 15:26:00', '2025-06-09 15:38:00'),
+
+-- Game 1C_ALECCC000: Visit wins 3-1 (sets: 21-25, 18-25, 25-20, 20-25)
+('1C_ALECCC000', 1, 21, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 16:00:00', '2025-06-09 16:12:00'),
+('1C_ALECCC000', 2, 18, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 16:14:00', '2025-06-09 16:24:00'),
+('1C_ALECCC000', 3, 25, 20, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 16:26:00', '2025-06-09 16:38:00'),
+('1C_ALECCC000', 4, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 16:40:00', '2025-06-09 16:50:00'),
+
+-- Game 1C_ALECCC001: Local wins 3-1 (sets: 25-18, 25-21, 20-25, 25-22)
+('1C_ALECCC001', 1, 25, 18, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 17:00:00', '2025-06-09 17:11:00'),
+('1C_ALECCC001', 2, 25, 21, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 17:13:00', '2025-06-09 17:24:00'),
+('1C_ALECCC001', 3, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 17:26:00', '2025-06-09 17:36:00'),
+('1C_ALECCC001', 4, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 17:38:00', '2025-06-09 17:49:00'),
+
+-- Game 1C_ALECCC002: Visit wins 3-2 (sets: 25-22, 23-25, 20-25, 25-23, 18-20)
+('1C_ALECCC002', 1, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 18:00:00', '2025-06-09 18:11:00'),
+('1C_ALECCC002', 2, 23, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 18:13:00', '2025-06-09 18:24:00'),
+('1C_ALECCC002', 3, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 18:26:00', '2025-06-09 18:36:00'),
+('1C_ALECCC002', 4, 25, 23, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 18:38:00', '2025-06-09 18:49:00'),
+('1C_ALECCC002', 5, 18, 20, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 18:51:00', '2025-06-09 19:01:00'),
+
+-- Game 2D_INFDDD001: Local wins 3-1 (sets: 25-18, 25-16, 20-25, 25-20)
+('2D_INFDDD001', 1, 25, 18, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 19:45:00', '2025-06-09 19:55:00'),
+('2D_INFDDD001', 2, 25, 16, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 19:57:00', '2025-06-09 20:06:00'),
+('2D_INFDDD001', 3, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 20:08:00', '2025-06-09 20:18:00'),
+('2D_INFDDD001', 4, 25, 20, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 20:20:00', '2025-06-09 20:30:00'),
+
+-- Game 2D_INFDDD002: Visit wins 3-2 (sets: 25-22, 23-25, 20-25, 26-24, 15-17)
+('2D_INFDDD002', 1, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 20:30:00', '2025-06-09 20:40:00'),
+('2D_INFDDD002', 2, 23, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 20:42:00', '2025-06-09 20:52:00'),
+('2D_INFDDD002', 3, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 20:54:00', '2025-06-09 21:03:00'),
+('2D_INFDDD002', 4, 26, 24, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 21:05:00', '2025-06-09 21:16:00'),
+('2D_INFDDD002', 5, 15, 17, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 21:18:00', '2025-06-09 21:27:00'),
+
+-- Game 1A_SENEEE001: Visit wins 3-2 (sets: 25-22, 21-25, 17-25, 25-23, 15-17)
+('1A_SENEEE001', 1, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:00:00', '2025-06-09 22:11:00'),
+('1A_SENEEE001', 2, 21, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:13:00', '2025-06-09 22:23:00'),
+('1A_SENEEE001', 3, 17, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:25:00', '2025-06-09 22:34:00'),
+('1A_SENEEE001', 4, 25, 23, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:36:00', '2025-06-09 22:47:00'),
+('1A_SENEEE001', 5, 15, 17, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:49:00', '2025-06-09 22:58:00'),
+
+-- Game 1A_SENEEE002: Visit wins 3-1 (sets: 25-22, 23-25, 19-25, 21-25)
+('1A_SENEEE002', 1, 25, 22, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:45:00', '2025-06-09 22:56:00'),
+('1A_SENEEE002', 2, 23, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 22:58:00', '2025-06-09 23:08:00'),
+('1A_SENEEE002', 3, 19, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 23:10:00', '2025-06-09 23:19:00'),
+('1A_SENEEE002', 4, 21, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-09 23:21:00', '2025-06-09 23:31:00'),
+
+-- Game 1C_ALECCC003: Local wins 3-2 (sets: 25-18, 23-25, 25-21, 20-25, 17-15)
+('1C_ALECCC003', 1, 25, 18, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-10 18:00:00', '2025-06-10 18:10:00'),
+('1C_ALECCC003', 2, 23, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-10 18:12:00', '2025-06-10 18:23:00'),
+('1C_ALECCC003', 3, 25, 21, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-10 18:25:00', '2025-06-10 18:36:00'),
+('1C_ALECCC003', 4, 20, 25, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-10 18:38:00', '2025-06-10 18:48:00'),
+('1C_ALECCC003', 5, 17, 15, 'ALIGNMENT_6_0', 'ALIGNMENT_6_0', '2025-06-10 18:50:00', '2025-06-10 19:00:00');
 
 INSERT INTO game_initial_situation (unique_code, local_team_id, visit_team_id, starting_team_id, left_team_id)
 VALUES ('1A_PREAAA000', 1, 2, 1, 1),
        ('1A_PREAAA001', 1, 3, 1, 3),
        ('1A_PREAAA002', 2, 3, 2, 2),
-
        ('2B_BENBBB000', 4, 5, 4, 4),
        ('2B_BENBBB001', 4, 6, 4, 6),
        ('2B_BENBBB002', 5, 6, 5, 5),
-
        ('1C_ALECCC000', 7, 8, 7, 7),
        ('1C_ALECCC001', 7, 9, 7, 9),
        ('1C_ALECCC002', 8, 9, 8, 8),
-
        ('2D_INFDDD000', 1, 9, 1, 1),
        ('2D_INFDDD001', 1, 2, 1, 2),
        ('2D_INFDDD002', 1, 12, 1, 1),
-
        ('1A_SENEEE000', 3, 4, 3, 3),
        ('1A_SENEEE001', 3, 5, 3, 5),
-       ('1A_SENEEE002', 4, 5, 4, 4);
+       ('1A_SENEEE002', 4, 5, 4, 4),
+       ('1A_PREAAA003', 2, 1, 2, 2),
+       ('2B_BENBBB003', 6, 4, 6, 6),
+       ('1C_ALECCC003', 9, 7, 9, 9),
+       ('2D_INFDDD003', 12, 1, 12, 12),
+       ('1A_SENEEE003', 5, 3, 5, 5);
+ 
+
+INSERT INTO player (no_shirt, team_id, person_id)
+VALUES 
+(1, 1, 21), (2, 1, 22), (3, 1, 23), (4, 1, 24), (5, 1, 25), (6, 1, 26), (7, 1, 27), (8, 1, 28),
+(1, 2, 29), (2, 2, 30), (3, 2, 31), (4, 2, 32), (5, 2, 33), (6, 2, 34), (7, 2, 35), (8, 2, 36),
+(1, 4, 37), (2, 4, 38), (3, 4, 39), (4, 4, 40), (5, 4, 41), (6, 4, 42), (7, 4, 43), (8, 4, 44),
+(1, 5, 45), (2, 5, 46), (3, 5, 47), (4, 5, 48), (5, 5, 49), (6, 5, 50), (7, 5, 51), (8, 5, 52),
+(1, 7, 53), (2, 7, 54), (3, 7, 55), (4, 7, 56), (5, 7, 57), (6, 7, 58), (7, 7, 59), (8, 7, 60),
+(9, 16, 61), (10, 16, 62), (11, 16, 63), (12, 16, 64),
+(9, 18, 65), (10, 18, 66), (11, 18, 67), (12, 18, 68);
+
+ 
+INSERT INTO referee (no_license, lvl_license, city_id, person_id)
+VALUES ('R0001','REG',1,1),
+        ('R0002','REG',2,2),
+        ('R0003','REG',3,3),
+        ('R0004','REG',4,4),
+        ('R0005','REG',5,5),
+        ('R0006','REG',1,6),
+        ('R0007','NAC',2,7),
+        ('R0008','NAC',3,8),
+        ('R0009','NAC',4,9),
+        ('R0010','NAC',5,10);
+
+ 
+INSERT INTO game_details (unique_code, category, division, competition_id, city_id, date)
+VALUES ('1A_PREAAA000', 0, NULL, 1, 1, '2025-06-09'),
+       ('1A_PREAAA001', 0, NULL, 1, 1, '2025-06-09'),
+       ('1A_PREAAA002', 0, NULL, 1, 2, '2025-06-09'),
+       ('2B_BENBBB000', 1, NULL, 2, 2, '2025-06-09'),
+       ('2B_BENBBB001', 1, NULL, 2, 2, '2025-06-09'),
+       ('2B_BENBBB002', 1, NULL, 2, 5, '2025-06-09'),
+       ('1C_ALECCC000', 2, NULL, 3, 3, '2025-06-09'),
+       ('1C_ALECCC001', 2, NULL, 3, 3, '2025-06-09'),
+       ('1C_ALECCC002', 2, NULL, 3, 9, '2025-06-09'),
+       ('2D_INFDDD000', 3, NULL, 2, 4, '2025-06-09'),
+       ('2D_INFDDD001', 3, NULL, 2, 4, '2025-06-09'),
+       ('2D_INFDDD002', 3, NULL, 2, 12, '2025-06-09'),
+       ('1A_SENEEE000', 8, NULL, 1, 6, '2025-06-09'),
+       ('1A_SENEEE001', 8, NULL, 1, 6, '2025-06-09'),
+       ('1A_SENEEE002', 8, NULL, 1, 5, '2025-06-09'),
+       ('1A_PREAAA003', 0, NULL, 1, 2, '2025-06-10'),
+       ('2B_BENBBB003', 1, NULL, 2, 5, '2025-06-10'),
+       ('1C_ALECCC003', 2, NULL, 3, 3, '2025-06-10'),
+       ('2D_INFDDD003', 3, NULL, 2, 4, '2025-06-10'),
+       ('1A_SENEEE003', 8, NULL, 1, 6, '2025-06-10'); 
+INSERT INTO game_referee_team (unique_code, principal_referee_id, secondary_referee_id, scorer_id, line_referee_1_id, line_referee_2_id, line_referee_3_id, line_referee_4_id)
+VALUES ('1A_PREAAA000', 1, NULL, 2, NULL, NULL, NULL, NULL),
+        ('1A_PREAAA001', 2, NULL, 3, NULL, NULL, NULL, NULL),
+        ('1A_PREAAA002', 3,  4,   5, NULL, NULL, NULL, NULL),
+        ('2B_BENBBB000', 4, NULL, 5, NULL, NULL, NULL, NULL),
+        ('2B_BENBBB001', 5,  6,   7, NULL, NULL, NULL, NULL),
+        ('2B_BENBBB002', 6, NULL, 8, NULL, NULL, NULL, NULL),
+        ('1C_ALECCC000', 7, NULL, 8, NULL, NULL, NULL, NULL),
+        ('1C_ALECCC001', 8,  9,  10, NULL, NULL, NULL, NULL),
+        ('1C_ALECCC002', 9, NULL, 10, NULL, NULL, NULL, NULL),
+        ('2D_INFDDD000', 1, NULL, 3, NULL, NULL, NULL, NULL),
+        ('2D_INFDDD001', 2,  3,   4, NULL, NULL, NULL, NULL),
+        ('2D_INFDDD002', 3, NULL, 5, NULL, NULL, NULL, NULL),
+        ('1A_SENEEE000', 4, NULL, 6, NULL, NULL, NULL, NULL),
+        ('1A_SENEEE001', 5,  6,   7, NULL, NULL, NULL, NULL),
+        ('1A_SENEEE002', 6, NULL, 8, NULL, NULL, NULL, NULL),
+        ('1A_PREAAA003', 7, NULL, 8, NULL, NULL, NULL, NULL),
+        ('2B_BENBBB003', 8,  9,  10, NULL, NULL, NULL, NULL),
+        ('1C_ALECCC003', 9, NULL, 10, NULL, NULL, NULL, NULL),
+        ('2D_INFDDD003', 1, NULL, 2, NULL, NULL, NULL, NULL),
+        ('1A_SENEEE003', 2,  3,   4, NULL, NULL, NULL, NULL);
+
+ 

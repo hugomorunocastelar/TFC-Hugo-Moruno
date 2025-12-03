@@ -6,7 +6,7 @@ public enum SanctionType {
     COACH('C', "Coach"),
     ASSISTANT_COACH('A', "Assistant Coach"),
     SUPPORT('T', "Support"),
-    IMPROPER('I', "Improper"),
+    IMPROPER('S', "Improper solicitude"),
     DELAY('D', "Delay");
 
     private char code;

@@ -1,6 +1,7 @@
 package dot.server.auth.user.model;
 
 import dot.server.auth.role.model.Role;
+import dot.server.data.Person.entity.Referee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -59,6 +60,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "referee_id")
+    private Referee referee;
 
     @CreationTimestamp
     private Instant createdAt;

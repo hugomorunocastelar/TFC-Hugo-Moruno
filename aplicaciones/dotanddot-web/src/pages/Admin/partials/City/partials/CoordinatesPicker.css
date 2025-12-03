@@ -1,4 +1,4 @@
-/* Coordinates Picker Styles */
+
 
 .coordinates-picker {
   display: flex;
@@ -157,7 +157,7 @@
   text-align: center;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .coordinates-inputs {
     grid-template-columns: 1fr;

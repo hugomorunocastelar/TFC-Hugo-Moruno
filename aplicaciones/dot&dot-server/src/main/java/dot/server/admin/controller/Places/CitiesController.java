@@ -1,6 +1,7 @@
 package dot.server.admin.controller.Places;
 
 import dot.server.admin.service.Places.CitiesService;
+import dot.server.auth.payload.response.HttpResponse;
 import dot.server.data.MatchDefinitions.dto.CityDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +20,26 @@ public class CitiesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CityDto>> getAllCities() {
+    public ResponseEntity<?> getAllCities() {
         List<CityDto> cities = citiesService.findAll();
         return ResponseEntity.ok(cities);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CityDto> getCityById(@PathVariable Long id) {
+    public ResponseEntity<?> getCityById(@PathVariable Long id) {
         return citiesService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<CityDto> createCity(@RequestBody CityDto cityDto) {
-        CityDto createdCity = citiesService.save(cityDto);
-        return new ResponseEntity<>(createdCity, HttpStatus.CREATED);
+    public ResponseEntity<?> createCity(@RequestBody CityDto cityDto) {
+        CityDto created = citiesService.save(cityDto);
+        return ResponseEntity.ok(new HttpResponse(HttpStatus.CREATED, created));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CityDto> updateCity(@PathVariable Long id, @RequestBody CityDto cityDto) {
+    public ResponseEntity<?> updateCity(@PathVariable Long id, @RequestBody CityDto cityDto) {
         try {
             CityDto updatedCity = citiesService.update(id, cityDto);
             return ResponseEntity.ok(updatedCity);
@@ -48,7 +49,7 @@ public class CitiesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCity(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCity(@PathVariable Long id) {
         citiesService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -11,7 +11,7 @@ El proyecto surge de la necesidad de modernizar los sistemas tradicionales de ge
 
 Entre sus funcionalidades clave, la aplicación permite a los árbitros **registrar resultados y decisiones en tiempo real** ⏳, automatizando la gestión de los partidos y reduciendo la carga administrativa. También ofrece un **sistema inteligente de generación de horarios** 🗓️, optimizando la distribución de los partidos según la disponibilidad de los equipos y las instalaciones.
 
-Desde un punto de vista técnico, **Dot & Dot** está diseñada para garantizar escalabilidad y seguridad 🔒. La aplicación web se desarrolla con **React.js** ⚛️, mientras que la versión móvil está implementada en **Flutter** 📱, asegurando compatibilidad con Android y, en el futuro, con iOS. El backend se basa en **Java con Spring Boot** ☕ y utiliza **MySQL** 🗄️ para la gestión de datos, con despliegue en **Microsoft Azure** ☁️ para garantizar alta disponibilidad y rendimiento.
+Desde un punto de vista técnico, **Dot & Dot** está diseñada para garantizar escalabilidad y seguridad 🔒. La aplicación web se desarrolla con **React.js** ⚛️. El backend se basa en **Java con Spring Boot** ☕ y utiliza **MySQL** 🗄️ para la gestión de datos, con despliegue en **Microsoft Azure** ☁️ para garantizar alta disponibilidad y rendimiento.
 
 Uno de los aspectos diferenciadores de **Dot & Dot** es su capacidad para proporcionar **estadísticas detalladas** 📊, permitiendo que jugadores y entrenadores analicen el rendimiento individual y colectivo. Además, se plantea la posibilidad de integrar **tecnologías de inteligencia artificial** 🤖 en futuras versiones, lo que podría permitir el auto-arbitraje y el análisis automatizado de jugadas mediante visión por computadora.
 
@@ -30,7 +30,6 @@ En definitiva, **Dot & Dot** representa un paso adelante en la digitalización d
 
 ### **🖥️ Frontend:**
 - **React.js** ⚛️ para la aplicación web
-- **Flutter** (Dart) 📱 para la aplicación móvil
 
 ## 🔧 Requisitos del Sistema
 ### **🖥️ Servidor:**
@@ -40,7 +39,6 @@ En definitiva, **Dot & Dot** representa un paso adelante en la digitalización d
 
 ### **📲 Cliente:**
 - Aplicación web compatible con Chrome, Firefox, Edge, Safari 🌍
-- Aplicación móvil Android 10+ (iOS en futuras versiones) 📱
 
 ## 🛤️ Roadmap de Desarrollo
 1. **Planificación y Diseño** - 🗓️ Marzo

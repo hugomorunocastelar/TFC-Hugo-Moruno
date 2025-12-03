@@ -27,4 +27,6 @@ public interface GameService {
     Optional<GameDto> update(Long id, UpdateGameRequest request);
 
     boolean delete(Long id);
+    
+    List<GameDto> findRefereeableGames();
 }

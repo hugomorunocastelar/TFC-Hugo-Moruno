@@ -18,7 +18,11 @@ public class GameDto implements DtoMapper<Game, GameDto> {
     private GameRefereeTeamDto refereeTeam;
     private GameObservationsDto observation;
     private List<GameSanctionsDto> sanctionsList;
-    private List<GameSetDto> sets;
+    private GameSetDto set1;
+    private GameSetDto set2;
+    private GameSetDto set3;
+    private GameSetDto set4;
+    private GameSetDto set5;
     private GameResultWOUTDto result;
     private boolean playing;
     private boolean finished;
@@ -36,7 +40,11 @@ public class GameDto implements DtoMapper<Game, GameDto> {
         dto.setRefereeTeam(new GameRefereeTeamDto().to(entity.getRefereeTeam()));
         dto.setObservation(new GameObservationsDto().to(entity.getObservation()));
         dto.setSanctionsList(new GameSanctionsDto().to(entity.getSanctionsList()));
-        dto.setSets(new GameSetDto().to(entity.getSets()));
+        dto.setSet1(new GameSetDto().to(entity.getSet1()));
+        dto.setSet2(new GameSetDto().to(entity.getSet2()));
+        dto.setSet3(new GameSetDto().to(entity.getSet3()));
+        dto.setSet4(new GameSetDto().to(entity.getSet4()));
+        dto.setSet5(new GameSetDto().to(entity.getSet5()));
         dto.setResult(new GameResultWOUTDto().to(entity.getResult()));
         dto.setPlaying(entity.isPlaying());
         dto.setFinished(entity.isFinished());
@@ -58,7 +66,7 @@ public class GameDto implements DtoMapper<Game, GameDto> {
         entity.setRefereeTeam(new GameRefereeTeamDto().from(dto.getRefereeTeam()));
         entity.setObservation(new GameObservationsDto().from(dto.getObservation()));
         entity.setSanctionsList(new GameSanctionsDto().from(dto.getSanctionsList()));
-        entity.setSets(new GameSetDto().from(dto.getSets()));
+        
         entity.setResult(new GameResultWOUTDto().from(dto.getResult()));
         entity.setPlaying(dto.isPlaying());
         entity.setFinished(dto.isFinished());

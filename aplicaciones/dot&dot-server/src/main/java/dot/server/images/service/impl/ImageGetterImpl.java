@@ -30,7 +30,7 @@ public class ImageGetterImpl implements ImageGetter {
     @Override
     public Resource getUserImage(String userId, String filename) {
         File userFolder = new File(imagesRoot, userId);
-        File imageFile = new File(userFolder, filename);
+        File imageFile = (userFolder.exists() && userFolder.isDirectory()) ? new File(imagesRoot+"/"+userId+"/"+filename) : null;
         if (imageFile.exists() && imageFile.isFile()) return new FileSystemResource(imageFile);
         return null;
     }

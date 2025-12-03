@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import { getSession, removeSession, saveSession } from '../../js/session.mjs';
 import { updateSelfUser } from '../../js/auth.mjs';
-import API from '../../js/env.js';
 import { saveUserImage } from '../../js/images/images.mjs';
 import { useNavigate } from 'react-router-dom';
 import CancelButton from '../Admin/components/buttons/cancel/CancelButton.jsx';
@@ -49,13 +48,68 @@ function Profile() {
     setStatus('');
   };
 
-  const handleAvatar = (e) => {
+  const compressImage = (file, maxSizeBytes = 1048576) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDimension = 1920;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = (height / width) * maxDimension;
+              width = maxDimension;
+            } else {
+              width = (width / height) * maxDimension;
+              height = maxDimension;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          let quality = 0.9;
+          const tryCompress = () => {
+            canvas.toBlob((blob) => {
+              if (!blob) {
+                reject(new Error('Compression failed'));
+                return;
+              }
+              if (blob.size <= maxSizeBytes || quality <= 0.1) {
+                const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+                resolve(compressedFile);
+              } else {
+                quality -= 0.1;
+                tryCompress();
+              }
+            }, 'image/jpeg', quality);
+          };
+          tryCompress();
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAvatar = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    setAvatarFile(file);
-    const reader = new FileReader();
-    reader.onload = () => setAvatarPreview(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      setAvatarFile(compressed);
+      const reader = new FileReader();
+      reader.onload = () => setAvatarPreview(reader.result);
+      reader.readAsDataURL(compressed);
+    } catch (err) {
+      console.error('Image compression error:', err);
+      setStatus('Failed to process image');
+    }
   };
 
   const validate = () => {
@@ -114,7 +168,6 @@ function Profile() {
 
   const handleLogout = () => {
     removeSession();
-    window.location.reload();
   };
 
   if (!sessionUser) {

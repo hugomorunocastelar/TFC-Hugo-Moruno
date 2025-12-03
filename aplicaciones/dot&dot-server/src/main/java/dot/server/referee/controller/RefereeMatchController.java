@@ -11,6 +11,7 @@ import dot.server.data.Match.repository.GameRepository;
 import dot.server.data.Match.repository.GameResultRepository;
 import dot.server.data.Match.repository.GameSanctionsRepository;
 import dot.server.data.Match.repository.GameSetRepository;
+import dot.server.websocket.service.LiveGameBroadcastService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class RefereeMatchController {
     private final GameSanctionsRepository gameSanctionsRepository;
     private final GameResultRepository gameResultRepository;
     private final TeamDao teamRepository;
+    private final LiveGameBroadcastService broadcastService;
 
     @PostMapping("/{uniqueCode}/sets/{setId}/points")
     public ResponseEntity<?> updateSetPoints(
@@ -62,11 +64,11 @@ public class RefereeMatchController {
                     .body(Map.of("error", "GameSet not found with id: " + setId));
         }
 
-        GameSet gameSet = setOpt.get();
+        GameSet set = setOpt.get();
 
-        if (!gameSet.getGame().getUniqueCode().equals(uniqueCode)) {
+        if (!set.getUniqueCode().equals(uniqueCode)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "GameSet does not belong to the specified game"));
+                    .body(Map.of("error", "Set does not belong to this game"));
         }
 
         String team = (String) body.get("team");
@@ -83,26 +85,29 @@ public class RefereeMatchController {
         }
 
         if (team.equals("local")) {
-            gameSet.setPointsLocal(gameSet.getPointsLocal() + points);
+            set.setPointsLocal(set.getPointsLocal() + points);
         } else {
-            gameSet.setPointsVisit(gameSet.getPointsVisit() + points);
+            set.setPointsVisit(set.getPointsVisit() + points);
         }
 
-        gameSetRepository.save(gameSet);
+        gameSetRepository.save(set);
 
-        // Check if set should end (25 points or 24-24 with 2 point difference)
-        if (shouldEndSet(gameSet)) {
-            gameSet.setTimeEnd(new Timestamp(System.currentTimeMillis()));
-            gameSetRepository.save(gameSet);
+        
+        if (shouldEndSet(set)) {
+            set.setTimeEnd(new Timestamp(System.currentTimeMillis()));
+            gameSetRepository.save(set);
 
-            // Check if game should end (3 sets won)
+            
             if (shouldEndGame(game)) {
                 finishGameWithResult(game);
             }
         }
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+
+        
+        broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "POINTS");
 
         return ResponseEntity.ok(updatedGame);
     }
@@ -159,8 +164,11 @@ public class RefereeMatchController {
 
         gameSanctionsRepository.save(sanction);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+
+        
+        broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "SANCTION");
 
         return ResponseEntity.ok(updatedGame);
     }
@@ -205,7 +213,7 @@ public class RefereeMatchController {
 
         gameSanctionsRepository.delete(sanction);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
 
         return ResponseEntity.ok(updatedGame);
@@ -241,7 +249,7 @@ public class RefereeMatchController {
 
         GameSet gameSet = setOpt.get();
 
-        if (!gameSet.getGame().getUniqueCode().equals(uniqueCode)) {
+        if (!gameSet.getUniqueCode().equals(uniqueCode)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "GameSet does not belong to the specified game"));
         }
@@ -259,7 +267,7 @@ public class RefereeMatchController {
 
         gameSetRepository.save(gameSet);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
 
         return ResponseEntity.ok(updatedGame);
@@ -313,7 +321,7 @@ public class RefereeMatchController {
 
         GameSet gameSet = setOpt.get();
 
-        if (!gameSet.getGame().getUniqueCode().equals(uniqueCode)) {
+        if (!gameSet.getUniqueCode().equals(uniqueCode)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "GameSet does not belong to the specified game"));
         }
@@ -328,7 +336,7 @@ public class RefereeMatchController {
 
         gameSetRepository.save(gameSet);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
 
         return ResponseEntity.ok(updatedGame);
@@ -359,7 +367,7 @@ public class RefereeMatchController {
         String visitAlignment = body.get("visitAlignment");
 
         GameSet newSet = new GameSet();
-        newSet.setGame(game);
+        newSet.setUniqueCode(game.getUniqueCode());
         newSet.setPointsLocal(0);
         newSet.setPointsVisit(0);
         newSet.setTimeStart(new Timestamp(System.currentTimeMillis()));
@@ -374,7 +382,7 @@ public class RefereeMatchController {
 
         gameSetRepository.save(newSet);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
 
         return ResponseEntity.ok(updatedGame);
@@ -409,7 +417,7 @@ public class RefereeMatchController {
 
         GameSet gameSet = setOpt.get();
 
-        if (!gameSet.getGame().getUniqueCode().equals(uniqueCode)) {
+        if (!gameSet.getUniqueCode().equals(uniqueCode)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "GameSet does not belong to the specified game"));
         }
@@ -417,7 +425,7 @@ public class RefereeMatchController {
         gameSet.setTimeEnd(new Timestamp(System.currentTimeMillis()));
         gameSetRepository.save(gameSet);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
 
         return ResponseEntity.ok(updatedGame);
@@ -448,8 +456,11 @@ public class RefereeMatchController {
 
         finishGameWithResult(game);
 
-        // Reload game with all relationships
+        
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+
+        
+        broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "FINISHED");
 
         return ResponseEntity.ok(updatedGame);
     }
@@ -463,12 +474,12 @@ public class RefereeMatchController {
         int local = gameSet.getPointsLocal();
         int visit = gameSet.getPointsVisit();
         
-        // Check if timeEnd is already set
+        
         if (gameSet.getTimeEnd() != null) {
             return false;
         }
         
-        // One team reached 25 and has at least 2 point difference
+        
         if (local >= 25 && local - visit >= 2) {
             return true;
         }
@@ -486,8 +497,10 @@ public class RefereeMatchController {
         int localSetsWon = 0;
         int visitSetsWon = 0;
         
-        for (GameSet set : game.getSets()) {
-            if (set.getTimeEnd() != null) {
+        
+        GameSet[] sets = {game.getSet1(), game.getSet2(), game.getSet3(), game.getSet4(), game.getSet5()};
+        for (GameSet set : sets) {
+            if (set != null && set.getTimeEnd() != null) {
                 if (set.getPointsLocal() > set.getPointsVisit()) {
                     localSetsWon++;
                 } else if (set.getPointsVisit() > set.getPointsLocal()) {
@@ -506,12 +519,18 @@ public class RefereeMatchController {
         game.setPlaying(false);
         game.setFinished(true);
         
-        // Calculate sets won by each team
+        
         int localSetsWon = 0;
         int visitSetsWon = 0;
+        int totalPointsLocal = 0;
+        int totalPointsVisit = 0;
         
-        for (GameSet set : game.getSets()) {
-            if (set.getTimeEnd() != null) {
+        GameSet[] sets = {game.getSet1(), game.getSet2(), game.getSet3(), game.getSet4(), game.getSet5()};
+        for (GameSet set : sets) {
+            if (set != null && set.getTimeEnd() != null) {
+                totalPointsLocal += set.getPointsLocal();
+                totalPointsVisit += set.getPointsVisit();
+                
                 if (set.getPointsLocal() > set.getPointsVisit()) {
                     localSetsWon++;
                 } else if (set.getPointsVisit() > set.getPointsLocal()) {
@@ -522,31 +541,33 @@ public class RefereeMatchController {
         
         gameRepository.save(game);
         
-        // Create or update GameResult
+        
         GameResult result = game.getResult();
         if (result == null) {
             result = new GameResult();
             result.setGame(game);
             
-            // Set timeStart from first set or current time
-            if (!game.getSets().isEmpty() && game.getSets().get(0).getTimeStart() != null) {
-                result.setTimeStart(game.getSets().get(0).getTimeStart());
+            
+            if (game.getSet1() != null && game.getSet1().getTimeStart() != null) {
+                result.setTimeStart(game.getSet1().getTimeStart());
             } else {
                 result.setTimeStart(new java.util.Date());
             }
         }
         
-        result.setPointsLocal(localSetsWon);
-        result.setPointsVisit(visitSetsWon);
+        result.setSetsWonLocal(localSetsWon);
+        result.setSetsWonVisit(visitSetsWon);
+        result.setPointsLocal(totalPointsLocal);
+        result.setPointsVisit(totalPointsVisit);
         result.setTimeEnd(new java.util.Date());
         
-        // Calculate duration in minutes
+        
         if (result.getTimeStart() != null) {
             long durationMs = result.getTimeEnd().getTime() - result.getTimeStart().getTime();
             result.setDuration((int) (durationMs / 60000));
         }
         
-        // Determine winner
+        
         if (localSetsWon > visitSetsWon && game.getInitialSituation() != null) {
             result.setWinnerTeam(game.getInitialSituation().getLocalTeam());
         } else if (visitSetsWon > localSetsWon && game.getInitialSituation() != null) {

@@ -22,13 +22,13 @@ public class CoachController {
 
     @GetMapping
     @Operation(summary = "Obtener todos los entrenadores")
-    public ResponseEntity<List<CoachDTO>> getAll() {
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(serv.list());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener entrenador por ID")
-    public ResponseEntity<CoachDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         CoachDTO dto = serv.findById(id);
         if (dto == null) {
             return ResponseEntity.notFound().build();
@@ -38,7 +38,7 @@ public class CoachController {
 
     @PostMapping
     @Operation(summary = "Crear un nuevo entrenador")
-    public ResponseEntity<CoachDTO> create(@Valid @RequestBody CoachDTO coach) {
+    public ResponseEntity<?> create(@Valid @RequestBody CoachDTO coach) {
         boolean created = serv.create(coach);
         if (created) {
             return ResponseEntity.status(201).body(coach);
@@ -48,7 +48,7 @@ public class CoachController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar entrenador existente")
-    public ResponseEntity<CoachDTO> update(
+    public ResponseEntity<?> update(
             @PathVariable Long id,
             @Valid @RequestBody CoachDTO coach
     ) {
@@ -62,7 +62,7 @@ public class CoachController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar entrenador por ID")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         boolean deleted = serv.delete(id);
         return deleted
                 ? ResponseEntity.noContent().build()

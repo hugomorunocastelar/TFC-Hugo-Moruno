@@ -30,3 +30,23 @@ export function getOutstandingMatch() {
       return response.json();
     });
 };
+
+export function getGamesByLeague(leagueId) {
+  return getPublic(API.MATCHES.LEAGUE(leagueId))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Games by league petition failed');
+      }
+      return response.json();
+    });
+};
+
+export function getGameById(gameId) {
+  return getPublic(API.OPEN.GAMES.READ(gameId))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Game petition failed');
+      }
+      return response.json();
+    });
+};

@@ -12,6 +12,8 @@ import Clubs from "./pages/App/components/clubs/Clubs";
 import ClubView from "./pages/App/components/clubs/partials/ClubView/ClubView";
 import Contact from "./pages/App/components/contact/Contact";
 import Referee from "./pages/Referee/Referee";
+import GameView from "./pages/App/components/gameView/GameView";
+import Matches from "./pages/App/components/matches/Matches";
 
 import Users from "./pages/Admin/partials/Users/Users";
 import Person from "./pages/Admin/partials/Person/Person";
@@ -36,6 +38,10 @@ import ResetPassword from "./pages/Login/partials/reset-password/ResetPassword";
 import WelcomeReferee from "./pages/Referee/partials/WelcomeReferee/WelcomeReferee";
 import MyGames from "./pages/Referee/partials/MyGames/MyGames";
 import Profile from "./pages/profile/Profile";
+import RefereeGames from "./pages/Admin/partials/RefereeGames/RefereeGames";
+import LiveRefereeGame from "./pages/Referee/LiveRefereeGame";
+import LiveGameView from "./pages/App/components/gameView/LiveGameView";
+import UserFavorites from "./pages/UserFavorites/UserFavorites";
 
 function Index() {
   return (
@@ -48,10 +54,15 @@ function Index() {
           <Route path="clubs" element={<Clubs />} />
           <Route path="clubs/:id" element={<ClubView />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="game/:gameId" element={<GameView />} />
+          <Route path="live/:uniqueCode" element={<LiveGameView />} />
+          <Route path="matches" element={<Matches />} />
+          <Route path="favorites" element={<AuthGuard><UserFavorites /></AuthGuard>} />
         </Route>
         <Route path="profile" element={<AuthGuard ><Profile /></AuthGuard>} />
         <Route path="admin" element={<AuthAdminGuard ><Admin /></AuthAdminGuard>}>
           <Route path="" element={<Welcome />} />
+          <Route path="referee-games" element={<RefereeGames />} />
           <Route path="users" element={<Users />} />
           <Route path="roles" element={<Roles />} />
           <Route path="person" element={<Person />} />
@@ -70,7 +81,10 @@ function Index() {
         <Route path="*" element={<Error />} />
         <Route path="referee" element={<AuthRefereeGuard><Referee /></AuthRefereeGuard>}>
           <Route path="" element={<WelcomeReferee />} />
+          <Route path="all-games" element={<RefereeGames />} />
           <Route path="my-games" element={<MyGames />} />
+          <Route path="game/:uniqueCode" element={<LiveRefereeGame />} />
+          <Route path="ongoing" element={<p>Ongoing</p>} />
           <Route path="upcoming" element={<p>Upcoming</p>} />
           <Route path="finished" element={<p>Upcoming</p>} />
           <Route path="generate" element={<p>Upcoming</p>} />

@@ -22,7 +22,7 @@ public class PersonController {
 
     @GetMapping
     @Operation(summary = "Obtener todas las personas")
-    public ResponseEntity<List<PersonDTO>> getAll() {
+    public ResponseEntity<?> getAll() {
         List<PersonDTO> response = serv.list();
         return ResponseEntity.ok(response);
     }
@@ -35,7 +35,7 @@ public class PersonController {
 
     @PostMapping
     @Operation(summary = "Crear una nueva persona")
-    public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonDTO person) {
+    public ResponseEntity<?> create(@Valid @RequestBody PersonDTO person) {
         boolean created = serv.create(person);
         if (created) {
             return ResponseEntity.status(201).body(person);
@@ -45,7 +45,7 @@ public class PersonController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar persona existente")
-    public ResponseEntity<PersonDTO> update(@PathVariable Long id, @Valid @RequestBody PersonDTO person) {
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PersonDTO person) {
         person.setId(id);
         boolean updated = serv.update(person);
         if (updated) {

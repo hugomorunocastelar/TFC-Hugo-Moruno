@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./OutstandingMatch.css";
-import { getOutstandingMatch } from '../../../../../../js/home/games.mjs';
 
-function OutstandingMatch() {
-
-  const [match, setMatch] = useState();
-
-  useEffect(() => {
-    getOutstandingMatch()
-    .then((response) => {
-      if (response) setMatch(response);
-    })
-  }, [])
+function OutstandingMatch({match}) {
+  const navigate = useNavigate();
 
   return (
     <div className='OM-Panel infoPanel'>
@@ -20,9 +12,11 @@ function OutstandingMatch() {
       </header>
       <main className='OM-Match'>
         {match ?
-        (<div>
-          <h2>{match.initialSituation.localTeam.name} vs {match.initialSituation.visitTeam.name}</h2>
-          <p>{`${new Date(match.result.timeStart).getUTCDate()}-${new Date(match.result.timeStart).getUTCMonth()}-${new Date(match.result.timeStart).getUTCFullYear()}`} - {`${new Date(match.result.timeStart).getUTCHours()}:${new Date(match.result.timeStart).getUTCMinutes() == 0 ? '00' : new Date(match.result.timeStart).getUTCMinutes()}`}</p>
+        (<div onClick={() => navigate(`/game/${match.id}`)} className="clickable-content">
+          <h2>{match.initialSituation.localTeam.name}</h2>
+          <h2>vs</h2>
+          <h2>{match.initialSituation.visitTeam.name}</h2>
+          <p>{`${new Date(match.details.timeStart).getUTCDate()}-${new Date(match.details.timeStart).getUTCMonth()}-${new Date(match.details.timeStart).getUTCFullYear()}`} - {`${new Date(match.details.timeStart).getUTCHours()}:${new Date(match.details.timeStart).getUTCMinutes() == 0 ? '00' : new Date(match.details.timeStart).getUTCMinutes()}`}</p>
         </div>) : (
           <div>
             <p>No data...</p>

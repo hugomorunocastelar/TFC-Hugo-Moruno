@@ -1,6 +1,7 @@
 package dot.server.referee.controller;
 
 import dot.server.data.Match.model.Game;
+import dot.server.data.Match.model.dto.GameDto;
 import dot.server.referee.service.RefereeGamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class RefereeGamesController {
     @GetMapping("/{refereeId}")
     public ResponseEntity<?> getGamesByReferee(@PathVariable Long refereeId) {
         try {
-            List<Game> games = refereeGamesService.getGamesByRefereeId(refereeId);
+            List<GameDto> games = new GameDto().to(refereeGamesService.getGamesByRefereeId(refereeId));
             return ResponseEntity.ok(games);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

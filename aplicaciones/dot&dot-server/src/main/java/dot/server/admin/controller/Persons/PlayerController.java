@@ -1,6 +1,7 @@
 package dot.server.admin.controller.Persons;
 
 import dot.server.admin.service.Persons.PlayerService;
+import dot.server.auth.payload.response.HttpResponse;
 import dot.server.data.Person.dto.PlayerDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +20,26 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
+    public ResponseEntity<?> getAllPlayers() {
         List<PlayerDTO> players = playerService.findAll();
         return ResponseEntity.ok(players);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayerDTO> getPlayerById(@PathVariable Long id) {
+    public ResponseEntity<?> getPlayerById(@PathVariable Long id) {
         return playerService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<PlayerDTO> createPlayer(@RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<?> createPlayer(@RequestBody PlayerDTO playerDTO) {
         PlayerDTO created = playerService.save(playerDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return ResponseEntity.ok(new HttpResponse(HttpStatus.CREATED, created));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlayerDTO> updatePlayer(@PathVariable Long id, @RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<?> updatePlayer(@PathVariable Long id, @RequestBody PlayerDTO playerDTO) {
         try {
             PlayerDTO updated = playerService.update(id, playerDTO);
             return ResponseEntity.ok(updated);
@@ -48,7 +49,7 @@ public class PlayerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
+    public ResponseEntity<?> deletePlayer(@PathVariable Long id) {
         playerService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

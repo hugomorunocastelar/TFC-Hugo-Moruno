@@ -1,6 +1,7 @@
 package dot.server.data.Match.model.dto;
 
 import dot.server.data.Match.model.Game;
+import dot.server.data.Match.model.dto.withoutGame.GameDetailsWOUTDto;
 import dot.server.data.Match.model.dto.withoutGame.GameInitialSituationWOUTDto;
 import dot.server.data.Match.model.dto.withoutGame.GameResultWOUTDto;
 import dot.server.data.MatchDefinitions.dto.LeagueDto;
@@ -12,6 +13,7 @@ public class GameSummaryDto implements DtoMapper<Game, GameSummaryDto> {
     private String uniqueCode;
     private GameInitialSituationWOUTDto initialSituation;
     private GameResultWOUTDto result;
+    private GameDetailsWOUTDto details;
     private boolean playing;
     private boolean finished;
     private int relevance;
@@ -25,6 +27,7 @@ public class GameSummaryDto implements DtoMapper<Game, GameSummaryDto> {
         dto.setUniqueCode(entity.getUniqueCode());
         dto.setResult(new GameResultWOUTDto().to(entity.getResult()));
         dto.setInitialSituation(new GameInitialSituationWOUTDto().to(entity.getInitialSituation()));
+        dto.setDetails(new GameDetailsWOUTDto().to(entity.getDetails()));
         dto.setPlaying(entity.isPlaying());
         dto.setFinished(entity.isFinished());
         dto.setRelevance(entity.getRelevance());
@@ -42,6 +45,7 @@ public class GameSummaryDto implements DtoMapper<Game, GameSummaryDto> {
         entity.setUniqueCode(dto.getUniqueCode());
         entity.setResult(new GameResultWOUTDto().from(dto.getResult()));
         entity.setInitialSituation(new GameInitialSituationWOUTDto().from(dto.getInitialSituation()));
+        entity.setDetails(new GameDetailsWOUTDto().from(dto.getDetails()));
         entity.setPlaying(dto.isPlaying());
         entity.setFinished(dto.isFinished());
         entity.setRelevance(dto.getRelevance());

@@ -18,8 +18,11 @@ public class GameResult {
     @JoinColumn(name = "uniqueCode", referencedColumnName = "uniqueCode", unique = true)
     private Game game;
 
-    private int pointsLocal;
-    private int pointsVisit;
+    private int setsWonLocal; 
+    private int setsWonVisit; 
+
+    private int pointsLocal; 
+    private int pointsVisit; 
 
     @ManyToOne
     @JoinColumn(name = "winner_team_id")

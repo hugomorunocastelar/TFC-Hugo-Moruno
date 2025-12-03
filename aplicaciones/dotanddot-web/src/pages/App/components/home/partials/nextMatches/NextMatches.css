@@ -1,6 +1,7 @@
 .NexMatches-Panel {
   height: fit-content;
-  display: nmex;
+  display: flex;
+  flex-direction: column;
 }
 
 .NexMatches {
@@ -10,12 +11,17 @@
 .NM-Head {
   display: flex;
   justify-content: center;
-  padding: 10px 0;
-
+  padding: 18px 0;
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  border-bottom: 3px solid #1976d2;
 
   & h2 {
     margin: 0;
-    color: var(--color-palette-green-4);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 }
 
@@ -25,55 +31,80 @@
   
   & tr {
     width: 100%;
-    height: 50px;
+    height: 60px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
     
     &:nth-child(even) {
-      background-color: var(--color-neutral-0);
+      background-color: #fafafa;
     }
     &:nth-child(odd) {
-      background-color: var(--color-neutral-1);
-    }
-    &:hover {
-      background-color: var(--color-neutral-2);
+      background-color: var(--color-neutral-0);
     }
     
     & td {
-      padding: 0 20px;
+      padding: 12px 20px;
       font-size: 20px;
       display: flex;
       align-items: center;
   
       & p {
         margin: 0;
-        font-size: 14px;
+        font-size: 15px;
         text-align: center;
+        color: #333;
+        font-weight: 500;
       }
       
       &:nth-child(1) {
         width: fit-content;
         display: flex;
+        flex: 1;
+        
         & p {
-          font-size: 26px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #222;
         }
       }
       
       &:nth-child(2) {
         width: fit-content;
+        
         & p {
           text-align: center;
         }
       } 
+
+      &:nth-child(3) {
+        width: 50px;
+        min-width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
 
       .time {
         display: flex;
         justify-content: end;
         gap: 16px;
         font-size: 14px;
+        color: #666;
       }
     }
   }
+}
 
+.clickable-row {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clickable-row:hover {
+  background: linear-gradient(90deg, rgba(33, 150, 243, 0.15) 0%, rgba(33, 150, 243, 0.05) 100%) !important;
+  transform: translateX(8px);
+  box-shadow: inset 4px 0 0 #2196f3;
 }

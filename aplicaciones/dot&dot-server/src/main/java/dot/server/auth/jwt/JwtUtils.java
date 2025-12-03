@@ -35,7 +35,7 @@ public class JwtUtils {
     }
 
     private Key key() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes()); // Si jwSecret no está en Base64
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes()); 
     }
 
     public String getUserNameFromJwtToken(String token) {

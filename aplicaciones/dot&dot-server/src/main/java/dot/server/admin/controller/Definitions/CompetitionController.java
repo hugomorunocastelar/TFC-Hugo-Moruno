@@ -18,26 +18,26 @@ public class CompetitionController {
     }
 
     @PostMapping
-    public ResponseEntity<CompetitionDto> createCompetition(@RequestBody CompetitionDto competitionDto) {
+    public ResponseEntity<?> createCompetition(@RequestBody CompetitionDto competitionDto) {
         CompetitionDto created = competitionService.createCompetition(competitionDto);
         return ResponseEntity.ok(created);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompetitionDto> getCompetitionById(@PathVariable Long id) {
+    public ResponseEntity<?> getCompetitionById(@PathVariable Long id) {
         return competitionService.getCompetitionById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<CompetitionDto>> getAllCompetitions() {
+    public ResponseEntity<?> getAllCompetitions() {
         List<CompetitionDto> list = competitionService.getAllCompetitions();
         return ResponseEntity.ok(list);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CompetitionDto> updateCompetition(@PathVariable Long id, @RequestBody CompetitionDto competitionDto) {
+    public ResponseEntity<?> updateCompetition(@PathVariable Long id, @RequestBody CompetitionDto competitionDto) {
         try {
             CompetitionDto updated = competitionService.updateCompetition(id, competitionDto);
             return ResponseEntity.ok(updated);
@@ -47,7 +47,7 @@ public class CompetitionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompetition(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCompetition(@PathVariable Long id) {
         competitionService.deleteCompetition(id);
         return ResponseEntity.noContent().build();
     }

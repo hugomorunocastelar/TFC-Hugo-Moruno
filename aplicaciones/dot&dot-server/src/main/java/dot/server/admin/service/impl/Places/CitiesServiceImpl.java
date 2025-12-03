@@ -44,7 +44,7 @@ public class CitiesServiceImpl implements CitiesService {
             throw new RuntimeException("City not found with id " + id);
         }
         City cityToUpdate = cityOpt.get();
-        // Update fields
+        
         cityToUpdate.setName(cityDto.getName());
         cityToUpdate.setRegion(cityDto.getRegion());
         cityToUpdate.setFirstPC(cityDto.getFirstPC());

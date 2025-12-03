@@ -8,6 +8,10 @@ function Admin() {
   const navigate = useNavigate();
 
   const pages = {
+    Referee: {
+      'Referee Games': 'referee-games',
+    },
+
     Data: {
       Person: 'person',
       Referee: 'referee',
@@ -81,7 +85,7 @@ function Admin() {
 
       <footer className='AP-Footer'>
         <Logo />
-        <p> 2025 Admin Panel - Todos los derechos reservados</p>
+        <p> 2025 Admin Panel - All rights reserved</p>
       </footer>
     </div>
   );

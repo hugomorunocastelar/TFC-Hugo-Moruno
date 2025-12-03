@@ -1,21 +1,14 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 import { useNavigate } from 'react-router-dom';
+import { extremaduraGeoData } from '../../../../../js/extremaduraMap.mjs';
 import './ExtremaduraMap.css';
 
 function ExtremaduraMap({ clubs }) {
   const initialCenter = [-6.0, 39.2];
-  const [geoData, setGeoData] = useState(null);
   const navigate = useNavigate();
-  const [zoom, setZoom] = useState(1.6);
+  const [zoom, setZoom] = useState(1.2);
   const [center, setCenter] = useState(initialCenter);
-  
-  useEffect(() => {
-    fetch('/src/assets/extremaduramap/extremadura.geojson')
-      .then(response => response.json())
-      .then(data => setGeoData(data))
-      .catch(error => console.error('Error loading GeoJSON:', error));
-  }, []);
   
   const citiesWithCoords = useMemo(() => {
     const cityMap = new Map();
@@ -41,17 +34,13 @@ function ExtremaduraMap({ clubs }) {
     return grouped;
   }, [clubs]);
 
-  if (!geoData) {
-    return <div className="extremadura-map-loading">Loading map...</div>;
-  }
-
   return (
     <div className="extremadura-map-container">
       <h3 className="extremadura-map-title">Map of Extremadura Clubs</h3>
       <ComposableMap
         projection="geoMercator"
         projectionConfig={{
-          scale: 6000,
+          scale: 4500,
           center: initialCenter
         }}
         className="extremadura-map-svg"
@@ -63,14 +52,14 @@ function ExtremaduraMap({ clubs }) {
             setZoom(position.zoom);
             setCenter(position.coordinates);
           }}
-          minZoom={1.6}
+          minZoom={1.2}
           maxZoom={20}
           translateExtent={[
             [-100, -100],
             [900, 700]
           ]}
         >
-          <Geographies geography={geoData}>
+          <Geographies geography={extremaduraGeoData}>
             {({ geographies }) =>
               geographies.map(geo => (
                 <Geography

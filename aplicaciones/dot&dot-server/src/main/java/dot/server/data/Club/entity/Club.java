@@ -19,4 +19,7 @@ public class Club {
     @JoinColumn(nullable = false)
     private City idCity;
 
+    @Embedded
+    private ClubContact contact;
+
 }

@@ -159,23 +159,25 @@ function Game() {
         try {
             const bodyData = {
                 relevance: parseInt(formData.relevance) || 0,
-                leagueId: formData.leagueId ? parseInt(formData.leagueId) : null,
-                category: formData.category || null,
-                division: formData.division || null,
-                competitionId: formData.competitionId ? parseInt(formData.competitionId) : null,
-                cityId: formData.cityId ? parseInt(formData.cityId) : null,
-                date: formData.date ? new Date(formData.date).toISOString() : null,
-                localTeamId: formData.localTeamId ? parseInt(formData.localTeamId) : null,
-                visitTeamId: formData.visitTeamId ? parseInt(formData.visitTeamId) : null,
-                principalRefereeId: formData.principalRefereeId ? parseInt(formData.principalRefereeId) : null,
-                secondaryRefereeId: formData.secondaryRefereeId ? parseInt(formData.secondaryRefereeId) : null,
-                scorerId: formData.scorerId ? parseInt(formData.scorerId) : null,
-                lineReferee1Id: formData.lineReferee1Id ? parseInt(formData.lineReferee1Id) : null,
-                lineReferee2Id: formData.lineReferee2Id ? parseInt(formData.lineReferee2Id) : null,
-                lineReferee3Id: formData.lineReferee3Id ? parseInt(formData.lineReferee3Id) : null,
-                lineReferee4Id: formData.lineReferee4Id ? parseInt(formData.lineReferee4Id) : null,
-                observations: formData.observations || null,
+                leagueId: formData.leagueId && formData.leagueId !== '' ? parseInt(formData.leagueId) : null,
+                category: formData.category && formData.category !== '' ? formData.category : null,
+                division: formData.division && formData.division !== '' ? formData.division : null,
+                competitionId: formData.competitionId && formData.competitionId !== '' ? parseInt(formData.competitionId) : null,
+                cityId: formData.cityId && formData.cityId !== '' ? parseInt(formData.cityId) : null,
+                date: formData.date && formData.date !== '' ? new Date(formData.date).toISOString() : null,
+                localTeamId: formData.localTeamId && formData.localTeamId !== '' ? parseInt(formData.localTeamId) : null,
+                visitTeamId: formData.visitTeamId && formData.visitTeamId !== '' ? parseInt(formData.visitTeamId) : null,
+                principalRefereeId: formData.principalRefereeId && formData.principalRefereeId !== '' ? parseInt(formData.principalRefereeId) : null,
+                secondaryRefereeId: formData.secondaryRefereeId && formData.secondaryRefereeId !== '' ? parseInt(formData.secondaryRefereeId) : null,
+                scorerId: formData.scorerId && formData.scorerId !== '' ? parseInt(formData.scorerId) : null,
+                lineReferee1Id: formData.lineReferee1Id && formData.lineReferee1Id !== '' ? parseInt(formData.lineReferee1Id) : null,
+                lineReferee2Id: formData.lineReferee2Id && formData.lineReferee2Id !== '' ? parseInt(formData.lineReferee2Id) : null,
+                lineReferee3Id: formData.lineReferee3Id && formData.lineReferee3Id !== '' ? parseInt(formData.lineReferee3Id) : null,
+                lineReferee4Id: formData.lineReferee4Id && formData.lineReferee4Id !== '' ? parseInt(formData.lineReferee4Id) : null,
+                observations: formData.observations && formData.observations !== '' ? formData.observations : null,
             };
+
+            console.log('Sending game data:', bodyData);
 
             if (formData.id) {
                 await updateGame(formData.id, bodyData);
@@ -186,19 +188,29 @@ function Game() {
             closeForm();
         } catch (error) {
             console.error('Error saving game:', error);
-            alert('Error al guardar el partido. Verifica que todos los campos requeridos estén completos.');
+            let errorMessage = 'Error saving the game.';
+            
+            if (error.response) {
+                errorMessage += ` ${error.response.data?.message || error.response.statusText || ''}`;
+            } else if (error.message) {
+                errorMessage += ` ${error.message}`;
+            }
+            
+            errorMessage += '\n\nVerify that all required fields are complete:\n- League\n- Relevance\n- Category\n- Competition\n- City\n- Date\n- Local Team\n- Visiting Team\n- Principal Referee';
+            
+            alert(errorMessage);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('¿Estás seguro de que quieres eliminar este partido?')) return;
+        if (!window.confirm('Are you sure you want to delete this game?')) return;
         try {
             await deleteGame(id);
             await fetchGames(true);
             if (selectedGame && selectedGame.id === id) closeForm();
         } catch (error) {
             console.error('Error deleting game:', error);
-            alert('Error al eliminar el partido.');
+            alert('Error deleting the game.');
         }
     };
 

@@ -12,6 +12,7 @@ public class ClubDto {
     private long id;
     private String name;
     private CityDto idCity;
+    private ClubContactDto contact;
 
     public static ClubDto from(Club club) {
         if (club == null) return null;
@@ -20,6 +21,7 @@ public class ClubDto {
         dto.setId(club.getId());
         dto.setName(club.getName());
         dto.setIdCity(CityDto.from(club.getIdCity()));
+        dto.setContact(ClubContactDto.from(club.getContact()));
         return dto;
     }
 
@@ -32,6 +34,7 @@ public class ClubDto {
         }
         club.setName(dto.getName());
         club.setIdCity(dto.getIdCity() != null ? CityDto.to(dto.getIdCity()) : null);
+        club.setContact(ClubContactDto.to(dto.getContact()));
         return club;
     }
 

@@ -9,7 +9,7 @@ import java.util.Date;
 public class GameSetDto implements DtoMapper<GameSet, GameSetDto> {
 
     private long id;
-    private GameDto game;
+    private int setNumber;
     private int pointsLocal;
     private int pointsVisit;
     private Date timeStart;
@@ -22,7 +22,7 @@ public class GameSetDto implements DtoMapper<GameSet, GameSetDto> {
         if (entity == null) return null;
         GameSetDto dto = new GameSetDto();
         dto.setId(entity.getId());
-        dto.setGame(new GameDto().to(entity.getGame()));
+        dto.setSetNumber(entity.getSetNumber());
         dto.setPointsLocal(entity.getPointsLocal());
         dto.setPointsVisit(entity.getPointsVisit());
         dto.setTimeStart(entity.getTimeStart());
@@ -37,7 +37,7 @@ public class GameSetDto implements DtoMapper<GameSet, GameSetDto> {
         if (dto == null) return null;
         GameSet entity = new GameSet();
         entity.setId(dto.getId());
-        entity.setGame(new GameDto().from(dto.getGame()));
+        entity.setSetNumber(dto.getSetNumber());
         entity.setPointsLocal(dto.getPointsLocal());
         entity.setPointsVisit(dto.getPointsVisit());
         entity.setTimeStart(dto.getTimeStart());

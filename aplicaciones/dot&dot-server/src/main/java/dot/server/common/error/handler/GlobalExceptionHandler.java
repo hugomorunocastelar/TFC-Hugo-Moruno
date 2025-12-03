@@ -15,11 +15,12 @@ import static dot.server.common.error.message.ErrorList.ER01;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger("exceptions");
+    private static final Logger exceptionLog = LoggerFactory.getLogger("exceptions");
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
-        log.info("IllegalArgumentException", ex);
+        exceptionLog.error("IllegalArgumentException: {}", ex.getMessage(), ex);
+        
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -28,9 +29,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+        exceptionLog.error("RuntimeException: {}", ex.getMessage(), ex);
+        
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex) {
-        log.info("Unhandled exception", ex);
+        exceptionLog.error("Unhandled exception: {}", ex.getMessage(), ex);
+        
         ErrorResponse error = new ErrorResponse(
                 ER01.getMensaje(),
                 ER01.getCodigo(),
@@ -39,4 +53,3 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
-

@@ -3,7 +3,12 @@ import CreateButton from '../../../components/buttons/create/CreateButton';
 import UpdateButton from '../../../components/buttons/update/UpdateButton';
 import CancelButton from '../../../components/buttons/cancel/CancelButton';
 
-function UsersForm({ formData, roles, onChange, onSubmit, onCancel }) {
+function UsersForm({ formData, roles, referees, onChange, onSubmit, onCancel }) {
+  const hasRefereeRole = formData.roles.some(roleId => {
+    const role = roles.find(r => r.id === roleId);
+    return role && role.name === 'ROLE_REFEREE';
+  });
+
   return (
     <div className='admin-form-container'>
       <div className='admin-form-header'>
@@ -32,6 +37,19 @@ function UsersForm({ formData, roles, onChange, onSubmit, onCancel }) {
                 ))}
               </select>
             </label>
+            {hasRefereeRole && (
+              <label>
+                <span>Associated Referee</span>
+                <select name="refereeId" value={formData.refereeId || ''} onChange={onChange}>
+                  <option value="">-- No Referee --</option>
+                  {referees.map(referee => (
+                    <option key={referee.id} value={referee.id}>
+                      {referee.dni.name} {referee.dni.surname} ({referee.noLicense})
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
         </div>
         <div className='admin-form-buttons'>

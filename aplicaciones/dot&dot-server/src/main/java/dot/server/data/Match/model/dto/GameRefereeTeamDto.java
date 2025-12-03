@@ -8,7 +8,6 @@ import lombok.Data;
 public class GameRefereeTeamDto implements DtoMapper<GameRefereeTeam, GameRefereeTeamDto> {
 
     private long id;
-    private GameDto game;
     private RefereeDTO principalReferee;
     private RefereeDTO secondaryReferee;
     private RefereeDTO scorer;
@@ -17,14 +16,11 @@ public class GameRefereeTeamDto implements DtoMapper<GameRefereeTeam, GameRefere
     private RefereeDTO lineReferee3;
     private RefereeDTO lineReferee4;
 
-    // Getters and setters
-
     @Override
     public GameRefereeTeamDto to(GameRefereeTeam entity) {
         if (entity == null) return null;
         GameRefereeTeamDto dto = new GameRefereeTeamDto();
         dto.setId(entity.getId());
-        dto.setGame(new GameDto().to(entity.getGame()));
         dto.setPrincipalReferee(RefereeDTO.from(entity.getPrincipalReferee()));
         dto.setSecondaryReferee(RefereeDTO.from(entity.getSecondaryReferee()));
         dto.setScorer(RefereeDTO.from(entity.getScorer()));
@@ -40,7 +36,6 @@ public class GameRefereeTeamDto implements DtoMapper<GameRefereeTeam, GameRefere
         if (dto == null) return null;
         GameRefereeTeam entity = new GameRefereeTeam();
         entity.setId(dto.getId());
-        entity.setGame(new GameDto().from(dto.getGame()));
         entity.setPrincipalReferee(RefereeDTO.to(dto.getPrincipalReferee()));
         entity.setSecondaryReferee(RefereeDTO.to(dto.getSecondaryReferee()));
         entity.setScorer(RefereeDTO.to(dto.getScorer()));

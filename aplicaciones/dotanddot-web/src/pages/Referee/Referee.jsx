@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "./Referee.css";
 import { Outlet, useNavigate } from 'react-router-dom';
 import Logo from '../../components/Logo/Logo';
+import { validateRole } from '../../js/auth.mjs';
 
 function Referee() {
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      try {
+        const adminRole = await validateRole('ROLE_ADMIN');
+        setIsAdmin(adminRole);
+      } catch {
+        setIsAdmin(false);
+      }
+    };
+    checkAdminRole();
+  }, []);
 
   const pages = {
-    Games: 'my-games',
+    ...(isAdmin && { 'All Games': 'all-games' }),
+    ...(!isAdmin && { 'My Games': 'my-games' }),
+    Ongoing: 'ongoing',
     Upcoming: 'upcoming',
     Finished: 'finished',
     Generate: 'generate',

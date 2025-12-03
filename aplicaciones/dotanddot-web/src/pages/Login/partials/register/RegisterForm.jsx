@@ -65,7 +65,7 @@ function RegisterForm() {
       register(formData)
         .then((response) => {
         if (response) {
-          navigate('/validate-account');
+          navigate('/login');
         } else {
           setFormData({ username: "", email: "", password: "", passwordRepeat: "", lopd: false });
           setErrorMessage("Registration failed. Please check your data.");

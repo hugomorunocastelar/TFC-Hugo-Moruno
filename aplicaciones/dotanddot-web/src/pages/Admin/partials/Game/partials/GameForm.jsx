@@ -9,7 +9,7 @@ const CATEGORIES = [
     'CADET', 'YOUTH', 'JUNIOR', 'ABSOLUTE', 'SENIOR'
 ];
 
-const DIVISIONS = ['FIRST', 'SECOND', 'THIRD', 'REGIONAL', 'PROVINCIAL'];
+const DIVISIONS = ['MIXED', 'FEMININE', 'MASCULINE'];
 
 const RELEVANCE_LEVELS = [
     { value: 1, label: 'Common' },
@@ -22,12 +22,43 @@ const RELEVANCE_LEVELS = [
 function GameForm({ formData, teams, leagues, competitions, cities, referees, onChange, onSubmit, onCancel }) {
     const [activeSection, setActiveSection] = useState('basic');
 
+    
+    const generateUniqueCodePreview = () => {
+        if (!formData.leagueId) {
+            return 'Select a league to see code preview';
+        }
+        
+        const league = leagues.find(l => l.id == formData.leagueId);
+        if (!league) {
+            return 'League not found';
+        }
+        
+        
+        
+        return `${league.codePrefix}XXX000 (auto-incremented)`;
+    };
+
     const renderSection = () => {
         switch (activeSection) {
             case 'basic':
                 return (
                     <div className="form-section">
                         <h3>Basic Information</h3>
+                        
+                        {!formData.id && (
+                            <div className="unique-code-preview">
+                                <label>
+                                    <span>Game Code Preview (auto-generated)</span>
+                                    <input 
+                                        type="text" 
+                                        value={generateUniqueCodePreview()} 
+                                        readOnly 
+                                        style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
+                                    />
+                                </label>
+                            </div>
+                        )}
+                        
                         <div className="form-grid">
                             <label>
                                 <span>League*</span>
@@ -67,7 +98,7 @@ function GameForm({ formData, teams, leagues, competitions, cities, referees, on
                             </label>
 
                             <label>
-                                <span>Division</span>
+                                <span>Division (Gender)</span>
                                 <select name="division" value={formData.division} onChange={onChange}>
                                     <option value="">Select division</option>
                                     {DIVISIONS.map(div => (
@@ -126,7 +157,7 @@ function GameForm({ formData, teams, leagues, competitions, cities, referees, on
                                     <option value="">Select home team</option>
                                     {teams.filter(t => t.id != formData.visitTeamId).map(team => (
                                         <option key={team.id} value={team.id}>
-                                            {team.name} - {team.club?.name || 'No club'}
+                                            {team.name} - {team.idClub?.name || 'No club'}
                                         </option>
                                     ))}
                                 </select>
@@ -143,7 +174,7 @@ function GameForm({ formData, teams, leagues, competitions, cities, referees, on
                                     <option value="">Select away team</option>
                                     {teams.filter(t => t.id != formData.localTeamId).map(team => (
                                         <option key={team.id} value={team.id}>
-                                            {team.name} - {team.club?.name || 'No club'}
+                                            {team.name} - {team.idClub?.name || 'No club'}
                                         </option>
                                     ))}
                                 </select>
@@ -182,9 +213,9 @@ function GameForm({ formData, teams, leagues, competitions, cities, referees, on
                             </label>
 
                             <label>
-                                <span>Scorer*</span>
-                                <select name="scorerId" value={formData.scorerId} onChange={onChange} required>
-                                    <option value="">Select scorer</option>
+                                <span>Scorer</span>
+                                <select name="scorerId" value={formData.scorerId} onChange={onChange}>
+                                    <option value="">Not assigned</option>
                                     {referees.filter(r => r.id != formData.principalRefereeId && r.id != formData.secondaryRefereeId).map(ref => (
                                         <option key={ref.id} value={ref.id}>
                                             {ref.dni?.name || `Referee ${ref.id}`} - {ref.noLicense}

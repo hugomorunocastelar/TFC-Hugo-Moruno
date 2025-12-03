@@ -10,7 +10,8 @@ import java.util.Date;
 public class GameResultDto implements DtoMapper<GameResult, GameResultDto> {
 
     private long id;
-    private GameDto game;
+    private int setsWonLocal;
+    private int setsWonVisit;
     private int pointsLocal;
     private int pointsVisit;
     private TeamDto winnerTeam;
@@ -23,7 +24,8 @@ public class GameResultDto implements DtoMapper<GameResult, GameResultDto> {
         if (entity == null) return null;
         GameResultDto dto = new GameResultDto();
         dto.setId(entity.getId());
-        dto.setGame(new GameDto().to(entity.getGame()));
+        dto.setSetsWonLocal(entity.getSetsWonLocal());
+        dto.setSetsWonVisit(entity.getSetsWonVisit());
         dto.setPointsLocal(entity.getPointsLocal());
         dto.setPointsVisit(entity.getPointsVisit());
         dto.setWinnerTeam(TeamDto.from(entity.getWinnerTeam()));
@@ -38,7 +40,8 @@ public class GameResultDto implements DtoMapper<GameResult, GameResultDto> {
         if (dto == null) return null;
         GameResult entity = new GameResult();
         entity.setId(dto.getId());
-        entity.setGame(new GameDto().from(dto.getGame()));
+        entity.setSetsWonLocal(dto.getSetsWonLocal());
+        entity.setSetsWonVisit(dto.getSetsWonVisit());
         entity.setPointsLocal(dto.getPointsLocal());
         entity.setPointsVisit(dto.getPointsVisit());
         entity.setWinnerTeam(TeamDto.to(dto.getWinnerTeam()));

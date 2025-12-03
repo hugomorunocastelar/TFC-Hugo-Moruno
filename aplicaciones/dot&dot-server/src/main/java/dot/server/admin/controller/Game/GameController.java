@@ -22,31 +22,31 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping
-    public ResponseEntity<List<GameDto>> getAllGames() {
+    public ResponseEntity<?> getAllGames() {
         return ResponseEntity.ok(gameService.findAll());
     }
     
     @GetMapping("/summary")
-    public ResponseEntity<List<GameSummaryDto>> getAllGamesSummary() {
+    public ResponseEntity<?> getAllGamesSummary() {
         return ResponseEntity.ok(gameService.findSummerizedAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GameDto> getGameById(@PathVariable Long id) {
+    public ResponseEntity<?> getGameById(@PathVariable Long id) {
         return gameService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @GetMapping("/code/{uniqueCode}")
-    public ResponseEntity<GameDto> getGameByUniqueCode(@PathVariable String uniqueCode) {
+    public ResponseEntity<?> getGameByUniqueCode(@PathVariable String uniqueCode) {
         return gameService.findByUniqueCode(uniqueCode)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<GameDto> createGame(@RequestBody CreateGameRequest request) {
+    public ResponseEntity<?> createGame(@RequestBody CreateGameRequest request) {
         try {
             GameDto created = gameService.create(request);
             return ResponseEntity.ok(created);
@@ -56,7 +56,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GameDto> updateGame(@PathVariable Long id, @RequestBody UpdateGameRequest request) {
+    public ResponseEntity<?> updateGame(@PathVariable Long id, @RequestBody UpdateGameRequest request) {
         try {
             return gameService.update(id, request)
                     .map(ResponseEntity::ok)
@@ -67,10 +67,19 @@ public class GameController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
+    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
         if (gameService.delete(id)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+    
+    /**
+     * Get all refereeable games (upcoming and ongoing)
+     * GET /admin/games/refereeable
+     */
+    @GetMapping("/refereeable")
+    public ResponseEntity<?> getRefereeableGames() {
+        return ResponseEntity.ok(gameService.findRefereeableGames());
     }
 }

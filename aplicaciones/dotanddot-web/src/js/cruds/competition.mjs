@@ -1,8 +1,8 @@
 import API from "../env";
-import { get, post } from "../http";
+import { get, getPublic, post } from "../http";
 
 export function getAllCompetitions() {
-  return get(API.COMPETITION.ALL)
+  return getPublic(API.OPEN.COMPETITIONS.ALL)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Competitions petition failed');

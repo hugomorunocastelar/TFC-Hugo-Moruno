@@ -18,26 +18,26 @@ public class GameplacesController {
     }
 
     @PostMapping
-    public ResponseEntity<GameplaceDto> createGameplace(@RequestBody GameplaceDto gameplaceDto) {
+    public ResponseEntity<?> createGameplace(@RequestBody GameplaceDto gameplaceDto) {
         GameplaceDto created = gameplaceService.createGameplace(gameplaceDto);
         return ResponseEntity.ok(created);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GameplaceDto> getGameplaceById(@PathVariable Long id) {
+    public ResponseEntity<?> getGameplaceById(@PathVariable Long id) {
         return gameplaceService.getGameplaceById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<GameplaceDto>> getAllGameplaces() {
+    public ResponseEntity<?> getAllGameplaces() {
         List<GameplaceDto> list = gameplaceService.getAllGameplaces();
         return ResponseEntity.ok(list);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GameplaceDto> updateGameplace(@PathVariable Long id, @RequestBody GameplaceDto gameplaceDto) {
+    public ResponseEntity<?> updateGameplace(@PathVariable Long id, @RequestBody GameplaceDto gameplaceDto) {
         try {
             GameplaceDto updated = gameplaceService.updateGameplace(id, gameplaceDto);
             return ResponseEntity.ok(updated);
@@ -47,7 +47,7 @@ public class GameplacesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGameplace(@PathVariable Long id) {
+    public ResponseEntity<?> deleteGameplace(@PathVariable Long id) {
         gameplaceService.deleteGameplace(id);
         return ResponseEntity.noContent().build();
     }

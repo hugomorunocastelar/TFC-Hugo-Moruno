@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MyGames.css";
 import { getRefereeGames } from "../../../../js/referee/referee.mjs";
 import { useNavigate } from "react-router-dom";
+import FavoriteButton from "../../../../components/FavoriteButton/FavoriteButton";
 
 function MyGames() {
     const [games, setGames] = useState([]);
@@ -20,7 +21,7 @@ function MyGames() {
             setLoading(false);
         } catch (err) {
             console.error("Error fetching referee games:", err);
-            setError(err.message || "Error al cargar los partidos asignados");
+            setError(err.message || "Error loading assigned games");
             setLoading(false);
         }
     };
@@ -42,7 +43,7 @@ function MyGames() {
     };
 
     if (loading) {
-        return <div className="my-games-loading">Cargando partidos...</div>;
+        return <div className="my-games-loading">Loading games...</div>;
     }
 
     if (error) {
@@ -52,14 +53,14 @@ function MyGames() {
     if (games.length === 0) {
         return (
             <div className="my-games-empty">
-                <p>No tienes partidos asignados actualmente</p>
+                <p>You have no games assigned currently</p>
             </div>
         );
     }
 
     return (
         <div className="my-games-container">
-            <h2 className="my-games-title">Mis Partidos Asignados</h2>
+            <h2 className="my-games-title">My Assigned Games</h2>
             <div className="my-games-list">
                 {games.map((game) => (
                     <div
@@ -72,6 +73,7 @@ function MyGames() {
                             <span className={`game-status ${getGameStatusClass(game)}`}>
                                 {getGameStatus(game)}
                             </span>
+                            <FavoriteButton gameId={game.id} size="small" />
                         </div>
 
                         <div className="game-card-body">
@@ -111,7 +113,7 @@ function MyGames() {
 
                             {game.league && (
                                 <div className="game-league">
-                                    <span className="league-label">Liga:</span>
+                                    <span className="league-label">League:</span>
                                     <span className="league-name">{game.league.name}</span>
                                 </div>
                             )}
@@ -119,7 +121,7 @@ function MyGames() {
 
                         <div className="game-card-footer">
                             <button className="game-manage-btn">
-                                {game.playing ? "Gestionar Partido" : "Ver Detalles"}
+                                {game.playing ? "Manage Game" : "View Details"}
                             </button>
                         </div>
                     </div>

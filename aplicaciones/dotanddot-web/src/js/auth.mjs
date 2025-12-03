@@ -79,7 +79,7 @@ export async function validateRole(role) {
     {
       return false;
     }
-    return response.json();
+    return (await response.json()).message === true ;
   } catch (error)
   {
     console.error('Invalid role:', error);

@@ -35,7 +35,6 @@ function Player() {
     setCurrentPage(page);
   };
 
-  // Fetch players
   const fetchPlayers = async (force = false) => {
     try {
       if (fetchedRef.current && !force) return;
@@ -50,7 +49,6 @@ function Player() {
     }
   };
 
-  // Fetch teams for dropdown
   const fetchTeams = async () => {
     try {
       getAllTeams()
@@ -63,7 +61,6 @@ function Player() {
     }
   };
 
-  // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
       getAllPersons()

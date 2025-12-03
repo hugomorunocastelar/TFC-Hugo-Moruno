@@ -21,13 +21,13 @@ public class OpenLeagueController {
     }
 
     @GetMapping
-    public ResponseEntity<List<League>> getAllLeagues() {
+    public ResponseEntity<?> getAllLeagues() {
         List<League> leagues = openLeagueService.findAll();
         return ResponseEntity.ok(leagues);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<League> getLeagueById(@PathVariable Long id) {
+    public ResponseEntity<?> getLeagueById(@PathVariable Long id) {
         League league = openLeagueService.findById(id);
         if (league == null) {
             return ResponseEntity.notFound().build();

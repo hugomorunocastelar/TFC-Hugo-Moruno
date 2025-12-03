@@ -1,35 +1,32 @@
 <configuration>
-<!--    <appender name="kpiRequests" class="ch.qos.logback.core.FileAppender">-->
-<!--        <file>logs/elk_kpiAiRequests.log</file>-->
-<!--        <append>true</append>-->
-<!--        <encoder>-->
-<!--            <pattern>%msg%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
-
-    <appender name="exceptions" class="ch.qos.logback.core.FileAppender">
+    <!-- Appender para excepciones -->
+    <appender name="EXCEPTIONS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/exceptions.log</file>
         <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/exceptions-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss} EXCEPTION [%logger{0}] -> %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex{full}</pattern>
         </encoder>
     </appender>
 
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Appender para consola -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss} %-5level[%logger{0}] -> %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%cyan(%logger{0})] - %msg%n</pattern>
         </encoder>
     </appender>
 
-<!--    <logger name="elk_kpiAiRequests" level="INFO" additivity="false">-->
-<!--        <appender-ref ref="kpiRequests"/>-->
-<!--    </logger>-->
-
-    <logger name="exceptions-log" level="INFO" additivity="false">
-        <appender-ref ref="exceptions"/>
+    <!-- Logger específico para excepciones (solo archivo) -->
+    <logger name="exceptions" level="ERROR" additivity="false">
+        <appender-ref ref="EXCEPTIONS_FILE"/>
     </logger>
 
+    <!-- Root logger (solo consola) -->
     <root level="INFO">
-        <appender-ref ref="Console"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

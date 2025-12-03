@@ -1,6 +1,7 @@
 package dot.server.admin.controller.Definitions;
 
 import dot.server.admin.service.Definitions.SeasonService;
+import dot.server.auth.payload.response.HttpResponse;
 import dot.server.data.MatchDefinitions.dto.SeasonDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +20,26 @@ public class SeasonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SeasonDto>> getAllSeasons() {
+    public ResponseEntity<?> getAllSeasons() {
         List<SeasonDto> seasons = seasonService.findAll();
         return ResponseEntity.ok(seasons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SeasonDto> getSeasonById(@PathVariable Long id) {
+    public ResponseEntity<?> getSeasonById(@PathVariable Long id) {
         return seasonService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<SeasonDto> createSeason(@RequestBody SeasonDto seasonDto) {
+    public ResponseEntity<?> createSeason(@RequestBody SeasonDto seasonDto) {
         SeasonDto created = seasonService.save(seasonDto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return ResponseEntity.ok(new HttpResponse(HttpStatus.CREATED, created));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SeasonDto> updateSeason(@PathVariable Long id, @RequestBody SeasonDto seasonDto) {
+    public ResponseEntity<?> updateSeason(@PathVariable Long id, @RequestBody SeasonDto seasonDto) {
         try {
             SeasonDto updated = seasonService.update(id, seasonDto);
             return ResponseEntity.ok(updated);
@@ -48,7 +49,7 @@ public class SeasonController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSeason(@PathVariable Long id) {
+    public ResponseEntity<?> deleteSeason(@PathVariable Long id) {
         seasonService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

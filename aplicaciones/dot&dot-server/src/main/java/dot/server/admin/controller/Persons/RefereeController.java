@@ -1,6 +1,7 @@
 package dot.server.admin.controller.Persons;
 
 import dot.server.admin.service.Persons.RefereeService;
+import dot.server.auth.payload.response.HttpResponse;
 import dot.server.data.Person.dto.RefereeDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +20,26 @@ public class RefereeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RefereeDTO>> getAllReferees() {
+    public ResponseEntity<?> getAllReferees() {
         List<RefereeDTO> referees = refereeService.findAll();
         return ResponseEntity.ok(referees);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RefereeDTO> getRefereeById(@PathVariable Long id) {
+    public ResponseEntity<?> getRefereeById(@PathVariable Long id) {
         return refereeService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<RefereeDTO> createReferee(@RequestBody RefereeDTO refereeDTO) {
+    public ResponseEntity<?> createReferee(@RequestBody RefereeDTO refereeDTO) {
         RefereeDTO created = refereeService.save(refereeDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return ResponseEntity.ok(new HttpResponse(HttpStatus.CREATED, created));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RefereeDTO> updateReferee(@PathVariable Long id, @RequestBody RefereeDTO refereeDTO) {
+    public ResponseEntity<?> updateReferee(@PathVariable Long id, @RequestBody RefereeDTO refereeDTO) {
         try {
             RefereeDTO updated = refereeService.update(id, refereeDTO);
             return ResponseEntity.ok(updated);
@@ -48,7 +49,7 @@ public class RefereeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReferee(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReferee(@PathVariable Long id) {
         refereeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -11,20 +11,20 @@ public class UpdateGameRequest {
     private int relevance;
     private Long leagueId;
     
-    // Game Details
+    
     private Category category;
     private Division division;
     private Long competitionId;
     private Long cityId;
     private Date date;
     
-    // Initial Situation
+    
     private Long localTeamId;
     private Long visitTeamId;
     private Long startingTeamId;
     private Long leftTeamId;
     
-    // Referee Team
+    
     private Long principalRefereeId;
     private Long secondaryRefereeId;
     private Long scorerId;
@@ -33,10 +33,10 @@ public class UpdateGameRequest {
     private Long lineReferee3Id;
     private Long lineReferee4Id;
     
-    // Observations
+    
     private String observations;
     
-    // Status
+    
     private Boolean playing;
     private Boolean finished;
 }

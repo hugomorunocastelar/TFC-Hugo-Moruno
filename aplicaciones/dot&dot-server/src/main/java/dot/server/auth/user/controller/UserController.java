@@ -28,20 +28,20 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Obtener todos los usuarios")
-    public ResponseEntity<List<UserDto>> getAll() {
+    public ResponseEntity<?> getAll() {
         List<UserDto> users = UserDto.to(serv.findAll());
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un usuario por ID")
-    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(UserDto.to(serv.findById(id)));
     }
 
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario")
-    public ResponseEntity<UserDto> create(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> create(@Valid @RequestBody UserDto userDto) {
         var password = userDto.getPassword();
         userDto.setPassword(passwordEncoder.encode(password));
         var saved = serv.save(UserDto.from(userDto));
@@ -50,7 +50,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un usuario existente")
-    public ResponseEntity<UserDto> update(
+    public ResponseEntity<?> update(
             @PathVariable Long id,
             @Valid @RequestBody UserDto userDto
     ) {
@@ -65,7 +65,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un usuario por ID")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         serv.deleteById(id);
         return ResponseEntity.noContent().build();
     }

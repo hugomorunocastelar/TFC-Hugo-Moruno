@@ -36,7 +36,6 @@ function Referee() {
     setCurrentPage(page);
   };
 
-  // Fetch referees
   const fetchReferees = async (force = false) => {
     try {
       if (fetchedRef.current && !force) return;
@@ -51,7 +50,6 @@ function Referee() {
     }
   };
 
-  // Fetch cities for dropdown
   const fetchCities = async () => {
     try {
       getAllCities()
@@ -63,7 +61,6 @@ function Referee() {
     }
   };
 
-  // Fetch persons for dropdown
   const fetchPersons = async () => {
     try {
       getAllPersons()

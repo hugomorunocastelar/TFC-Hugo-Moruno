@@ -36,4 +36,8 @@ public class GameDetails {
     @Temporal(TemporalType.DATE)
     private Date date;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column()
+    private Date timeStart;
+
 }

@@ -1,8 +1,8 @@
 import API from "../env";
-import { get, post } from "../http";
+import { get, getPublic, post } from "../http";
 
 export function getAllLeagues() {
-  return get(API.LEAGUE.ALL)
+  return getPublic(API.OPEN.LEAGUES.ALL)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Leagues petition failed');

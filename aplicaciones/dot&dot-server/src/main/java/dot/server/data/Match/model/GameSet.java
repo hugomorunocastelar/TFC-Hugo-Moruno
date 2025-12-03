@@ -14,9 +14,11 @@ public class GameSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "uniqueCode", referencedColumnName = "uniqueCode")
-    private Game game;
+    @Column(nullable = false)
+    private String uniqueCode;
+
+    @Column(nullable = false)
+    private int setNumber; 
 
     private int pointsLocal;
     private int pointsVisit;

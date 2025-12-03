@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import "./RecentMatches.css";
-import { getAllOpenGames } from '../../../../../../js/home/games.mjs';
+import FavoriteButton from '../../../../../../components/FavoriteButton/FavoriteButton';
 
-function RecentMatches() {
+function RecentMatches({matches}) {
+  const navigate = useNavigate();
 
-  const [matches, setMatches] = useState([]);
-
-  useEffect(() => {
-    getAllOpenGames()
-    .then((response) => {
-      if (response) setMatches(response);
-    });
-  }, []);
-  
   return (
     <div className='RecMatches-Panel infoPanel'>
       <div className='RecMatches'>
@@ -22,8 +15,9 @@ function RecentMatches() {
         <table className='RM-MatchesTable'>
           <tbody>
             {matches ? (matches.filter(p => !p.playing && p.finished)
+            .slice(0, 5)
             .map((elem) => (
-              <tr key={elem.id}>
+              <tr key={elem.id} onClick={() => navigate(`/game/${elem.id}`)} className="clickable-row">
                 <td>
                   <div className='teams'>
                     <p>{elem.initialSituation.localTeam.name}</p>
@@ -41,6 +35,9 @@ function RecentMatches() {
                     <p>{`${new Date(elem.result.timeStart).getUTCHours()}:${new Date(elem.result.timeStart).getUTCMinutes() == 0 ? '00' : new Date(elem.result.timeStart).getUTCMinutes()}`}</p>
                     <p>{`${new Date(elem.result.timeStart).getUTCDate()}-${new Date(elem.result.timeStart).getUTCMonth()}-${new Date(elem.result.timeStart).getUTCFullYear()}`}</p>
                   </div>
+                </td>
+                <td>
+                  <FavoriteButton gameId={elem.id} size="small" />
                 </td>
               </tr>
             ))) : (

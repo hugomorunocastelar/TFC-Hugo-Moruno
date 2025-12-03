@@ -16,7 +16,6 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
             .catch(error => console.error('Error loading GeoJSON:', error));
     }, []);
 
-    // Buscar coordenadas usando Nominatim (OpenStreetMap)
     const handleSearch = async () => {
         if (!searchQuery.trim()) return;
 
@@ -35,7 +34,7 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
             setSearchResults(data);
         } catch (error) {
             console.error('Error searching location:', error);
-            alert('Error al buscar la ubicación');
+            alert('Error searching location');
         } finally {
             setSearching(false);
         }
@@ -62,11 +61,10 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
 
-            // Normalizar a 0-1
+            
             const normX = x / rect.width;
             const normY = y / rect.height;
 
-            // Límites reales de Extremadura ajustados empíricamente
             const bounds = {
                 minLon: -7.6,
                 maxLon: -4.6,
@@ -74,12 +72,9 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
                 maxLat: 40.5
             };
             
-            // Conversión directa lineal de píxeles a coordenadas
-            // Sin considerar zoom ya que ZoomableGroup lo maneja internamente
             const lon = bounds.minLon + (normX * (bounds.maxLon - bounds.minLon));
             const lat = bounds.maxLat - (normY * (bounds.maxLat - bounds.minLat));
 
-            // Validar límites
             if (lon >= bounds.minLon && lon <= bounds.maxLon && lat >= bounds.minLat && lat <= bounds.maxLat) {
                 onCoordinatesChange({
                     latitude: lat,
@@ -120,7 +115,7 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
                 <div className='search-input-group'>
                     <input
                         type="text"
-                        placeholder="Buscar dirección o lugar..."
+                        placeholder="Search address or location..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleSearch())}
@@ -131,7 +126,7 @@ function CoordinatesPicker({ latitude, longitude, onCoordinatesChange, cityName 
                         disabled={searching}
                         className='search-button'
                     >
-                        {searching ? 'Buscando...' : '🔍 Buscar'}
+                        {searching ? 'Searching...' : '🔍 Search'}
                     </button>
                 </div>
 

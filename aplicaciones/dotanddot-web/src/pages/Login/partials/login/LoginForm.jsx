@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import "./LoginForm.css";
 import { login } from '../../../../js/auth.mjs';
 import { getProfilePic} from '../../../../js/images/images.mjs';
@@ -10,10 +10,39 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const userInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+
+  useEffect(() => {
+    if (userInputRef.current) {
+      userInputRef.current.focus();
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendData();
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setFormData({ user: "", password: "" });
+      setError("");
+      if (userInputRef.current) {
+        userInputRef.current.focus();
+      }
+    }
+    if (e.key === 'Tab' && e.target.name === 'user' && !e.shiftKey) {
+      e.preventDefault();
+      if (passwordInputRef.current) {
+        passwordInputRef.current.focus();
+      }
+    }
   };
 
   function sendData() {
@@ -61,19 +90,37 @@ function LoginForm() {
 
   return (
     <>
-    <div className='LoginForm-Data'>
+    <div className='LoginForm-Data' onKeyDown={handleKeyDown}>
       <div className='LoginForm-Inputs'>
         <label>
           Username or Email
           <div>
-            <input type="user" name="user" placeholder='Enter your user' value={formData.user} onChange={handleChange} required />
+            <input 
+              ref={userInputRef}
+              type="user" 
+              name="user" 
+              placeholder='Enter your user' 
+              value={formData.user} 
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              required 
+            />
           </div>
         </label>
         <label>
           Password
           <div>
-            <input type={show ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} required />
-            <button type="button" onClick={() => setShow(!show)} className="passwordShower" >
+            <input 
+              ref={passwordInputRef}
+              type={show ? "text" : "password"} 
+              name="password" 
+              placeholder="Enter your password" 
+              value={formData.password} 
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              required 
+            />
+            <button type="button" onClick={() => setShow(!show)} className="passwordShower" tabIndex={-1}>
               {show ? (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
                   <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
@@ -88,7 +135,7 @@ function LoginForm() {
             </button>
           </div>
         </label>
-        <a className='forgotPass' onClick={() => navigate('/forgot-password')}>Forgot password?</a>
+        <a className='forgotPass' onClick={() => navigate('/forgot-password')} tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && navigate('/forgot-password')}>Forgot password?</a>
       </div>
       {error && <p className='lp-error'>{error}</p>}
     </div>
