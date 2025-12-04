@@ -7,6 +7,7 @@ import { validateRole } from '../../js/auth.mjs';
 function Referee() {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [asideOpen, setAsideOpen] = useState(true);
 
   useEffect(() => {
     const checkAdminRole = async () => {
@@ -23,9 +24,6 @@ function Referee() {
   const pages = {
     ...(isAdmin && { 'All Games': 'all-games' }),
     ...(!isAdmin && { 'My Games': 'my-games' }),
-    Ongoing: 'ongoing',
-    Upcoming: 'upcoming',
-    Finished: 'finished',
     Generate: 'generate',
   };
 
@@ -49,7 +47,17 @@ function Referee() {
       </header>
 
       <div className='REF-Body'>
-        <aside className='REF-Aside'>
+        <button 
+          className={`REF-Aside-Toggle ${asideOpen ? 'open' : 'closed'}`}
+          onClick={() => setAsideOpen(!asideOpen)}
+          aria-label={asideOpen ? 'Close sidebar' : 'Open sidebar'}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+          </svg>
+        </button>
+        
+        <aside className={`REF-Aside ${asideOpen ? 'open' : 'closed'}`}>
           <nav className='REF-Aside-Nav'>
             {Object.entries(pages).map(([label, route]) => (
               <button

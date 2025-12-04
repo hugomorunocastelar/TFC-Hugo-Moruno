@@ -168,6 +168,7 @@ function Profile() {
 
   const handleLogout = () => {
     removeSession();
+    navigate('/');
   };
 
   if (!sessionUser) {

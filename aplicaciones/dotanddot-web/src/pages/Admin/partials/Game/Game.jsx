@@ -30,6 +30,7 @@ function Game() {
         competitionId: '',
         cityId: '',
         date: '',
+        time: '',
         localTeamId: '',
         visitTeamId: '',
         principalRefereeId: '',
@@ -44,15 +45,27 @@ function Game() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const [loadingData, setLoadingData] = useState(true);
+    const [cityFilter, setCityFilter] = useState('');
     const fetchedRef = useRef(false);
 
-    const totalPages = Math.ceil(games.length / itemsPerPage);
+    const filteredGames = games.filter(game => {
+        if (!cityFilter) return true;
+        const cityName = game.details?.city?.name || '';
+        return cityName.toLowerCase().includes(cityFilter.toLowerCase());
+    });
+
+    const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentGames = games.slice(startIndex, startIndex + itemsPerPage);
+    const currentGames = filteredGames.slice(startIndex, startIndex + itemsPerPage);
 
     const goToPage = (page) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
+    };
+
+    const handleCityFilterChange = (filterValue) => {
+        setCityFilter(filterValue);
+        setCurrentPage(1);
     };
 
     const fetchGames = async (force = false) => {
@@ -104,6 +117,7 @@ function Game() {
             competitionId: '',
             cityId: '',
             date: '',
+            time: '',
             localTeamId: '',
             visitTeamId: '',
             principalRefereeId: '',
@@ -120,6 +134,14 @@ function Game() {
     }
 
     const openFormForEdit = (game) => {
+        const gameDate = game.details?.date ? new Date(game.details.date) : null;
+        let timeStr = '';
+        if (gameDate) {
+            const hours = String(gameDate.getHours()).padStart(2, '0');
+            const minutes = String(gameDate.getMinutes()).padStart(2, '0');
+            timeStr = `${hours}:${minutes}`;
+        }
+        
         setFormData({
             id: game.id,
             relevance: game.relevance || 0,
@@ -128,7 +150,8 @@ function Game() {
             division: game.details?.division || '',
             competitionId: game.details?.competition?.id || '',
             cityId: game.details?.city?.id || '',
-            date: game.details?.date ? new Date(game.details.date).toISOString().split('T')[0] : '',
+            date: gameDate ? gameDate.toISOString().split('T')[0] : '',
+            time: timeStr,
             localTeamId: game.initialSituation?.localTeam?.id || '',
             visitTeamId: game.initialSituation?.visitTeam?.id || '',
             principalRefereeId: game.refereeTeam?.principalReferee?.id || '',
@@ -157,6 +180,15 @@ function Game() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Combine date and time if both are provided
+            let combinedDateTime = null;
+            if (formData.date && formData.date !== '') {
+                const dateStr = formData.time && formData.time !== '' 
+                    ? `${formData.date}T${formData.time}:00`
+                    : `${formData.date}T00:00:00`;
+                combinedDateTime = new Date(dateStr).toISOString();
+            }
+            
             const bodyData = {
                 relevance: parseInt(formData.relevance) || 0,
                 leagueId: formData.leagueId && formData.leagueId !== '' ? parseInt(formData.leagueId) : null,
@@ -164,7 +196,7 @@ function Game() {
                 division: formData.division && formData.division !== '' ? formData.division : null,
                 competitionId: formData.competitionId && formData.competitionId !== '' ? parseInt(formData.competitionId) : null,
                 cityId: formData.cityId && formData.cityId !== '' ? parseInt(formData.cityId) : null,
-                date: formData.date && formData.date !== '' ? new Date(formData.date).toISOString() : null,
+                date: combinedDateTime,
                 localTeamId: formData.localTeamId && formData.localTeamId !== '' ? parseInt(formData.localTeamId) : null,
                 visitTeamId: formData.visitTeamId && formData.visitTeamId !== '' ? parseInt(formData.visitTeamId) : null,
                 principalRefereeId: formData.principalRefereeId && formData.principalRefereeId !== '' ? parseInt(formData.principalRefereeId) : null,
@@ -235,6 +267,8 @@ function Game() {
                     currentGames={currentGames}
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    cityFilter={cityFilter}
+                    onCityFilterChange={handleCityFilterChange}
                     onPageChange={goToPage}
                     onNew={openFormForCreate}
                     onEdit={openFormForEdit}

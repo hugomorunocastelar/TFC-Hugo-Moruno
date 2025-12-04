@@ -37,6 +37,25 @@ public class OpenMatchesController {
         return ResponseEntity.ok(matchService.getGamesByCompetition(competitionId));
     }
 
+    @GetMapping("/live/{uniqueCode}/initial")
+    public ResponseEntity<?> getGameInitialState(@PathVariable String uniqueCode) {
+        log.info("Fetching initial game state for: {}", uniqueCode);
+
+        Optional<Game> gameOpt = gameRepository.findAll().stream()
+                .filter(g -> g.getUniqueCode().equals(uniqueCode))
+                .findFirst();
+
+        if (gameOpt.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(java.util.Map.of("error", "Game not found with uniqueCode: " + uniqueCode));
+        }
+
+        Game game = gameOpt.get();
+        dot.server.data.Match.model.dto.GameDto gameDto = new dot.server.data.Match.model.dto.GameDto().to(game);
+        
+        return ResponseEntity.ok(gameDto);
+    }
+
     @GetMapping(value = "/live/{uniqueCode}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamGameUpdates(@PathVariable String uniqueCode) {
         log.info("New SSE connection request for game: {}", uniqueCode);

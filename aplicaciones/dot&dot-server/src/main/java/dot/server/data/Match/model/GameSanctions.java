@@ -20,6 +20,9 @@ public class GameSanctions {
     @Column(nullable = false)
     private SanctionType type;
 
+    @Column(nullable = false)
+    private String severity; 
+
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;

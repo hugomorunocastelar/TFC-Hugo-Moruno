@@ -38,7 +38,7 @@ export async function checkFavorite(gameId) {
     try {
         const response = await http.get(API.USER.CHECK_FAVORITE(gameId));
         const data = await response.json();
-        // HttpResponse devuelve { status: 200, message: boolean }
+        
         return data?.message === true;
     } catch (error) {
         console.error('Error al verificar favorito:', error);
@@ -50,7 +50,7 @@ export async function countFavorites() {
     try {
         const response = await http.get(API.USER.COUNT_FAVORITES);
         const data = await response.json();
-        // HttpResponse devuelve { status: 200, message: number }
+        
         return data?.message || 0;
     } catch (error) {
         console.error('Error al contar favoritos:', error);

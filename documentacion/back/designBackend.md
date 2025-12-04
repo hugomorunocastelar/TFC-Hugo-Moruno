@@ -38,7 +38,7 @@ El backend se organiza en los siguientes módulos principales:
 
 El sistema implementa una estructura completa que digitaliza el acta real de voleibol:
 
-<img src="../diagramas/acta-real.png" height="400">
+<img src="../acta-real.png" height="400">
 
 ## Entidad Game (Partido)
 

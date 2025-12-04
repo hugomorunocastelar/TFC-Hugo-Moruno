@@ -137,6 +137,16 @@ function GameForm({ formData, teams, leagues, competitions, cities, referees, on
                                     required 
                                 />
                             </label>
+
+                            <label className="full-width">
+                                <span>Match Time</span>
+                                <input 
+                                    type="time" 
+                                    name="time" 
+                                    value={formData.time} 
+                                    onChange={onChange}
+                                />
+                            </label>
                         </div>
                     </div>
                 );

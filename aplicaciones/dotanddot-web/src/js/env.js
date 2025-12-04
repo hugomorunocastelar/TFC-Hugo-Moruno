@@ -93,8 +93,10 @@ const API = {
     GET_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}`,
     START_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/start`,
     UPDATE_POINTS: (uniqueCode, setId) => `${BACK_IP}/referee/matches/${uniqueCode}/sets/${setId}/points`,
+    UPDATE_ALIGNMENTS: (uniqueCode, setId) => `${BACK_IP}/referee/matches/${uniqueCode}/sets/${setId}/alignments`,
     ADD_SANCTION: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/sanctions`,
     FINISH_GAME: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/finish`,
+    START_NEW_SET: (uniqueCode) => `${BACK_IP}/referee/matches/${uniqueCode}/sets`,
   },
   SEASONS: {
     ROOT: `${ADMIN_BACK_IP}/seasons`,
@@ -174,6 +176,7 @@ const API = {
     BASE: `${OPEN_BACK_IP}/matches`,
     LEAGUE: (leagueId) => `${OPEN_BACK_IP}/matches/league/${leagueId}`,
     LIVE: (uniqueCode) => `${OPEN_BACK_IP}/matches/live/${uniqueCode}`,
+    LIVE_INITIAL: (uniqueCode) => `${OPEN_BACK_IP}/matches/live/${uniqueCode}/initial`,
     LIVE_STATS: (uniqueCode) => `${OPEN_BACK_IP}/matches/live/${uniqueCode}/stats`
   },
   IMAGE: {

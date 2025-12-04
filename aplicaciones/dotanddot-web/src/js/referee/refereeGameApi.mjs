@@ -68,14 +68,21 @@ export async function updateSetPoints(uniqueCode, setId, team, points) {
   }
 }
 
-export async function addGameSanction(uniqueCode, type, teamId, marcador) {
+export async function addGameSanction(uniqueCode, severity, teamId, marcador, sanctionType = null) {
   try
   {
-    const response = await http.post(API.REFEREE.ADD_SANCTION(uniqueCode), {
-      type,
+    const body = {
+      type: severity, 
       teamId,
       marcador
-    });
+    };
+    
+    
+    if (sanctionType) {
+      body.sanctionType = sanctionType;
+    }
+    
+    const response = await http.post(API.REFEREE.ADD_SANCTION(uniqueCode), body);
     if (!response.ok)
     {
       throw new Error('Add sanction failed');
@@ -106,4 +113,42 @@ export function getSetsArray(gameData) {
   });
   
   return setsArray;
+}
+
+export async function updateAlignments(uniqueCode, setId, localAlignment, visitAlignment) {
+  try
+  {
+    const response = await http.put(API.REFEREE.UPDATE_ALIGNMENTS(uniqueCode, setId), {
+      localAlignment,
+      visitAlignment
+    });
+    if (!response.ok)
+    {
+      throw new Error('Update alignments failed');
+    }
+    return response.json();
+  } catch (error)
+  {
+    console.error('Update alignments error:', error);
+    return false;
+  }
+}
+
+export async function startNextSet(uniqueCode, localAlignment, visitAlignment) {
+  try
+  {
+    const response = await http.post(API.REFEREE.START_NEW_SET(uniqueCode), {
+      localAlignment,
+      visitAlignment
+    });
+    if (!response.ok)
+    {
+      throw new Error('Start new set failed');
+    }
+    return response.json();
+  } catch (error)
+  {
+    console.error('Start new set error:', error);
+    return false;
+  }
 }

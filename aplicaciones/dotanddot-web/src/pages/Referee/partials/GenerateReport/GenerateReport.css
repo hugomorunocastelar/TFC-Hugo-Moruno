@@ -1,0 +1,153 @@
+.generate-report-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.generate-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.generate-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.generate-error,
+.generate-empty {
+    text-align: center;
+    padding: 3rem;
+}
+
+.generate-empty h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.generate-empty p {
+    color: #999;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.report-game-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.report-game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-palette-green-3);
+}
+
+.report-game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.report-game-code {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--color-palette-green-3);
+}
+
+.report-game-status {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.report-game-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 10px;
+}
+
+.report-team {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+}
+
+.report-vs {
+    font-weight: bold;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.report-game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.report-game-info span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.btn-generate-pdf {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--color-palette-green-2) 0%, var(--color-palette-green-3) 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-generate-pdf:hover {
+    background: linear-gradient(135deg, var(--color-palette-green-3) 0%, var(--color-palette-green-2) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+}
+
+.btn-generate-pdf:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .generate-report-container {
+        padding: 1rem;
+    }
+}

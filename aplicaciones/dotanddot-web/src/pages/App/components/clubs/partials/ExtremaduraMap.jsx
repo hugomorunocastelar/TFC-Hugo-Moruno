@@ -52,7 +52,7 @@ function ExtremaduraMap({ clubs }) {
             setZoom(position.zoom);
             setCenter(position.coordinates);
           }}
-          minZoom={1.2}
+          minZoom={2}
           maxZoom={20}
           translateExtent={[
             [-100, -100],
@@ -110,7 +110,7 @@ function ExtremaduraMap({ clubs }) {
                   {showClubDetails && cityClubs.length > 0 && (
                     <g>
                       {cityClubs.map((club, index) => {
-                        const yOffset = markerSize * zoom + 10 + (index * 18);
+                        const yOffset = markerSize * zoom + 12 + (index * 22);
                         return (
                           <g 
                             key={club.id}
@@ -119,25 +119,25 @@ function ExtremaduraMap({ clubs }) {
                           >
                             <rect
                               x={-3 / zoom}
-                              y={(yOffset - 7) / zoom}
-                              width={100 / zoom}
-                              height={12 / zoom}
+                              y={(yOffset - 9) / zoom}
+                              width={130 / zoom}
+                              height={16 / zoom}
                               className="club-item-background"
                               rx={2 / zoom}
                             />
                             <circle
                               cx={0}
                               cy={yOffset / zoom}
-                              r={5 / zoom}
+                              r={6 / zoom}
                               className="club-item-circle"
                               strokeWidth={1 / zoom}
                             />
                             <text
-                              x={8 / zoom}
-                              y={(yOffset + 3) / zoom}
+                              x={10 / zoom}
+                              y={(yOffset + 4) / zoom}
                               className="club-item-text"
                               style={{
-                                fontSize: `${8 / zoom}px`
+                                fontSize: `${10 / zoom}px`
                               }}
                             >
                               {club.name}

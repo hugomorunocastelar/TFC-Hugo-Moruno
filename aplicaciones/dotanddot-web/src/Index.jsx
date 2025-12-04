@@ -42,6 +42,7 @@ import RefereeGames from "./pages/Admin/partials/RefereeGames/RefereeGames";
 import LiveRefereeGame from "./pages/Referee/LiveRefereeGame";
 import LiveGameView from "./pages/App/components/gameView/LiveGameView";
 import UserFavorites from "./pages/UserFavorites/UserFavorites";
+import GenerateReport from "./pages/Referee/partials/GenerateReport/GenerateReport";
 
 function Index() {
   return (
@@ -55,7 +56,7 @@ function Index() {
           <Route path="clubs/:id" element={<ClubView />} />
           <Route path="contact" element={<Contact />} />
           <Route path="game/:gameId" element={<GameView />} />
-          <Route path="live/:uniqueCode" element={<LiveGameView />} />
+          <Route path="game/live/:uniqueCode" element={<LiveGameView />} />
           <Route path="matches" element={<Matches />} />
           <Route path="favorites" element={<AuthGuard><UserFavorites /></AuthGuard>} />
         </Route>
@@ -84,10 +85,7 @@ function Index() {
           <Route path="all-games" element={<RefereeGames />} />
           <Route path="my-games" element={<MyGames />} />
           <Route path="game/:uniqueCode" element={<LiveRefereeGame />} />
-          <Route path="ongoing" element={<p>Ongoing</p>} />
-          <Route path="upcoming" element={<p>Upcoming</p>} />
-          <Route path="finished" element={<p>Upcoming</p>} />
-          <Route path="generate" element={<p>Upcoming</p>} />
+          <Route path="generate" element={<GenerateReport />} />
         </Route>
         <Route path="login" element={<Login />} />
         <Route path="validate-account/:token" element={<ValidateAccount />} />

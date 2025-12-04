@@ -20,9 +20,9 @@ spring:
             enable: true
   datasource:
     #        SERVER
-    url: jdbc:mysql://mysql:3306/dotdot_db
+#    url: jdbc:mysql://mysql:3306/dotdot_db
     #        DEVELOPMENT
-#    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
+    url: jdbc:mysql://dot-dot.duckdns.org:3306/dotdot_db
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
     password: dotdotdb
@@ -37,5 +37,5 @@ jwt:
 
 images:
   folder:
-#    path: "D:\\DAW2-Repositorios\\TFC-Hugo-Moruno\\aplicaciones\\dot&dot-server\\images"
-    path: "/home/ubuntu/back/images"
+    path: "D:\\DAW2-Repositorios\\TFC-Hugo-Moruno\\aplicaciones\\dot&dot-server\\images"
+#    path: "/home/ubuntu/back/images"

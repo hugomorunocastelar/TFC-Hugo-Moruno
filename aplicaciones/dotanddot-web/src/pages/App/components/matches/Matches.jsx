@@ -130,7 +130,7 @@ function Matches() {
                             <div
                                 key={game.id}
                                 className="match-card"
-                                onClick={() => navigate(`/game/${game.id}`)}
+                                onClick={() => navigate(game.playing ? `/game/live/${game.uniqueCode}` : `/game/${game.id}`)}
                             >
                                 <div className="match-card-header">
                                     <span className="match-code">{game.uniqueCode}</span>

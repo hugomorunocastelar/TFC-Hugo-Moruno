@@ -82,7 +82,7 @@ function Competition() {
 
       if (!localTeam || !visitTeam) return;
 
-      // Inicializar equipos si no existen
+      
       if (!standings[localTeam.id]) {
         standings[localTeam.id] = {
           name: localTeam.name,
@@ -106,7 +106,7 @@ function Competition() {
         };
       }
 
-      // Actualizar estadísticas
+      
       const setsLocal = game.result.setsWonLocal || 0;
       const setsVisit = game.result.setsWonVisit || 0;
 
@@ -128,7 +128,7 @@ function Competition() {
       }
     });
 
-    // Convertir a array y ordenar
+    
     return Object.values(standings).sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points;
       const diffA = a.setsWon - a.setsLost;
@@ -156,17 +156,17 @@ function Competition() {
           const gamesCount = gamesData[league.id]?.length || 0;
           const standings = gamesData[league.id] ? calculateStandings(gamesData[league.id]) : [];
           
-          // Estado de filtros para esta liga específica
+          
           const leagueFilter = filters[league.id] || { status: 'all', team: 'all', startDate: '', endDate: '' };
           
-          // Obtener lista de equipos únicos
+          
           const teams = gamesData[league.id] ? 
             [...new Set(gamesData[league.id].flatMap(game => [
               game.initialSituation?.localTeam?.name,
               game.initialSituation?.visitTeam?.name
             ]).filter(Boolean))].sort() : [];
           
-          // Función para actualizar filtros de esta liga
+          
           const updateLeagueFilter = (key, value) => {
             setFilters(prev => ({
               ...prev,
@@ -174,30 +174,30 @@ function Competition() {
             }));
           };
           
-          // Filtrar partidos
+          
           const filteredGames = gamesData[league.id] ? gamesData[league.id].filter(game => {
-            // Filtro por estado
+            
             if (leagueFilter.status !== 'all') {
               if (leagueFilter.status === 'finished' && !game.finished) return false;
               if (leagueFilter.status === 'playing' && !game.playing) return false;
               if (leagueFilter.status === 'upcoming' && (game.finished || game.playing)) return false;
             }
             
-            // Filtro por equipo
+            
             if (leagueFilter.team !== 'all') {
               const localTeam = game.initialSituation?.localTeam?.name;
               const visitTeam = game.initialSituation?.visitTeam?.name;
               if (localTeam !== leagueFilter.team && visitTeam !== leagueFilter.team) return false;
             }
             
-            // Filtro por fecha de inicio
+            
             if (leagueFilter.startDate && game.details?.date) {
               const gameDate = new Date(game.details.date).setHours(0, 0, 0, 0);
               const filterDate = new Date(leagueFilter.startDate).setHours(0, 0, 0, 0);
               if (gameDate < filterDate) return false;
             }
             
-            // Filtro por fecha de fin
+            
             if (leagueFilter.endDate && game.details?.date) {
               const gameDate = new Date(game.details.date).setHours(0, 0, 0, 0);
               const filterDate = new Date(leagueFilter.endDate).setHours(0, 0, 0, 0);
@@ -211,7 +211,7 @@ function Competition() {
           <div key={league.id} className="league-section">
             <h3 className="league-title">{league.name} ({gamesCount} {gamesCount === 1 ? 'game' : 'games'})</h3>
             
-            {/* Tabla de Clasificación */}
+            {}
             {standings.length > 0 && (
               <div className="standings-section">
                 <h4 className="standings-title">Clasificación</h4>
@@ -250,7 +250,7 @@ function Competition() {
               </div>
             )}
             
-            {/* Filtros */}
+            {}
             <div className="filters-section">
               <div className="filter-group">
                 <label>Estado:</label>
@@ -320,13 +320,13 @@ function Competition() {
                   const status = game.finished ? 'FINISHED' : (game.playing ? 'PLAYING' : 'UPCOMING');
                   const badge = getStatusBadge(status);
                   
-                  // Acceso correcto a las propiedades de GameDto
+                  
                   const localTeam = game.initialSituation?.localTeam?.name || 'Equipo Local';
                   const visitTeam = game.initialSituation?.visitTeam?.name || 'Equipo Visitante';
                   const date = game.details?.date || '';
                   const city = game.details?.city?.name || 'Ciudad';
                   
-                  // Resultados de sets
+                  
                   const setsLocal = game.result?.setsWonLocal || 0;
                   const setsVisit = game.result?.setsWonVisit || 0;
                   

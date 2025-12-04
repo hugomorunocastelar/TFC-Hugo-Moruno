@@ -8,10 +8,6 @@ function Admin() {
   const navigate = useNavigate();
 
   const pages = {
-    Referee: {
-      'Referee Games': 'referee-games',
-    },
-
     Data: {
       Person: 'person',
       Referee: 'referee',

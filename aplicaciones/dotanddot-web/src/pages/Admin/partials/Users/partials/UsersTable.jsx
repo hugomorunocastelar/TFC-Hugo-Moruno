@@ -18,6 +18,7 @@ function UsersTable({ currentUsers, currentPage, totalPages, onPageChange, onNew
             <th>Username</th>
             <th>Email</th>
             <th>Roles</th>
+            <th>Associated Referee</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -28,6 +29,11 @@ function UsersTable({ currentUsers, currentPage, totalPages, onPageChange, onNew
               <td>{user.email}</td>
               <td>{user.roles ? user.roles.map(r => r.name).join(', ') : ''}</td>
               <td>
+                {user.referee 
+                  ? `${user.referee.dni?.name || ''} ${user.referee.dni?.surname || ''} (${user.referee.noLicense || 'N/A'})`
+                  : '-'}
+              </td>
+              <td>
                 <div className='admin-table-actions'>
                   <EditButton onClick={() => onEdit(user)} />
                   <DeleteButton onClick={() => onDelete(user.id)} />
@@ -37,7 +43,7 @@ function UsersTable({ currentUsers, currentPage, totalPages, onPageChange, onNew
           ))}
           {currentUsers.length === 0 && (
             <tr>
-              <td colSpan="4" className='admin-no-data'>No users found.</td>
+              <td colSpan="5" className='admin-no-data'>No users found.</td>
             </tr>
           )}
         </tbody>

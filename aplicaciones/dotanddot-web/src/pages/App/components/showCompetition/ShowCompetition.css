@@ -43,7 +43,7 @@
   border-bottom: 3px solid var(--color-palette-green-1);
 }
 
-/* Filtros */
+
 .filters-section {
   display: flex;
   flex-wrap: wrap;
@@ -257,7 +257,7 @@
   border-radius: 12px;
 }
 
-/* Tabla de Clasificación */
+
 .standings-section {
   margin-bottom: 2rem;
   background: white;

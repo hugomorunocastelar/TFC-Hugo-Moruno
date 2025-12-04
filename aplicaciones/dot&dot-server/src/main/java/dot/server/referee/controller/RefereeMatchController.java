@@ -7,6 +7,7 @@ import dot.server.data.Match.model.Game;
 import dot.server.data.Match.model.GameSanctions;
 import dot.server.data.Match.model.GameSet;
 import dot.server.data.Match.model.GameResult;
+import dot.server.data.Match.model.dto.GameDto;
 import dot.server.data.Match.repository.GameRepository;
 import dot.server.data.Match.repository.GameResultRepository;
 import dot.server.data.Match.repository.GameSanctionsRepository;
@@ -35,6 +36,75 @@ public class RefereeMatchController {
     private final GameResultRepository gameResultRepository;
     private final TeamDao teamRepository;
     private final LiveGameBroadcastService broadcastService;
+
+    /**
+     * Get game by unique code
+     * GET /referee/matches/{uniqueCode}
+     */
+    @GetMapping("/{uniqueCode}")
+    public ResponseEntity<?> getGame(@PathVariable String uniqueCode) {
+        Optional<Game> gameOpt = gameRepository.findAll().stream()
+                .filter(g -> g.getUniqueCode().equals(uniqueCode))
+                .findFirst();
+
+        if (gameOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Game not found with uniqueCode: " + uniqueCode));
+        }
+
+        GameDto gameDto = new GameDto().to(gameOpt.get());
+        return ResponseEntity.ok(gameDto);
+    }
+
+    /**
+     * Start a game
+     * PUT /referee/matches/{uniqueCode}/start
+     */
+    @PutMapping("/{uniqueCode}/start")
+    public ResponseEntity<?> startGame(@PathVariable String uniqueCode) {
+        Optional<Game> gameOpt = gameRepository.findAll().stream()
+                .filter(g -> g.getUniqueCode().equals(uniqueCode))
+                .findFirst();
+
+        if (gameOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Game not found with uniqueCode: " + uniqueCode));
+        }
+
+        Game game = gameOpt.get();
+
+        if (game.isPlaying()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Game is already in progress"));
+        }
+
+        if (game.isFinished()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Game is already finished"));
+        }
+
+        game.setPlaying(true);
+        
+        
+        GameSet firstSet = new GameSet();
+        firstSet.setUniqueCode(game.getUniqueCode());
+        firstSet.setSetNumber(1);
+        firstSet.setPointsLocal(0);
+        firstSet.setPointsVisit(0);
+        firstSet.setTimeStart(new Timestamp(System.currentTimeMillis()));
+        gameSetRepository.save(firstSet);
+
+        gameRepository.save(game);
+
+        
+        Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
+
+        
+        broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "STARTED");
+
+        return ResponseEntity.ok(gameDto);
+    }
 
     @PostMapping("/{uniqueCode}/sets/{setId}/points")
     public ResponseEntity<?> updateSetPoints(
@@ -105,11 +175,12 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
         
         broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "POINTS");
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     @PostMapping("/{uniqueCode}/sanctions")
@@ -136,18 +207,40 @@ public class RefereeMatchController {
         String typeStr = (String) body.get("type");
         Integer teamId = (Integer) body.get("teamId");
         String marcador = (String) body.get("marcador");
+        String sanctionTypeStr = (String) body.get("sanctionType"); 
 
         if (typeStr == null || teamId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Missing required fields: type and teamId"));
         }
 
+        String severity;
         SanctionType sanctionType;
-        try {
-            sanctionType = SanctionType.valueOf(typeStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "Invalid sanction type. Must be YELLOW or RED"));
+        
+        
+        if (typeStr.equalsIgnoreCase("YELLOW") || typeStr.equalsIgnoreCase("RED")) {
+            severity = typeStr.toUpperCase();
+            
+            
+            if (sanctionTypeStr != null && !sanctionTypeStr.isEmpty()) {
+                try {
+                    sanctionType = SanctionType.valueOf(sanctionTypeStr.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("error", "Invalid sanctionType: " + sanctionTypeStr));
+                }
+            } else {
+                sanctionType = SanctionType.INDIVIDUAL; 
+            }
+        } else {
+            
+            try {
+                sanctionType = SanctionType.valueOf(typeStr.toUpperCase());
+                severity = "YELLOW"; 
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Invalid sanction type. Must be YELLOW, RED, or valid sanction type (INDIVIDUAL, COACH, ASSISTANT_COACH, SUPPORT, IMPROPER, DELAY)"));
+            }
         }
 
         Optional<Team> teamOpt = teamRepository.findById(teamId.longValue());
@@ -159,6 +252,7 @@ public class RefereeMatchController {
         GameSanctions sanction = new GameSanctions();
         sanction.setGame(game);
         sanction.setType(sanctionType);
+        sanction.setSeverity(severity);
         sanction.setTeam(teamOpt.get());
         sanction.setMarcador(marcador != null ? marcador.substring(0, Math.min(marcador.length(), 5)) : null);
 
@@ -166,11 +260,12 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
         
         broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "SANCTION");
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     /**
@@ -215,8 +310,9 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     @PutMapping("/{uniqueCode}/sets/{setId}/alignments")
@@ -269,8 +365,9 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     /**
@@ -338,8 +435,9 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
     
     @PostMapping("/{uniqueCode}/sets")
@@ -384,8 +482,9 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     @PutMapping("/{uniqueCode}/sets/{setId}/end")
@@ -427,8 +526,9 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     /**
@@ -458,11 +558,12 @@ public class RefereeMatchController {
 
         
         Game updatedGame = gameRepository.findById(game.getId()).orElse(game);
+        GameDto gameDto = new GameDto().to(updatedGame);
 
         
         broadcastService.broadcastGameUpdate(uniqueCode, updatedGame, "FINISHED");
 
-        return ResponseEntity.ok(updatedGame);
+        return ResponseEntity.ok(gameDto);
     }
 
     /**

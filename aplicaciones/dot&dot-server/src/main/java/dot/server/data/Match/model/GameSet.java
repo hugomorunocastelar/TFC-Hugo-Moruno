@@ -17,24 +17,21 @@ public class GameSet {
     @Column(nullable = false)
     private String uniqueCode;
 
-    @Column(nullable = false)
     private int setNumber; 
 
-    private int pointsLocal;
-    private int pointsVisit;
+    private int pointsLocal = 0;
+    private int pointsVisit = 0;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
     private Date timeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
     private Date timeEnd;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String localAlignment;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String visitAlignment;
 
 }

@@ -5,7 +5,7 @@ import DeleteButton from '../../../components/buttons/delete/DeleteButton';
 import Paginator from '../../../../../components/Paginator/Paginator';
 import './GameTable.css';
 
-function GameTable({ currentGames, currentPage, totalPages, onPageChange, onNew, onEdit, onDelete }) {
+function GameTable({ currentGames, currentPage, totalPages, cityFilter, onCityFilterChange, onPageChange, onNew, onEdit, onDelete }) {
   const formatDate = (dateString) => {
     if (!dateString) return 'No date';
     const date = new Date(dateString);
@@ -22,6 +22,15 @@ function GameTable({ currentGames, currentPage, totalPages, onPageChange, onNew,
     <div className='game-table-container'>
       <div className='game-table-header'>
         <h2>Match Management</h2>
+        <div className='filter-container'>
+          <input
+            type="text"
+            placeholder="Filter by city..."
+            value={cityFilter}
+            onChange={(e) => onCityFilterChange(e.target.value)}
+            className='city-filter-input'
+          />
+        </div>
         <NewButton onClick={onNew} />
       </div>
 

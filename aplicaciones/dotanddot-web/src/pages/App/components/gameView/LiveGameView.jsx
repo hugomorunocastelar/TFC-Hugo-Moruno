@@ -27,7 +27,23 @@ function LiveGameView() {
 
   const localTeam = game.initialSituation?.localTeam;
   const visitTeam = game.initialSituation?.visitTeam;
-  const currentSet = game.sets?.find(s => !s.timeEnd) || game.sets?.[game.sets.length - 1];
+  const setsArray = [game.set1, game.set2, game.set3, game.set4, game.set5].filter(Boolean);
+  const currentSet = setsArray.find(s => !s.timeEnd) || setsArray[setsArray.length - 1];
+
+  
+  const getSetsWon = () => {
+    let localSets = 0;
+    let visitSets = 0;
+    setsArray.forEach(set => {
+      if (set.timeEnd) {
+        if (set.pointsLocal > set.pointsVisit) localSets++;
+        else if (set.pointsVisit > set.pointsLocal) visitSets++;
+      }
+    });
+    return { localSets, visitSets };
+  };
+
+  const { localSets, visitSets } = getSetsWon();
 
   return (
     <div className="live-game-view">
@@ -46,38 +62,48 @@ function LiveGameView() {
         </div>
       </div>
 
-      <div className="scoreboard">
-        <div className="team local">
-          <div className="team-name">{localTeam?.name || 'Local'}</div>
-          <div className="team-score">{currentSet?.pointsLocal || 0}</div>
+      <div className="game-display">
+        <div className="teams-header">
+          <div className="team-info local">
+            <div className="team-name">{localTeam?.name || 'Local'}</div>
+            <div className="team-club">{localTeam?.idClub?.name}</div>
+          </div>
+          <div className="center-info">
+            {currentSet && (
+              <div className="current-set-badge">Set {currentSet.setNumber}</div>
+            )}
+          </div>
+          <div className="team-info visit">
+            <div className="team-name">{visitTeam?.name || 'Visitor'}</div>
+            <div className="team-club">{visitTeam?.idClub?.name}</div>
+          </div>
         </div>
 
-        <div className="separator">
-          <div className="vs">VS</div>
-          {currentSet && (
-            <div className="current-set">Set {currentSet.setNumber}</div>
-          )}
+        <div className="score-section">
+          <div className="sets-won">
+            <div className="sets-won-value local">{localSets}</div>
+            <div className="sets-won-label">SETS</div>
+            <div className="sets-won-value visit">{visitSets}</div>
+          </div>
+
+          <div className="current-score">
+            <div className="score-value local">{currentSet?.pointsLocal || 0}</div>
+            <div className="score-separator">-</div>
+            <div className="score-value visit">{currentSet?.pointsVisit || 0}</div>
+          </div>
         </div>
 
-        <div className="team visit">
-          <div className="team-score">{currentSet?.pointsVisit || 0}</div>
-          <div className="team-name">{visitTeam?.name || 'Visitor'}</div>
-        </div>
-      </div>
-
-      <div className="sets-overview">
-        <h3>Sets</h3>
-        <div className="sets-list">
-          {game.sets?.map((set) => (
+        <div className="sets-grid">
+          {setsArray.map((set) => (
             <div 
               key={set.id} 
-              className={`set-item ${!set.timeEnd ? 'active' : 'finished'}`}
+              className={`set-column ${!set.timeEnd ? 'active' : 'finished'}`}
             >
-              <div className="set-header">Set {set.setNumber}</div>
-              <div className="set-score">
-                <span className="local">{set.pointsLocal}</span>
-                <span className="separator">-</span>
-                <span className="visit">{set.pointsVisit}</span>
+              <div className="set-label">Set {set.setNumber}</div>
+              <div className="set-points">
+                <span className="points-local">{set.pointsLocal}</span>
+                <span className="points-separator">-</span>
+                <span className="points-visit">{set.pointsVisit}</span>
               </div>
               {set.timeEnd && <div className="set-status">✓</div>}
             </div>
